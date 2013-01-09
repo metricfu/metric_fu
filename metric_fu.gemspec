@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
   # string comparison ftw
   if RUBY_VERSION < '1.9'
     s.add_dependency("ripper", ["= 1.0.5"])
-    s.add_dependency("rails_best_practices", ["= 1.3.0"])
+    s.add_dependency("rails_best_practices", ["= 1.3.0"]) # needs ripper as dependency
     s.add_dependency("rcov", ["~> 0.8"])
     s.add_dependency("Saikuro", ["= 1.1.0"])
   else
