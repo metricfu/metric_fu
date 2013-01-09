@@ -5,7 +5,7 @@ describe RailsBestPractices do
     it "should gather the raw data" do
       MetricFu::Configuration.run {}
       practices = MetricFu::RailsBestPractices.new
-      practices.should_receive(:`).with("rails_best_practices _#{MetricFu::RailsBestPractices::VERSION}_ --without-color .")
+      practices.should_receive(:`).with("rails_best_practices --without-color .")
       practices.emit
     end
   end
