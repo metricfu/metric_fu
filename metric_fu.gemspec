@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
     "flog"                  => ["= 2.3.0"],
     "reek"                  => ["= 1.2.12"],
     "metric_fu-roodi"       => [">= 2.2.0"],
-    "rails_best_practices"  => ["~> 0.10.1"],
     "churn"                 => ["= 0.0.25"],
     "sexp_processor"        => ["~> 3.0.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
     # "ruby_parser"           => ["~> 2.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
@@ -45,12 +44,14 @@ Gem::Specification.new do |s|
   end
   # string comparison ftw
   if RUBY_VERSION < '1.9'
-    s.add_dependency("ripper",[" =1.0.5"])
+    s.add_dependency("ripper", ["= 1.0.5"])
+    s.add_dependency("rails_best_practices", ["= 1.3.0"])
     s.add_dependency("rcov", ["~> 0.8"])
     s.add_dependency("Saikuro", ["= 1.1.0"])
   else
     s.add_dependency("rcov", ["~> 0.8"])
     s.add_dependency("japgolly-Saikuro", ">= 1.1.1.0")
+    s.add_dependency("rails_best_practices", [">= 1.13.2"])
     # still using rcov in ruby 1.9 till some errors are fleshed out
     # s.add_dependency("simplecov", [">= 0.5.4"])
     # s.add_dependency("simplecov-rcov", [">= 0.2.3"])

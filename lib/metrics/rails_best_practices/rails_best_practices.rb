@@ -1,8 +1,8 @@
 module MetricFu
   class RailsBestPractices < Generator
-    VERSION = '0.10.1'
+
     def emit
-      @output = `rails_best_practices _#{VERSION}_ --without-color .`
+      @output = `rails_best_practices --without-color .`
     end
 
     def analyze
