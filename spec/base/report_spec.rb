@@ -15,12 +15,13 @@ describe MetricFu::Report do
     @report = MetricFu::Report.new
   end
 
-  describe "#to_yaml" do
+  describe "#as_yaml" do
     it 'should call #report_hash' do
       report_hash = mock('report_hash')
       report_hash.should_receive(:to_yaml)
+
       @report.should_receive(:report_hash).and_return(report_hash)
-      @report.to_yaml
+      @report.as_yaml
     end
   end
 

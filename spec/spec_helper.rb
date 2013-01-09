@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'spec/autorun'
+require 'rspec/autorun'
 require 'date'
 require 'construct'
 

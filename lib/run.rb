@@ -24,11 +24,11 @@ module MetricFu
     end
     def save_reports
       mf_debug "** SAVING REPORT YAML OUTPUT TO #{MetricFu.base_directory}"
-      MetricFu.report.save_output(MetricFu.report.to_yaml,
+      MetricFu.report.save_output(MetricFu.report.as_yaml,
                                   MetricFu.base_directory,
                                   "report.yml")
       mf_debug "** SAVING REPORT DATA OUTPUT TO #{MetricFu.data_directory}"
-      MetricFu.report.save_output(MetricFu.report.to_yaml,
+      MetricFu.report.save_output(MetricFu.report.as_yaml,
                                   MetricFu.data_directory,
                                   "#{Time.now.strftime("%Y%m%d")}.yml")
       mf_debug "** SAVING TEMPLATIZED REPORT"

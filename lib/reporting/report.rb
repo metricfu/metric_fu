@@ -24,7 +24,7 @@ module MetricFu
     # @return YAML
     #   A YAML object containing the results of the report generation
     #   process
-    def to_yaml
+    def as_yaml
       report_hash.to_yaml
     end
 
