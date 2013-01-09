@@ -4,10 +4,11 @@ module MetricFu
 
     def initialize(options={})
       super
+      @opts = command_line_options
     end
 
     def emit
-      @output = `churn --yaml`
+      @output = command_line_call
       yaml_start = @output.index("---")
       @output = @output[yaml_start...@output.length] if yaml_start
     end
@@ -23,6 +24,18 @@ module MetricFu
     def to_h
       {:churn => @churn[:churn]}
     end
+
+    private
+      def command_line_options
+        opts = ["--yaml"]
+        opts << "--minimum_churn_count=#{@options[:minimum_churn_count]}" if @options[:minimum_churn_count]
+
+        opts.join(" ")
+      end
+
+      def command_line_call
+        `churn #{@opts}`
+      end
   end
 
 end

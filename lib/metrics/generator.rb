@@ -30,9 +30,10 @@ module MetricFu
   # in general setup the directory structure that the MetricFu system
   # expects.
   class Generator
-    attr_reader :report, :template
+    attr_reader :report, :template, :options
 
     def initialize(options={})
+      @options = options
       create_metric_dir_if_missing
       create_output_dir_if_missing
       create_data_dir_if_missing
