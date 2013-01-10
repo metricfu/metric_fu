@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
     "flog"                  => ["= 2.3.0"],
     "reek"                  => ["= 1.2.12"],
     "metric_fu-roodi"       => [">= 2.2.0"],
-    "rails_best_practices"  => ["~> 0.10.1"],
+    "rails_best_practices"  => ["= 1.13.2"],
     "churn"                 => ["= 0.0.25"],
     "sexp_processor"        => ["~> 3.0.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
     # "ruby_parser"           => ["~> 2.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
@@ -32,8 +32,8 @@ Gem::Specification.new do |s|
     # "syntax"                => ["= 1.0.0"],
     "coderay"               => [],
     "fattr"                 => ["= 2.2.1"],
-    "arrayfields"           => [" =4.7.4"],
-    "map"                   => [" =6.2.0"],
+    "arrayfields"           => ["= 4.7.4"],
+    "map"                   => ["= 6.2.0"],
     "bluff"                 => [],
     "googlecharts"          => []
   }.each do |gem, version|

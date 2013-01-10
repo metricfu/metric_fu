@@ -1,6 +1,6 @@
 module MetricFu
   class RailsBestPractices < Generator
-    VERSION = '0.10.1'
+    VERSION = '1.13.2'
     def emit
       command = %Q(rails_best_practices _#{VERSION}_ --without-color .)
       mf_debug "** #{command}"
