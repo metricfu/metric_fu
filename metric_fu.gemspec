@@ -21,25 +21,22 @@ Gem::Specification.new do |s|
   {
     "flay"                  => ["= 1.2.1"],
     "metric_fu-roodi"       => [">= 2.2.0"],
-    "rails_best_practices"  => ["~> 0.10.1"],
+    "rails_best_practices"  => ["= 1.3.0"], # needs ripper as dependency
     "rcov"                  => ["~> 0.8"],
     "Saikuro"               => ["= 1.1.0"],
-
     "reek"                  => ["= 1.2.12"],
     "flog"                  => ["= 2.3.0"],
     "churn"                 => ["= 0.0.25"],
-      "sexp_processor"        => ["~> 3.0.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
-      # "ruby_parser"           => ["~> 2.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
-
-
+    "sexp_processor"        => ["~> 3.0.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
+    # "ruby_parser"           => ["~> 2.3"], # required because of churn, flog, reek 1.2.12, ripper_ruby_parser 0.0.8
     "coderay"               => [],
     "bluff"                 => [],
     "googlecharts"          => [],
     "activesupport"         => [">= 2.0.0"],
     "ripper"                => ["= 1.0.5"],
     "fattr"                 => ["= 2.2.1"],
-    "arrayfields"           => [" =4.7.4"],
-    "map"                   => [" =6.2.0"]
+    "arrayfields"           => ["= 4.7.4"],
+    "map"                   => ["= 6.2.0"]
   }.each do |gem, version|
     if version == []
       s.add_runtime_dependency(gem)
