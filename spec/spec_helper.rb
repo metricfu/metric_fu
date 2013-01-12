@@ -5,6 +5,17 @@ require 'construct'
 
 require File.expand_path File.join(File.dirname(__FILE__), '/../lib/metric_fu.rb')
 include MetricFu
-def compare_paths(path1,path2)
-  File.join(MetricFu.root_dir,path1).should == File.join(MetricFu.root_dir,path2)
+
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[MetricFu.root_dir + "/spec/support/**/*.rb"].each {|f| require f}
+
+RSpec.configure do |config|
+  # :suite after/before all specs
+  # :each ever describe block
+  # :all ever it block
+
+  config.after(:suite) do
+    cleanup_test_files
+  end
 end
