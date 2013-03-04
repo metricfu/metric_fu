@@ -16,7 +16,7 @@ See `metric_fu --help` for more options
 
 ## Compatibility
 
-It is currently testing on MRI 1.8.7, 1.9.2, and 1.9.3
+It is currently testing on MRI 1.8.7, 1.9.2, 1.9.3 and 2.0.0.
 
 * The `japgolly-Saikuro` fork and `metric_fu-roodi` fork are a part of an attempt to get metric_fu working in a modern Ruby environment, specifically compatibility with Ruby 1.9 and Bundler.
 * rails_best_practices is disabled in ruby 1.8
@@ -49,7 +49,7 @@ To generate the same metrics metric_fu has been generating run from the root of 
 
     RAILS_ENV=test rcov $(ruby -e "puts Dir['{spec,test}/**/*_{spec,test}.rb'].join(' ')") --sort coverage --no-html --text-coverage --no-color --profile --exclude-only '.*' --include-file "\Aapp,\Alib" -Ispec >> coverage/rcov/rcov.txt
 
-#### Simplecov metrics with Ruby 1.9
+#### Simplecov metrics with Ruby 1.9 and 2.0
 
 Add to your Gemfile or otherwise install
 
