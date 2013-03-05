@@ -39,6 +39,10 @@ describe MetricFu::Cli::Helper do
         defaults[:saikuro].should be_true
       end
 
+      it "enables Cane" do
+        defaults[:cane].should be_true
+      end
+
       it "enables RCov" do
         defaults[:rcov].should be_true
       end
@@ -142,6 +146,13 @@ describe MetricFu::Cli::Helper do
       helper.process_options(["--roodi"])[:roodi].should be_true
     end
 
+    it "turns cane off" do
+      helper.process_options(["--no-cane"])[:cane].should be_false
+    end
+
+    it "turns cane on" do
+      helper.process_options(["--cane"])[:cane].should be_true
+    end
   end
 
 end
