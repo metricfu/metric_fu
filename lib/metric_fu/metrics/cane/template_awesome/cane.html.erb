@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>Cane Results</title>
+	<style>
+	<%= inline_css("css/default.css") %>
+	</style>
+</head>
+
+<body>
+	<h1>Cane Results</h1>
+  <a href="index.html">back to menu</a>
+	<h2>Total Violations: <%= @cane[:total_violations] %></h2>
+  <p><a href='https://github.com/square/cane'>Cane</a> reports code quality threshold violations.</p>
+
+  <% graph_name = 'cane' %>
+  <% if MetricFu.configuration.graph_engine == :gchart %>
+  <img src="<%= graph_name %>.png?<%= Time.now.to_i %>" />
+  <% else %>
+  <canvas id="graph"></canvas>
+  <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
+  <% end %>
+
+  <% if @cane[:violations][:abc_complexity] && @cane[:violations][:abc_complexity].size > 0 %>
+	<h3>Methods exceeding allowed Abc complexity (<%= @cane[:violations][:abc_complexity].size %>)</h3>
+	<table>
+    <tr>
+		  <th>File</th>
+		  <th>Method</th>
+		  <th>Complexity</th>
+    </tr>
+    <% count = 0 %>
+    <% @cane[:violations][:abc_complexity].each do |violation| %>
+      <tr class='<%= cycle("light", "dark", count) %>'>
+        <td><%=violation[:file]%></td>
+        <td><%=violation[:method]%></td>
+        <td><%=violation[:complexity]%></td>
+      </tr>
+      <% count += 1 %>
+		<% end %>
+	</table>
+  <% end %>
+  <% if @cane[:violations][:line_style] && @cane[:violations][:line_style].size > 0 %>
+	<h3>Lines violating style requirements (<%= @cane[:violations][:line_style].size %>)</h3>
+	<table>
+    <tr>
+		  <th>File</th>
+		  <th>Description</th>
+    </tr>
+    <% count = 0 %>
+    <% @cane[:violations][:line_style].each do |violation| %>
+      <tr class='<%= cycle("light", "dark", count) %>'>
+        <td><%=violation[:line]%></td>
+        <td><%=violation[:description]%></td>
+      </tr>
+      <% count += 1 %>
+		<% end %>
+	</table>
+  <% end %>
+  <% if @cane[:violations][:comment] && @cane[:violations][:comment].size > 0 %>
+	<h3>Class definitions requiring comments (<%= @cane[:violations][:comment].size %>)</h3>
+	<table>
+    <tr>
+		  <th>File</th>
+		  <th>Class</th>
+    </tr>
+    <% count = 0 %>
+    <% @cane[:violations][:comment].each do |violation| %>
+      <tr class='<%= cycle("light", "dark", count) %>'>
+        <td><%=violation[:line]%></td>
+        <td><%=violation[:class_name]%></td>
+      </tr>
+      <% count += 1 %>
+		<% end %>
+	</table>
+  <% end %>
+	<p>Generated on <%= Time.now.localtime %></p>
+</body>
+</html>

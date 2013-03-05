@@ -29,12 +29,18 @@ module MetricFu
     def sexp_processor
       '~> 4.0'
     end
+    def parallel
+      '0.6.2'
+    end
 
     def rcov
       '~> 0.8'
     end
     def saikuro
       '>= 1.1.1.0'
+    end
+    def cane
+      '2.5.2'
     end
   end
 end

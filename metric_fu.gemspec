@@ -29,10 +29,12 @@ Gem::Specification.new do |s|
     "flog"                  => ["= #{MetricFu::MetricVersion.flog}"],
     "reek"                  => ["= #{MetricFu::MetricVersion.reek}"],
     "churn"                 => ["= #{MetricFu::MetricVersion.churn}"],
-      # specifying dependencies for flay, reek, churn, and flog
+    "cane"                  => ["= #{MetricFu::MetricVersion.cane}"],
+      # specifying dependencies for flay, reek, churn, flog, and cane
       "ruby_parser"           => ["~> 3.0", ">= #{MetricFu::MetricVersion.ruby_parser}"],
       "sexp_processor"        => ["#{MetricFu::MetricVersion.sexp_processor}"],
       "ruby2ruby"             => ["= #{MetricFu::MetricVersion.ruby2ruby}"],
+      "parallel"              => ["= #{MetricFu::MetricVersion.parallel}"],
     "activesupport"         => [">= 2.0.0"], # ok
     "coderay"               => [],
     "fattr"                 => ["= 2.2.1"],
