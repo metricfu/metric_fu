@@ -26,5 +26,21 @@ module MetricFu
         end
       end
     end
+
+    class Documentation
+      def self.parse(violation_list)
+        violation_list.split(/\n/).map do |violation|
+          {:description => violation.strip}
+        end
+      end
+    end
+
+    class Others
+      def self.parse(violation_list)
+        violation_list.split(/\n/).map do |violation|
+          {:description => violation.strip}
+        end
+      end
+    end
   end
 end

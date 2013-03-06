@@ -127,7 +127,7 @@ describe MetricFu::Configuration do
       end
 
       it 'should set @cane to ' +
-                          %q(:dirs_to_cane => @code_dirs, :abc_max => 15, :line_length => 80, :no_doc => 'n') do
+                          %q(:dirs_to_cane => @code_dirs, :abc_max => 15, :line_length => 80, :no_doc => 'n', :no_readme => 'y') do
         load_metric 'cane'
         @config.send(:cane).
           should == {
@@ -135,7 +135,8 @@ describe MetricFu::Configuration do
             :filetypes => ["rb"],
             :abc_max => 15,
             :line_length => 80,
-            :no_doc => "n"}
+            :no_doc => "n",
+            :no_readme => "n"}
       end
 
       it 'should set @rcov to ' +

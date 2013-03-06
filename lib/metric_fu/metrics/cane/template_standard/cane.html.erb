@@ -47,6 +47,19 @@
 		<% end %>
 	</table>
   <% end %>
+  <% if @cane[:violations][:documentation] && @cane[:violations][:documentation].size > 0 %>
+  <h3>Missing documentation (<%= @cane[:violations][:documentation].size %>)</h3>
+  <table>
+    <tr>
+      <th>Description</th>
+    </tr>
+    <% @cane[:violations][:documentation].each do |violation| %>
+      <tr>
+        <td><%=violation[:description]%></td>
+      </tr>
+    <% end %>
+  </table>
+  <% end %>
   <% if @cane[:violations][:comment] && @cane[:violations][:comment].size > 0 %>
 	<h3>Class definitions requiring comments (<%= @cane[:violations][:comment].size %>)</h3>
 	<table>
@@ -63,6 +76,19 @@
       <% count += 1 %>
 		<% end %>
 	</table>
+  <% end %>
+  <% if @cane[:violations][:others] && @cane[:violations][:others].size > 0 %>
+  <h3>Others (<%= @cane[:violations][:others].size %>)</h3>
+  <table>
+    <tr>
+      <th>Description</th>
+    </tr>
+    <% @cane[:violations][:others].each do |violation| %>
+      <tr>
+        <td><%=violation[:description]%></td>
+      </tr>
+    <% end %>
+  </table>
   <% end %>
 	<p>Generated on <%= Time.now.localtime %></p>
 </body>

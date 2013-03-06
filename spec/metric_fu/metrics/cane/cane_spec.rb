@@ -43,6 +43,20 @@ describe Cane do
       @cane.should_receive(:`).with("mf-cane")
       output = @cane.emit
     end
+
+    it "should use no-readme if specified" do
+      configure_cane_with({no_readme: 'y'})
+      @cane = MetricFu::Cane.new('base_dir')
+      @cane.should_receive(:`).with("mf-cane --no-readme")
+      output = @cane.emit
+    end
+
+    it "should include README violations if no_readme != 'y'" do
+      configure_cane_with({no_readme: 'n'})
+      @cane = MetricFu::Cane.new('base_dir')
+      @cane.should_receive(:`).with("mf-cane")
+      output = @cane.emit
+    end
   end
 
   describe "parse cane output" do
@@ -84,6 +98,21 @@ describe Cane do
           {line: 'lib/comments/bar.rb:2', class_name: 'Bar'}
         ]
       end
+
+      it "should extract no readme violations if present" do
+        @cane.analyze
+        @cane.violations[:documentation].should == [
+          {description: 'No README found'},
+        ]
+      end
+
+      it "should extract unknown violations in others category" do
+        @cane.analyze
+        @cane.violations[:others].should == [
+          {description: 'Misc issue 1'},
+          {description: 'Misc issue 2'}
+        ]
+      end
     end
 
     describe "to_h method" do
@@ -122,10 +151,22 @@ Lines violated style requirements (340):
   lib/line/foo.rb:1       Line is >80 characters (135)
   lib/line/bar.rb:2       Line contains trailing whitespace
 
+Missing documentation (1):
+
+  No README found
+
 Class definitions require explanatory comments on preceding line (2):
 
   lib/comments/foo.rb:1       Foo
   lib/comments/bar.rb:2       Bar
+
+Unknown violation (1):
+
+  Misc issue 1
+
+Another Unknown violation (1):
+
+  Misc issue 2
 
 Total Violations: 6
     OUTPUT

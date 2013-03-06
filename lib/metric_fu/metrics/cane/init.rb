@@ -6,6 +6,7 @@ MetricFu::Configuration.run do |config|
     :abc_max => 15,
     :line_length => 80,
     :no_doc => 'n',
+    :no_readme => 'n',
     :filetypes => ['rb']
   })
 end
