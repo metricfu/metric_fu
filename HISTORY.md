@@ -9,7 +9,7 @@
 
 * Adding cane metrics (Sathish, pull request #49)
   * Not yet included in hotspots
-  * *Removed ruby 1.9 support*
+  * *Removed ruby 1.8 support*
 
 ### MetricFu 3.0.1 / 2013-03-01
 
