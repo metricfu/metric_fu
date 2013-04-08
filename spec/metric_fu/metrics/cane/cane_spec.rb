@@ -59,6 +59,23 @@ describe Cane do
     end
   end
 
+  describe "parse cane empty output" do
+    before :each do
+      MetricFu::Configuration.run {}
+      File.stub!(:directory?).and_return(true)
+      @cane = MetricFu::Cane.new('base_dir')
+      @cane.instance_variable_set(:@output, '')
+    end
+
+    describe "analyze method" do
+
+      it "should find total violations" do
+        @cane.analyze
+        @cane.total_violations.should == 0
+      end
+    end
+  end
+
   describe "parse cane output" do
     before :each do
       lines = sample_cane_output
