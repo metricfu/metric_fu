@@ -1,5 +1,6 @@
 # require these first because others depend on them
 MetricFu.reporting_require { 'report' }
+MetricFu.metrics_require   { 'hotspots/hotspot' }
 MetricFu.metrics_require   { 'generator' }
 MetricFu.metrics_require   { 'graph' }
 MetricFu.reporting_require { 'graphs/grapher' }

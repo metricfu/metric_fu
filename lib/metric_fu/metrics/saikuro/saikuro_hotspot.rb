@@ -1,4 +1,4 @@
-class SaikuroHotspot
+class SaikuroHotspot < MetricFu::Hotspot
   include MetricFu::HotspotScoringStrategies
 
   COLUMNS = %w{lines complexity}
@@ -43,6 +43,18 @@ class SaikuroHotspot
         end
       end
     end
+  end
+
+  def present_group(group)
+    occurences = group.size
+    complexity = get_mean(group.column("complexity"))
+    "#{"average " if occurences > 1}complexity is %.1f" % complexity
+  end
+
+  def present_group_details(group)
+    occurences = group.size
+    complexity = get_mean(group.column("complexity"))
+    "#{"average " if occurences > 1}complexity is %.1f" % complexity
   end
 
 end

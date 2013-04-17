@@ -81,6 +81,13 @@ END
       expected =  JSON.parse("{\"methods\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":\"Client#client_requested_sync\",\"file_path\":\"lib/client/client.rb\",\"hash\":7919384682,\"simple_method_name\":\"#client_requested_sync\"},\"details\":{\"reek\":\"found 1 code smells\",\"flog\":\"complexity is 37.9\"}}],\"classes\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":7995629750},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\"}}],\"files\":[{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":-5738801681},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\",\"churn\":\"detected high level of churn (changed 54 times)\"}},{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/foo.rb\",\"hash\":-7081271905},\"details\":{\"churn\":\"detected high level of churn (changed 52 times)\"}}]}")
       compare_hashes(JSON.parse(hotspots.to_h[:hotspots].to_json), expected)
     end
+    # really testing the output of analyzed_problems#worst_items
+    it "should return the worst item granularities: files, classes, methods" do
+      hotspots = MetricFu::Hotspots.new
+      analyzer = HotspotAnalyzer.new(@yaml)
+      hotspots.instance_variable_set(:@analyzer, analyzer)
+      hotspots.analyze.keys.should =~ [:files, :classes, :methods]
+    end
   end
 end
 def compare_hashes(got,expected)

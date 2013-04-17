@@ -1,4 +1,4 @@
-class RoodiHotspot
+class RoodiHotspot < MetricFu::Hotspot
   include MetricFu::HotspotScoringStrategies
 
   COLUMNS = %w{problems}
@@ -32,6 +32,21 @@ class RoodiHotspot
         "file_path" => problem[:file]
       }
     end
+  end
+
+  def present_group(group)
+    occurences = group.size
+    "found #{occurences} design problems"
+  end
+
+  def present_group_details(group)
+    occurences = group.size
+    message = "found #{occurences} design problems<br/>"
+    group.each do |item|
+      problem    = item.data["problems"]
+      message << "* #{problem}<br/>"
+    end
+    message
   end
 
 end

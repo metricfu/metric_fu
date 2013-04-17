@@ -1,4 +1,4 @@
-class StatsHotspot
+class StatsHotspot < MetricFu::Hotspot
 
   COLUMNS = %w{stat_name stat_value}
 
