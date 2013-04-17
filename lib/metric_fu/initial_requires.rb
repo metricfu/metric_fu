@@ -2,7 +2,12 @@ require 'rake'
 require 'yaml'
 begin
   require 'psych'
+  # Don't complain that "syck has been removed" in Ruby 2.0. Using syck will
+  # complain, but then sets itself to psych anyway.
+  stderr = $stderr 
+  $stderr = File.open('/dev/null', 'w')
   YAML::ENGINE.yamler = 'syck'
+  $stderr = stderr
 rescue LoadError
   #nothing to report
 end
