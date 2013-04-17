@@ -1,3 +1,4 @@
+MetricFu.reporting_require { 'graphs/grapher' }
 module MetricFu
   class RcovGrapher < Grapher
     attr_accessor :rcov_percent, :labels

@@ -1,3 +1,4 @@
+MetricFu.reporting_require { 'graphs/grapher' }
 module MetricFu
   class ReekGrapher < Grapher
     attr_accessor :reek_count, :labels

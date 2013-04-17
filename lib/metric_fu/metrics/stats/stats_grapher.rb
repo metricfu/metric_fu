@@ -1,3 +1,4 @@
+MetricFu.reporting_require { 'graphs/grapher' }
 module MetricFu
   class StatsGrapher < Grapher
     attr_accessor :loc_counts, :lot_counts, :labels

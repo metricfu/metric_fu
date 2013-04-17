@@ -1,3 +1,4 @@
+MetricFu.reporting_require { 'graphs/grapher' }
 module MetricFu
   class RoodiGrapher < Grapher
     attr_accessor :roodi_count, :labels
