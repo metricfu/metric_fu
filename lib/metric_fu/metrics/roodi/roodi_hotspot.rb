@@ -11,6 +11,7 @@ class RoodiHotspot < MetricFu::Hotspot
     :roodi
   end
 
+  # returns 1 or 0
   def map(row)
     MetricFu::HotspotScoringStrategies.present(row)
   end
