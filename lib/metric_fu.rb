@@ -41,6 +41,7 @@ module MetricFu
     (ENV['CC_BUILD_ARTIFACTS'] || 'tmp/metric_fu')
   end
   def self.configure
+    MetricFu.lib_require { 'core_ext' }
     MetricFu.lib_require { 'configuration' }
     init_files = Dir.glob(File.join(MetricFu.metrics_dir, '**/init.rb')).reject do |file|
       if file =~ /rcov/o

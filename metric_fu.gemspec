@@ -22,27 +22,35 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   {
+    # metric dependencies
+    "flay"                  => MetricFu::MetricVersion.flay,
+    "churn"                 => MetricFu::MetricVersion.churn,
+    "flog"                  => MetricFu::MetricVersion.flog,
+    "reek"                  => MetricFu::MetricVersion.reek,
+    "cane"                  => MetricFu::MetricVersion.cane,
+      # specifying gem dependencies for
+      # flay, churn, flog, reek, and cane
+      "ruby_parser"           => MetricFu::MetricVersion.ruby_parser,
+      "sexp_processor"        => MetricFu::MetricVersion.sexp_processor,
+      # reek
+      "ruby2ruby"             => MetricFu::MetricVersion.ruby2ruby,
+      # cane
+      "parallel"              => MetricFu::MetricVersion.parallel,
+      # required by main, a churn dependency
+      "fattr"                 => ["= 2.2.1"],
+      "arrayfields"           => ["= 4.7.4"],
+      "map"                   => ["= 6.2.0"],
     "rails_best_practices"  => MetricFu::MetricVersion.rails_best_practices,
     "japgolly-Saikuro"      => MetricFu::MetricVersion.saikuro,
     "metric_fu-roodi"       => MetricFu::MetricVersion.roodi,
-    "flay"                  => MetricFu::MetricVersion.flay,
-    "flog"                  => MetricFu::MetricVersion.flog,
-    "reek"                  => MetricFu::MetricVersion.reek,
-    "churn"                 => MetricFu::MetricVersion.churn,
-    "cane"                  => MetricFu::MetricVersion.cane,
-      # specifying dependencies for f, r, ch, f, and cane
-      "ruby_parser"           => MetricFu::MetricVersion.ruby_parser,
-      "sexp_processor"        => MetricFu::MetricVersion.sexp_processor,
-      "ruby2ruby"             => MetricFu::MetricVersion.ruby2ruby,
-      "parallel"              => MetricFu::MetricVersion.parallel,
-    "activesupport"         => [">= 2.0.0"], # ok
+    #
+    # other dependencies
+    # ruby version identification
     'redcard'               => [],
+    # syntax highlighting
     "coderay"               => [],
-    "fattr"                 => ["= 2.2.1"],
-    "arrayfields"           => ["= 4.7.4"],
-    "map"                   => ["= 6.2.0"],
+    # default graphing libraries
     "bluff"                 => [],
-    "googlecharts"          => []
   }.each do |gem, version|
     if version == []
       s.add_runtime_dependency(gem)
