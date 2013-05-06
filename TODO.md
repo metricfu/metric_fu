@@ -8,8 +8,6 @@
 
 * Move code that references rcov out of
 
-    lib/reporting/templates/awesome/css/default.css
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/default.css
     lib/reporting/templates/standard/index.html.erb
 
@@ -17,52 +15,44 @@
 
     lib/configuration.rb
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 * Move code that references flay out of
 
     lib/metrics/generator.rb
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 * Move code that references churn out of
 
     lib/metrics/hotspots/analysis/code_issue.rb
     lib/metrics/hotspots/init.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 * Move code that references rails_best_practices out of
 
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 
 * Move code that references reek out of
 
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 
 * Move code that references roodi out of
 
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 * Move code that references saikuro out of
 
     lib/metrics/hotspots/analysis/code_issue.rb
-    lib/reporting/templates/awesome/index.html.erb
     lib/reporting/templates/standard/index.html.erb
 
 * Move code that references stats out of
 
-lib/reporting/templates/awesome/index.html.erb
 lib/reporting/templates/standard/index.html.erb
 
 * Review how metric_fu uses each tools to generate metrics, e.g. by shelling out commands, rake task, modifying the output, etc.

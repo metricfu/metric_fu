@@ -198,6 +198,26 @@ module MetricFu
       return first_value if iteration % 2 == 0
       return second_value
     end
+
+    # available in the erb template
+    # as it's processed in the context of
+    # the binding of this class
+    def metric_links
+      @metrics.keys.map {|metric| metric_link(metric.to_s) }
+    end
+
+    def metric_link(metric)
+      <<-LINK
+      <a href="#{metric}.html">
+        #{snake_case_to_title_case(metric)}
+      </a>
+      LINK
+    end
+
+    def snake_case_to_title_case(string)
+     string.split('_').collect{|word| word[0] = word[0..0].upcase; word}.join(" ")
+    end
+
     # belive me, I tried to meta program this with an inherited hook
     # I couldn't get it working
     def template_directory

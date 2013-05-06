@@ -1,0 +1,15 @@
+.bluff-tooltip {
+	background: #fff;
+	border: 1px solid #d1edf5;
+	padding: 8px 8px 6px;
+}
+.bluff-tooltip .color {
+	display: block;
+	height: 4px;
+	width: 30px;
+	margin: 0 0 4px;
+	overflow: hidden;
+}
+.bluff-tooltip .data {
+	font-weight: bold;
+}

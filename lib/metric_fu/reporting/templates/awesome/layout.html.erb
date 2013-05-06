@@ -9,6 +9,8 @@
     <%= inline_css("css/buttons.css") %>
     <%= inline_css("css/integrity.css") %>
     <%= inline_css("css/default.css") %>
+    <%= inline_css('css/bluff.css') if MetricFu.configuration.graph_engine == :bluff %>
+    <%= inline_css('css/rcov.css') if @metrics.has_key?(:rcov) %>
     </style>
     <link REL="SHORTCUT ICON" HREF="/favicon.ico">
     <script language="javascript" src="js-class.js" type="text/javascript"></script>

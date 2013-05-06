@@ -14,10 +14,13 @@ class AwesomeTemplate < MetricFu::Template
       FileUtils.copy(f, File.join(MetricFu.output_directory, File.basename(f)))
     end
 
+    @metrics = {}
     report.each_pair do |section, contents|
       if template_exists?(section)
         create_instance_var(section, contents)
+        @metrics[section] = contents
         create_instance_var(:per_file_data, per_file_data)
+        mf_debug  "Generating html for section #{section} with #{template(section)} for report #{report.class}"
         @html = erbify(section)
         html = erbify('layout')
         fn = output_filename(section)
@@ -66,8 +69,14 @@ class AwesomeTemplate < MetricFu::Template
       data = File.open(file, 'r').readlines
       fn = "#{file.gsub(%r{/}, '_')}.html"
 
-      out = "<html><head><style>#{inline_css('css/syntax.css')}</style></head><body>"
-      out << "<table cellpadding='0' cellspacing='0' class='ruby'>"
+      out = <<-HTML
+        <html><head><style>
+          #{inline_css('css/syntax.css')}
+          #{inline_css('css/bluff.css') if MetricFu.configuration.graph_engine == :bluff}
+          #{inline_css('css/rcov.css') if @metrics.has_key?(:rcov)}
+        </style></head><body>
+        out << "<table cellpadding='0' cellspacing='0' class='ruby'>
+      HTML
       data.each_with_index do |line, idx|
         line_number = (idx + 1).to_s
         out << "<tr>"
