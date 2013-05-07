@@ -28,6 +28,10 @@ class FlogHotspot < MetricFu::Hotspot
     Array(data[:method_containers]).each do |method_container|
       Array(method_container[:methods]).each do |entry|
         file_path = entry[1][:path].sub(%r{^/},'') if entry[1][:path]
+        if file_path.nil?
+          STDERR.puts "Skipping Flog data with no file path: #{entry[1].inspect}"
+          next
+        end
         location = MetricFu::Location.for(entry.first)
         table << {
           "metric" => name,
