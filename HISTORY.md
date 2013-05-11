@@ -5,6 +5,7 @@
 * Fixes
   * Line numbers now display and link properly in annotated code (Benjamin Fleischer)
   * No longer remove historical metrics when testing metric_fu
+  * Churn metric handler won't crash when no source control found (Dan Mayer)
 * Misc (Benjamin Fleischer)
   * Removed StandardTemplate, had no additional value and needed to be maintained
   * Removed most template references to specific metrics

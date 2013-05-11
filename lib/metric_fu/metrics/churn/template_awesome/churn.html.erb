@@ -8,12 +8,14 @@
     <th>Times Changed</th>
   </tr>
   <% count = 0 %>
-  <% @churn[:changes].each do |change| %>
-    <tr>
-      <td><%= link_to_filename(change[:file_path]) %></td>
-      <td><%= change[:times_changed] %></td>
-    </tr>
-    <% count += 1 %>
+  <% if @churn[:changes] %>
+    <% @churn[:changes].each do |change| %>
+      <tr>
+        <td><%= link_to_filename(change[:file_path]) %></td>
+        <td><%= change[:times_changed] %></td>
+      </tr>
+      <% count += 1 %>
+    <% end %>
   <% end %>
 </table>
 

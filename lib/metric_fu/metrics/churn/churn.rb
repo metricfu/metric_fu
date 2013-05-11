@@ -7,8 +7,8 @@ module MetricFu
     end
 
     def analyze
-      if @output.match(/Churning requires a subversion or git repo/)
-        @churn = [:churn => {}]
+      if @output.nil? || @output.match(/Churning requires.*git/)
+        @churn = {:churn => {}}
       else
         @churn = YAML::load(@output)
       end

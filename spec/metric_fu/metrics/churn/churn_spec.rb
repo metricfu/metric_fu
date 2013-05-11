@@ -33,11 +33,18 @@ describe Churn do
       @changes = {"lib/generators/flog.rb" => 2, "lib/metric_fu.rb" => 3}
     end
 
-    it "should be empty on error" do
+    it "should be empty on error text" do
       churn = MetricFu::Churn.new
       churn.instance_variable_set(:@output, "Churning requires a subversion or git repo")
       result = churn.analyze
-      result.should == [:churn => {}]
+      result.should == {:churn => {}}
+    end
+
+    it "should be empty on error no output captured" do
+      churn = MetricFu::Churn.new
+      churn.instance_variable_set(:@output, nil)
+      result = churn.analyze
+      result.should == {:churn => {}}
     end
 
     it "should return yaml results" do
