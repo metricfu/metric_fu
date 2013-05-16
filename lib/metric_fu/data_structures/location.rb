@@ -5,28 +5,21 @@ module MetricFu
     attr_accessor :class_name, :method_name, :file_path, :simple_method_name, :hash
 
     def self.get(file_path, class_name, method_name)
-      # This could be more 'confident' using Maybe, but we want it to be as fast as possible
-      file_path_copy = file_path == nil ? nil : file_path.clone
-      class_name_copy = class_name == nil ? nil : class_name.clone
-      method_name_copy = method_name == nil ? nil : method_name.clone
-      key = [file_path_copy, class_name_copy, method_name_copy]
+      location = new(file_path, class_name, method_name)
       @@locations ||= {}
-      if @@locations.has_key?(key)
-        @@locations[key]
-      else
-        location = self.new(file_path_copy, class_name_copy, method_name_copy)
-        @@locations[key] = location
-        location.freeze  # we cache a lot of method call results, so we want location to be immutable
+      @@locations.fetch(location.to_key) do
+        @@locations[location.to_key] = location
+        location.finalize
         location
       end
     end
 
     def initialize(file_path, class_name, method_name)
-      @file_path = file_path
-      @class_name = class_name
-      @method_name = method_name
-      @simple_method_name = @method_name.sub(@class_name,'') unless @method_name == nil
-      @hash = [@file_path, @class_name, @method_name].hash
+      @file_path          = file_path
+      @class_name         = class_name
+      @method_name        = method_name
+      @simple_method_name = @method_name.to_s.sub(@class_name.to_s,'')
+      @hash               = to_key.hash
     end
 
     # TODO - we need this method (and hash accessor above) as a temporary hack where we're using Location as a hash key
@@ -67,6 +60,17 @@ module MetricFu
 
     def <=>(other)
       [self.file_path.to_s, self.class_name.to_s, self.method_name.to_s] <=> [other.file_path.to_s, other.class_name.to_s, other.method_name.to_s]
+    end
+
+    def to_key
+      [@file_path, @class_name, @method_name]
+    end
+
+    def finalize
+      @file_path   &&= @file_path.clone
+      @class_name  &&= @class_name.clone
+      @method_name &&= @method_name.clone
+      freeze  # we cache a lot of method call results, so we want location to be immutable
     end
 
     private
