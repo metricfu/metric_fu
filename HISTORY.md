@@ -1,5 +1,8 @@
 ### Master
 
+* Features
+  * Allow setting of the --continue flag with flog (Eric Wollesen)
+
 * Misc
   * Make Location and AnalyzedProblems code more confident (Avdi Grimm)
 
