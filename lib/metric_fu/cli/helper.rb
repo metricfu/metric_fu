@@ -39,7 +39,7 @@ module MetricFu
         options = MetricFu::Cli::MicroOptParse::Parser.new do |p|
             p.banner = self.banner
             p.version = self.version
-            p.option :run, "Run all metrics with defaults", :default => false
+            p.option :run, "Run all metrics with defaults", :default => true
             metrics.each do |metric|
               p.option metric.to_sym, "Enables or disables #{metric.to_s}", :default => true #, :value_in_set => [true, false]
             end

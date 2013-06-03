@@ -48,7 +48,10 @@ describe MetricFu::Cli::Helper do
       it "enables RCov" do
         defaults[:rcov].should be_true
       end
-
+      
+      it "runs by default" do
+        defaults[:run].should be_true
+      end
     end
 
     if MetricFu.configuration.mri?
