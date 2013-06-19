@@ -131,10 +131,10 @@ module MetricFu
       end
     end
 
-    def display_location(location, stat)
-      file_path, class_name, method_name = location.file_path, location.class_name, location.method_name
+    def display_location(location)
+      class_name, method_name = location.class_name, location.method_name
       str = ""
-      str += link_to_filename(file_path)
+      str += link_to_filename(location.file_name, location.line_number)
       str += " : " if method_name || class_name
       if(method_name)
         str += "#{method_name}"

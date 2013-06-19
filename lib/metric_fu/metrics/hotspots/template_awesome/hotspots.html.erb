@@ -28,12 +28,13 @@
         <% columns.each do |column| %>
           <% item = items[column].length >= items_length ? items[column][items_length] : nil %>
           <% if item %>
-            <% file, line = item[:location].file_path.split(/:/) %>
+            <% location = item[:location] %>
+            <% file, line =  location.file_name, location.line_number %>
             <td>
             <b>
-              <%= display_location(file, nil) %>
+              <%= display_location(location) %>
             </b>
-            <% if item[:location].file_path %>
+            <% if file != '' %>
               <% if per_file_data[file] %>
                 <small>&laquo;
                   <b><a href="<%= file.gsub(%r{/}, '_') %>.html<%= (line.nil? ? '' : "#line#{line}") %>">annotate</a></b>
