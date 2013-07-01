@@ -3,6 +3,8 @@
 * Fixes
   * obey --no-open option (Chris Mason)
   * Don't run the hotspots metric if it has been disabled (Chris Mason)
+* Patches
+  * Make the run specs work without the need to shell out. (Robin Curry)
 * Misc
   * metric_fu runs with the -r option by default (Chris Mason #69)
   * Switch to metric_fu-Saikuro gem (Benjamin Fleischer)
