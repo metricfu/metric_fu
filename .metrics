@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 # For testing that this file gets loaded
-mf_debug "Metrics config loaded"
+$metric_file_loaded = true
+
 # example configuration
 # MetricFu::Configuration.run do |config|
 #   coverage_file = File.expand_path("coverage/rcov/rcov.txt", Dir.pwd)

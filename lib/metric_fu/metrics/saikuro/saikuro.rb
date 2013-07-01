@@ -13,35 +13,13 @@ module MetricFu
       end
 
       saikuro_bin= $:.map{|d| d+'/../bin/saikuro'}.select{|f| File.exists? f}.first || 'saikuro'
-      mf_debug(capture_output do
+      mf_debug(MfDebugger::Logger.capture_output do
         sh %{#{saikuro_bin} #{options_string}} do |ok, response|
           unless ok
             mf_log "Saikuro failed with exit status: #{response.exitstatus}"
           end
         end
       end)
-    end
-
-    def capture_output(&block)
-      old_stdout = STDOUT.clone
-      pipe_r, pipe_w = IO.pipe
-      pipe_r.sync    = true
-      output         = ""
-      reader = Thread.new do
-        begin
-          loop do
-            output << pipe_r.readpartial(1024)
-          end
-        rescue EOFError
-        end
-      end
-      STDOUT.reopen(pipe_w)
-      yield
-    ensure
-      STDOUT.reopen(old_stdout)
-      pipe_w.close
-      reader.join
-      return output
     end
 
     def format_directories

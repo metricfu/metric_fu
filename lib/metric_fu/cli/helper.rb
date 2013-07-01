@@ -35,7 +35,7 @@ module MetricFu
         MetricFu.configuration.metrics.sort_by(&:to_s)
       end
 
-      def process_options(argv=ARGV.dup)
+      def process_options(argv=[])
         options = MetricFu::Cli::MicroOptParse::Parser.new do |p|
             p.banner = self.banner
             p.version = self.version

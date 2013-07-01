@@ -11,8 +11,8 @@ module MetricFu
       def shutdown
         @helper.shutdown
       end
-      def run
-        options =  @helper.process_options
+      def run(argv=ARGV.dup)
+        options =  @helper.process_options(argv)
         mf_debug "Got options #{options.inspect}"
         if options[:run]
           @helper.run(options)
