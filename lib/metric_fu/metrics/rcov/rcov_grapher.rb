@@ -10,8 +10,8 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:rcov]
-        self.rcov_percent.push(metrics[:rcov][:global_percent_run])
+      if metrics && metrics.report_hash()[:rcov]
+        self.rcov_percent.push(metrics.report_hash()[:rcov][:global_percent_run])
         self.labels.update( { self.labels.size => date })
       end
     end

@@ -10,8 +10,8 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:roodi]
-        @roodi_count.push(metrics[:roodi][:problems].size)
+      if metrics && metrics.report_hash()[:roodi]
+        @roodi_count.push(metrics.report_hash()[:roodi][:problems].size)
         @labels.update( { @labels.size => date })
       end
     end

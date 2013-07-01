@@ -11,9 +11,9 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:flog]
+      if metrics && metrics.report_hash()[:flog]
         @top_five_percent_average.push(calc_top_five_percent_average(metrics))
-        @flog_average.push(metrics[:flog][:average])
+        @flog_average.push(metrics.report_hash()[:flog][:average])
         @labels.update( { @labels.size => date })
       end
     end
@@ -21,9 +21,9 @@ module MetricFu
     private
 
     def calc_top_five_percent_average(metrics)
-      return calc_top_five_percent_average_legacy(metrics) if metrics[:flog][:pages]
+      return calc_top_five_percent_average_legacy(metrics) if metrics.report_hash()[:flog][:pages]
 
-      method_scores = metrics[:flog][:method_containers].inject([]) do |method_scores, container|
+      method_scores = metrics.report_hash()[:flog][:method_containers].inject([]) do |method_scores, container|
         method_scores += container[:methods].values.map {|v| v[:score]}
       end
       method_scores.sort!.reverse!
@@ -40,7 +40,7 @@ module MetricFu
     end
 
     def calc_top_five_percent_average_legacy(metrics)
-      methods = metrics[:flog][:pages].inject([]) {|methods, page| methods << page[:scanned_methods]}
+      methods = metrics.report_hash()[:flog][:pages].inject([]) {|methods, page| methods << page[:scanned_methods]}
       methods.flatten!
       methods = methods.sort_by {|method| method[:score]}.reverse
 

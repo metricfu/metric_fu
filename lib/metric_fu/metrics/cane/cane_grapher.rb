@@ -10,8 +10,8 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:cane]
-        @cane_violations.push(metrics[:cane][:total_violations].to_i)
+      if metrics && metrics.report_hash()[:cane]
+        @cane_violations.push(metrics.report_hash()[:cane][:total_violations].to_i)
         @labels.update( { @labels.size => date })
       end
     end

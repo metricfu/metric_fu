@@ -10,11 +10,11 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:reek]
+      if metrics && metrics.report_hash()[:reek]
         counter = @labels.size
         @labels.update( { @labels.size => date })
 
-        metrics[:reek][:matches].each do |reek_chunk|
+        metrics.report_hash()[:reek][:matches].each do |reek_chunk|
           reek_chunk[:code_smells].each do |code_smell|
             # speaking of code smell...
             @reek_count[code_smell[:type]] = [] if @reek_count[code_smell[:type]].nil?

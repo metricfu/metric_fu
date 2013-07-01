@@ -11,9 +11,9 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:stats]
-        self.loc_counts.push(metrics[:stats][:codeLOC].to_i)
-        self.lot_counts.push(metrics[:stats][:testLOC].to_i)
+      if metrics && metrics.report_hash()[:stats]
+        self.loc_counts.push(metrics.report_hash()[:stats][:codeLOC].to_i)
+        self.lot_counts.push(metrics.report_hash()[:stats][:testLOC].to_i)
         self.labels.update( { self.labels.size => date })
       end
     end

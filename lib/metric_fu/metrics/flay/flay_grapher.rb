@@ -10,8 +10,8 @@ module MetricFu
     end
 
     def get_metrics(metrics, date)
-      if metrics && metrics[:flay]
-        @flay_score.push(metrics[:flay][:total_score].to_i)
+      if metrics && metrics.report_hash()[:flay]
+        @flay_score.push(metrics.report_hash()[:flay][:total_score].to_i)
         @labels.update( { @labels.size => date })
       end
     end
