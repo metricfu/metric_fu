@@ -1,16 +1,17 @@
 MetricFu.metrics_require   { 'flog/flog_grapher' }
 module MetricFu
   class FlogBluffGrapher < FlogGrapher
-    def graph!
-      content = <<-EOS
-        #{BLUFF_DEFAULT_OPTIONS}
-        g.title = 'Flog: code complexity';
-        g.data('average', [#{@flog_average.join(',')}]);
-        g.data('top 5% average', [#{@top_five_percent_average.join(',')}])
-        g.labels = #{MultiJson.dump(@labels)};
-        g.draw();
-      EOS
-      File.open(File.join(self.output_directory, 'flog.js'), 'w') {|f| f << content }
+    def title
+      'Flog: code complexity'
+    end
+    def data
+      [
+        ['average', @flog_average.join(',')],
+        ['top 5% average', @top_five_percent_average.join(',')]
+      ]
+    end
+    def output_filename
+      'flog.js'
     end
   end
 end

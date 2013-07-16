@@ -1,25 +1,30 @@
 MetricFu.metrics_require   { 'reek/reek_grapher' }
 module MetricFu
   class ReekGchartGrapher < ReekGrapher
-    def graph!
-      determine_y_axis_scale(@reek_count.values.flatten.uniq)
+    def title
+      "Reek: code smells"
+    end
+    def legend
+      @legend ||= @reek_count.keys.sort
+    end
+    def data
       values = []
-      legend = @reek_count.keys.sort
       legend.collect {|k| values << @reek_count[k]}
-
-      url = Gchart.line(
-        :size => GCHART_GRAPH_SIZE,
-        :title => URI.escape("Reek: code smells"),
-        :data => values,
-        :stacked => false,
-        :bar_colors => COLORS,
-        :legend => legend,
-        :custom => "chdlp=t",
-        :max_value => @max_value,
-        :axis_with_labels => 'x,y',
-        :axis_labels => [@labels.values, @yaxis],
-        :format => 'file',
-        :filename => File.join(self.output_directory, 'reek.png'))
+      values
+    end
+    def output_filename
+      'reek.png'
+    end
+    def gchart_line_options
+      super.merge({
+          :bar_colors => COLORS,
+          :stacked => false,
+          :legend => legend,
+          :custom => 'chdlp=t',
+        })
+    end
+    def y_axis_scale_argument
+      @reek_count.values.flatten.uniq
     end
   end
 end

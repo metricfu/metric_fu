@@ -1,15 +1,16 @@
 MetricFu.metrics_require   { 'roodi/roodi_grapher' }
 module MetricFu
   class RoodiBluffGrapher < RoodiGrapher
-    def graph!
-      content = <<-EOS
-        #{BLUFF_DEFAULT_OPTIONS}
-        g.title = 'Roodi: design problems';
-        g.data('roodi', [#{@roodi_count.join(',')}]);
-        g.labels = #{MultiJson.dump(@labels)};
-        g.draw();
-      EOS
-      File.open(File.join(self.output_directory, 'roodi.js'), 'w') {|f| f << content }
+    def title
+      'Roodi: design problems'
+    end
+    def data
+      [
+        ['roodi', @roodi_count.join(',')]
+      ]
+    end
+    def output_filename
+      'roodi.js'
     end
   end
 end

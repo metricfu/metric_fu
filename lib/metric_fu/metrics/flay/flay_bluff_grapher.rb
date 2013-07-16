@@ -1,15 +1,16 @@
 MetricFu.metrics_require   { 'flay/flay_grapher' }
 module MetricFu
   class FlayBluffGrapher < FlayGrapher
-    def graph!
-      content = <<-EOS
-        #{BLUFF_DEFAULT_OPTIONS}
-        g.title = 'Flay: duplication';
-        g.data('flay', [#{@flay_score.join(',')}]);
-        g.labels = #{MultiJson.dump(@labels)};
-        g.draw();
-      EOS
-      File.open(File.join(self.output_directory, 'flay.js'), 'w') {|f| f << content }
+    def title
+      'Flay: duplication'
+    end
+    def data
+      [
+        ['flay', @flay_score.join(',')]
+      ]
+    end
+    def output_filename
+      'flay.js'
     end
   end
 end

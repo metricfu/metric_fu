@@ -1,17 +1,20 @@
 MetricFu.metrics_require   { 'flay/flay_grapher' }
 module MetricFu
   class FlayGchartGrapher < FlayGrapher
-    def graph!
-      determine_y_axis_scale(@flay_score)
-      url = Gchart.line(
-        :size => GCHART_GRAPH_SIZE,
-        :title => URI.escape("Flay: duplication"),
-        :data => @flay_score,
-        :max_value => @max_value,
-        :axis_with_labels => 'x,y',
-        :axis_labels => [@labels.values, @yaxis],
-        :format => 'file',
-        :filename => File.join(self.output_directory, 'flay.png'))
+    def title
+      "Flay: duplication"
+    end
+    def data
+      @flay_score
+    end
+    def output_filename
+      'flay.png'
+    end
+    def gchart_line_options
+      super
+    end
+    def y_axis_scale_argument
+      @flay_score
     end
   end
 end

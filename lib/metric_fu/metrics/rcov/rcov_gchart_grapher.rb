@@ -1,17 +1,22 @@
 MetricFu.metrics_require   { 'rcov/rcov_grapher' }
 module MetricFu
   class RcovGchartGrapher < RcovGrapher
-    def graph!
-      url = Gchart.line(
-        :size => GCHART_GRAPH_SIZE,
-        :title => URI.escape("Rcov: code coverage"),
-        :data => self.rcov_percent,
+    def title
+      "Rcov: code coverage"
+    end
+    def data
+      self.rcov_percent
+    end
+    def output_filename
+      'rcov.png'
+    end
+    # overrides method
+    def y_axis_scale_options
+      {
         :max_value => 101,
         :axis_with_labels => 'x,y',
         :axis_labels => [self.labels.values, [0,20,40,60,80,100]],
-        :format => 'file',
-        :filename => File.join(self.output_directory, 'rcov.png')
-      )
+      }
     end
   end
 end
