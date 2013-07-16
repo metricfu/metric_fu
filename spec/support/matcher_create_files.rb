@@ -1,21 +1,27 @@
-RSpec::Matchers.define :create_file do |expected|
+RSpec::Matchers.define :create_files do |expected|
 
   match do |block|
-    @before = exists?(expected)
+    @before = false
+    @after = true
+    expected.each do |file|
+      @before |= exists?(file)
+    end
     block.call
-    @after = exists?(expected)
+    expected.each do |file|
+      @after &= exists?(file)
+    end
     !@before && @after
   end
 
   failure_message_for_should do |block|
     existed_before_message expected do
-      "The file #{expected.inspect} was not created"
+      "One or more files in [#{expected.inspect}] was not created."
     end
   end
 
   failure_message_for_should_not do |block|
     existed_before_message expected do
-      "The file #{expected.inspect} was created"
+      "The files in [#{expected.inspect}] were created."
     end
   end
 
@@ -26,7 +32,7 @@ RSpec::Matchers.define :create_file do |expected|
 
   def existed_before_message(expected)
     if @before
-      "The file #{expected.inspect} existed before, so this test doesn't work"
+      "One or more files in  [#{expected.inspect}] existed before, so this test doesn't work"
     else
       yield
     end

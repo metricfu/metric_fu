@@ -11,22 +11,22 @@ class AwesomeTemplate < MetricFu::Template
 
     # Copy Bluff javascripts to output directory
     Dir[File.join(template_directory, '..', 'javascripts', '*')].each do |f|
-      FileUtils.copy(f, File.join(MetricFu.output_directory, File.basename(f)))
+      FileUtils.cp(f, File.join(self.output_directory, File.basename(f)))
     end
 
     @metrics = {}
-    report.each_pair do |section, contents|
+    result.each_pair do |section, contents|
       if template_exists?(section)
         create_instance_var(section, contents)
         @metrics[section] = contents
         create_instance_var(:per_file_data, per_file_data)
-        mf_debug  "Generating html for section #{section} with #{template(section)} for report #{report.class}"
+        mf_debug  "Generating html for section #{section} with #{template(section)} for result #{result.class}"
         @html = erbify(section)
         html = erbify('layout')
         fn = output_filename(section)
-        MetricFu.report.save_output(html, MetricFu.output_directory, fn)
+        formatter.write_template(html, fn)
       else
-        mf_debug  "no template for section #{section} with #{template(section)} for report #{report.class}"
+        mf_debug  "no template for section #{section} with #{template(section)} for result #{result.class}"
       end
     end
 
@@ -35,9 +35,9 @@ class AwesomeTemplate < MetricFu::Template
       @html = erbify('index')
       html = erbify('layout')
       fn = output_filename('index')
-      MetricFu.report.save_output(html, MetricFu.output_directory, fn)
+      formatter.write_template(html, fn)
     else
-      mf_debug  "no template for section index for report #{report.class}"
+      mf_debug  "no template for section index for result #{result.class}"
     end
 
     write_file_data
@@ -101,7 +101,7 @@ class AwesomeTemplate < MetricFu::Template
       end
       out << "<table></body></html>"
 
-      MetricFu.report.save_output(out, MetricFu.output_directory, fn)
+      formatter.write_template(out, fn)
     end
   end
   def template_directory

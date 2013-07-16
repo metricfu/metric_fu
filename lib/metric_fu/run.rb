@@ -6,10 +6,8 @@ module MetricFu
       load_user_configuration
     end
     def run(options={})
-      disable_metrics(options)
-      run_reports
-      save_reports
-      save_graphs
+      configure_run(options)
+      measure
       display_results if options[:open]
     end
 
@@ -18,47 +16,27 @@ module MetricFu
       MetricFu.configuration.metrics.sort_by! {|x| x == :hotspots ? 1 : 0 }
       MetricFu.configuration.metrics
     end
-    def run_reports
+    def measure
+      reporter.start
       report_metrics.each {|metric|
-        mf_log "** STARTING METRIC #{metric}"
-        MetricFu.report.add(metric)
-        mf_log "** ENDING METRIC #{metric}"
+        reporter.start_metric(metric)
+        MetricFu.result.add(metric)
+        reporter.finish_metric(metric)
       }
-    end
-    def save_reports
-      mf_log "** SAVING REPORTS"
-      mf_debug "** SAVING REPORT YAML OUTPUT TO #{MetricFu.base_directory}"
-      MetricFu.report.save_output(MetricFu.report.as_yaml,
-                                  MetricFu.base_directory,
-                                  "report.yml")
-      mf_debug "** SAVING REPORT DATA OUTPUT TO #{MetricFu.data_directory}"
-      MetricFu.report.save_output(MetricFu.report.as_yaml,
-                                  MetricFu.data_directory,
-                                  "#{Time.now.strftime("%Y%m%d")}.yml")
-      mf_debug "** SAVING TEMPLATIZED REPORT"
-      MetricFu.report.save_templatized_report
-    end
-    def save_graphs
-      mf_log "** GENERATING GRAPHS"
-      mf_debug "** PREPARING TO GRAPH"
-      MetricFu.graphs.each {|graph|
-        mf_debug "** Graphing #{graph} with #{MetricFu.graph_engine}"
-        MetricFu.graph.add(graph, MetricFu.graph_engine)
-      }
-      mf_debug "** GENERATING GRAPH"
-      MetricFu.graph.generate
+      reporter.finish
     end
     def display_results
-      if MetricFu.report.open_in_browser?
-        mf_debug "** OPENING IN BROWSER FROM #{MetricFu.output_directory}"
-        MetricFu.report.show_in_browser(MetricFu.output_directory)
-      end
-      mf_log "** COMPLETE"
+      reporter.display_results
     end
     private
     def load_user_configuration
       file = File.join(Dir.pwd, '.metrics')
       load file if File.exist?(file)
+    end
+    # Updates configuration based on runtime options.
+    def configure_run(options)
+      disable_metrics(options)
+      configure_formatters(options)
     end
     def disable_metrics(options)
       return if options.size == 0
@@ -72,6 +50,24 @@ module MetricFu
           mf_debug "active metrics are #{MetricFu.configuration.metrics.inspect}"
         end
       end
+    end
+    def configure_formatters(options)
+      # Configure from command line if any.
+      if options[:format]
+        MetricFu.formatters.clear # Command-line format takes precedence.
+        Array(options[:format]).each do |format, o|
+          MetricFu.configuration.add_formatter(format, o)
+        end
+      end
+      # If no formatters specified, use defaults.
+      if MetricFu.configuration.formatters.empty?
+        Array(MetricFu::Formatter::DEFAULT).each do |format, o|
+          MetricFu.configuration.add_formatter(format, o)
+        end
+      end
+    end
+    def reporter
+      Reporter.new(MetricFu.configuration.formatters)
     end
   end
 end

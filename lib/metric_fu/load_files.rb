@@ -1,5 +1,5 @@
 # require these first because others depend on them
-MetricFu.reporting_require { 'report' }
+MetricFu.reporting_require { 'result' }
 MetricFu.metrics_require   { 'hotspots/hotspot' }
 MetricFu.metrics_require   { 'generator' }
 MetricFu.metrics_require   { 'graph' }
@@ -27,5 +27,8 @@ Dir.glob(File.join(MetricFu.metrics_dir, '**/*.rb')).each do |file|
   require(file) unless file =~ /init.rb/
 end
 Dir.glob(File.join(MetricFu.reporting_dir, '**/*.rb')).each do |file|
+  require file
+end
+Dir.glob(File.join(MetricFu.formatter_dir, '**/*.rb')).each do |file|
   require file
 end

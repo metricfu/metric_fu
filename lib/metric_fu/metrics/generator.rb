@@ -6,7 +6,7 @@ module MetricFu
   # skeleton for producing different types of metrics.
   #
   # It drives the production of the metrics through a template
-  # method - #generate_report(options={}).  This method calls
+  # method - #generate_result(options={}).  This method calls
   # #emit, #analyze and #to_h in order to produce the metrics.
   #
   # To implement a concrete class to generate a metric, therefore,
@@ -30,7 +30,7 @@ module MetricFu
   # in general setup the directory structure that the MetricFu system
   # expects.
   class Generator
-    attr_reader :report, :template, :options
+    attr_reader :result, :template, :options
 
     def initialize(options={})
       @options = options
@@ -40,17 +40,17 @@ module MetricFu
     end
 
     # Creates a new generator and returns the output of the
-    # #generate_report method.  This is the typical way to
-    # generate a new MetricFu report. For more information see
-    # the #generate_report instance method.
+    # #generate_result method.  This is the typical way to
+    # generate a new MetricFu result. For more information see
+    # the #generate_result instance method.
     #
     # @params options Hash
     #   A currently unused hash to configure the Generator
     #
-    # @see generate_report
-    def self.generate_report(options={})
+    # @see generate_result
+    def self.generate_result(options={})
       generator = self.new(options)
-      generator.generate_report
+      generator.generate_result
     end
 
     # Provides the unqualified class name of an implemented concrete
@@ -121,7 +121,7 @@ module MetricFu
     # This template method also calls before_emit, after_emit... etc.
     # methods to allow extra hooks into the processing methods, and help
     # to keep the logic of your Generators clean.
-    def generate_report
+    def generate_result
       mf_debug "Executing #{self.class.to_s.gsub(/.*::/, '')}"
 
       %w[emit analyze].each do |meth|

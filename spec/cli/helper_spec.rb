@@ -48,7 +48,7 @@ describe MetricFu::Cli::Helper do
       it "enables RCov" do
         defaults[:rcov].should be_true
       end
-      
+
       it "runs by default" do
         defaults[:run].should be_true
       end
@@ -164,6 +164,18 @@ describe MetricFu::Cli::Helper do
 
     it "turns roodi on" do
       helper.process_options(["--roodi"])[:roodi].should be_true
+    end
+
+    context 'given a single format' do
+      it "sets the format" do
+        helper.process_options(["--format", "json"])[:format].should eq([['json']])
+      end
+    end
+
+    context 'given multiple formats' do
+      it "sets multiple formats" do
+        helper.process_options(["--format", "json", "--format", "yaml"])[:format].should eq([['json'], ['yaml']])
+      end
     end
 
   end

@@ -12,7 +12,7 @@ module MetricFu
     end
 
     def emit
-      @analyzer = MetricFu::HotspotAnalyzer.new(MetricFu.report.report_hash)
+      @analyzer = MetricFu::HotspotAnalyzer.new(MetricFu.result.result_hash)
     end
 
     def analyze

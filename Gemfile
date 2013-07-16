@@ -14,5 +14,6 @@ group :test do
     # https://github.com/kina/simplecov-rcov-text
     gem 'simplecov-rcov-text'
   end
+  gem "fakefs", :require => "fakefs/safe"
 end
 gemspec

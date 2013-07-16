@@ -25,7 +25,7 @@ module MetricFu
     LIB_ROOT
   end
   class << self
-    %w(metrics reporting logging errors data_structures tasks).each do |dir|
+    %w(metrics formatter reporting logging errors data_structures tasks).each do |dir|
       define_method("#{dir}_dir") do
         File.join(lib_dir,dir)
       end

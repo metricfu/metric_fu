@@ -43,7 +43,7 @@ module MetricFu
             metrics.each do |metric|
               p.option metric.to_sym, "Enables or disables #{metric.to_s}", :default => true #, :value_in_set => [true, false]
             end
-            p.option :open, "Open report in browser", :default => true
+            p.option :open, "Open report in browser (if supported by formatter)", :default => true
         end.process!(argv)
         options
       end

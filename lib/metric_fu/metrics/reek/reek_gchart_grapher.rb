@@ -19,7 +19,7 @@ module MetricFu
         :axis_with_labels => 'x,y',
         :axis_labels => [@labels.values, @yaxis],
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'reek.png'))
+        :filename => File.join(self.output_directory, 'reek.png'))
     end
   end
 end

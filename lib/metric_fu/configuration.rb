@@ -61,6 +61,7 @@ module MetricFu
       set_directories
       configure_template
       add_promiscuous_instance_variable(:metrics, [])
+      add_promiscuous_instance_variable(:formatters, [])
       add_promiscuous_instance_variable(:graphs, [])
       add_promiscuous_instance_variable(:graph_engines, [])
       add_promiscuous_method(:graph_engine)
@@ -88,6 +89,10 @@ module MetricFu
     def add_graph(metric)
       add_promiscuous_method(metric)
       self.graphs = (graphs << metric).uniq
+    end
+
+    def add_formatter(format, output = nil)
+      @formatters << MetricFu::Formatter.class_for(format).new(output: output)
     end
 
     # e.g. :reek, {}
@@ -208,6 +213,5 @@ module MetricFu
         add_promiscuous_instance_variable(:code_dirs,['lib'])
       end
     end
-
   end
 end

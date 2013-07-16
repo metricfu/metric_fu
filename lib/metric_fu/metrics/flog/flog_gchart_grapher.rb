@@ -15,7 +15,7 @@ module MetricFu
         :axis_with_labels => 'x,y',
         :axis_labels => [@labels.values, @yaxis],
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'flog.png'))
+        :filename => File.join(self.output_directory, 'flog.png'))
     end
   end
 end

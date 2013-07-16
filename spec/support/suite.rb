@@ -16,3 +16,28 @@ end
 def resources_path
   "#{MetricFu.root_dir}/spec/resources"
 end
+
+def setup_fs
+  if defined?(FakeFS::Dir::Glob) # fakefs doesn't seem to work on rubinius...
+    FakeFS.activate!
+    FakeFS::FileSystem.clone('lib')
+    FakeFS::FileSystem.clone('.metrics')
+    FileUtils.mkdir_p(Pathname.pwd.join(MetricFu.base_directory))
+    FileUtils.mkdir_p(Pathname.pwd.join(MetricFu.output_directory))
+  end
+end
+
+def cleanup_fs
+  if defined?(FakeFS::Dir::Glob)
+    FakeFS::FileSystem.clear
+    FakeFS.deactivate!
+  else
+    # Not ideal, but workaround for rubinius...
+    FileUtils.rm_rf("#{MetricFu.base_directory}/report.yml")
+    FileUtils.rm_rf(Dir.glob("#{MetricFu.output_directory}/*.html"))
+    FileUtils.rm_rf(Dir.glob("#{MetricFu.output_directory}/*.js"))
+    FileUtils.rm_rf(Dir.glob("#{MetricFu.data_directory}/*.yml"))
+    FileUtils.rm_rf(Dir["tmp/metric_fu/customdir"])
+    FileUtils.rm_rf("#{MetricFu.base_directory}/customreport.yml")
+  end
+end

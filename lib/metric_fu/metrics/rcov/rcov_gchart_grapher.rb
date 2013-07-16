@@ -10,7 +10,7 @@ module MetricFu
         :axis_with_labels => 'x,y',
         :axis_labels => [self.labels.values, [0,20,40,60,80,100]],
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'rcov.png')
+        :filename => File.join(self.output_directory, 'rcov.png')
       )
     end
   end

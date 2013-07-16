@@ -18,11 +18,11 @@ module MetricFu
       MetricFu::Hotspot.analyzers
     end
 
-    def initialize(report_hash)
-      # we can't depend on the Report
+    def initialize(result_hash)
+      # we can't depend on the result
       # returning a parsed yaml file as a hash?
-      report_hash = YAML::load(report_hash) if report_hash.is_a?(String)
-      setup(report_hash)
+      result_hash = YAML::load(result_hash) if result_hash.is_a?(String)
+      setup(result_hash)
     end
 
     # def worst_items; previous method name
@@ -48,7 +48,7 @@ module MetricFu
     # extract into its own method
     # remove unnecessary constants,
     # turn into methods
-    def setup(report_hash)
+    def setup(result_hash)
       # TODO There is likely a clash that will happen between
       # column names eventually. We should probably auto-prefix
       # them (e.g. "roodi_problem")
@@ -59,7 +59,7 @@ module MetricFu
       # to ultimately generate the hotspots
       @analyzer_tables = MetricFu::AnalyzerTables.new(analyzer_columns)
       tool_analyzers.each do |analyzer|
-        analyzer.generate_records(report_hash[analyzer.name], @analyzer_tables.table)
+        analyzer.generate_records(result_hash[analyzer.name], @analyzer_tables.table)
       end
       @analyzer_tables.generate_records
       @rankings = MetricFu::HotspotRankings.new(@analyzer_tables.tool_tables)

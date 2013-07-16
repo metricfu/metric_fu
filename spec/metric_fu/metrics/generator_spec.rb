@@ -79,17 +79,17 @@ describe MetricFu::Generator do
     end
   end
 
-  describe 'ConcreteClass#generate_report' do
+  describe 'ConcreteClass#generate_result' do
     it 'should create a new instance of ConcreteClass' do
       ConcreteClass.should_receive(:new).and_return(@concrete_class)
-      @concrete_class.should_receive(:generate_report).and_return(true)
-      ConcreteClass.generate_report
+      @concrete_class.should_receive(:generate_result).and_return(true)
+      ConcreteClass.generate_result
     end
 
-    it 'should call #generate_report on the new ConcreteClass' do
+    it 'should call #generate_result on the new ConcreteClass' do
       ConcreteClass.should_receive(:new).and_return(@concrete_class)
-      @concrete_class.should_receive(:generate_report).and_return(true)
-      ConcreteClass.generate_report
+      @concrete_class.should_receive(:generate_result).and_return(true)
+      ConcreteClass.generate_result
     end
   end
 
@@ -112,50 +112,50 @@ describe MetricFu::Generator do
     end
   end
 
-  describe "#generate_report" do
+  describe "#generate_result" do
     it 'should  raise an error when calling #emit' do
       @abstract_class = MetricFu::Generator.new
-      lambda { @abstract_class.generate_report }.should  raise_error
+      lambda { @abstract_class.generate_result }.should  raise_error
     end
 
     it 'should call #analyze' do
       @abstract_class = MetricFu::Generator.new
-      lambda { @abstract_class.generate_report }.should  raise_error
+      lambda { @abstract_class.generate_result }.should  raise_error
     end
 
     it 'should call #to_h' do
       @abstract_class = MetricFu::Generator.new
-      lambda { @abstract_class.generate_report }.should  raise_error
+      lambda { @abstract_class.generate_result }.should  raise_error
     end
   end
 
-  describe "#generate_report (in a concrete class)" do
+  describe "#generate_result (in a concrete class)" do
 
     %w[emit analyze].each do |meth|
       it "should call #before_#{meth}" do
         @concrete_class.should_receive("before_#{meth}")
-        @concrete_class.generate_report
+        @concrete_class.generate_result
       end
 
       it "should call ##{meth}" do
         @concrete_class.should_receive("#{meth}")
-        @concrete_class.generate_report
+        @concrete_class.generate_result
       end
 
       it "should call #after_#{meth}" do
         @concrete_class.should_receive("after_#{meth}")
-        @concrete_class.generate_report
+        @concrete_class.generate_result
       end
     end
 
     it "should call #before_to_h" do
       @concrete_class.should_receive("before_to_h")
-      @concrete_class.generate_report
+      @concrete_class.generate_result
     end
 
     it "should call #to_h" do
       @concrete_class.should_receive(:to_h)
-      @concrete_class.generate_report
+      @concrete_class.generate_result
     end
 
   end

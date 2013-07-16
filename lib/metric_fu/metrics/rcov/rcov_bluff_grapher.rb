@@ -9,7 +9,7 @@ module MetricFu
         g.labels = #{MultiJson.dump(@labels)};
         g.draw();
       EOS
-      File.open(File.join(MetricFu.output_directory, 'rcov.js'), 'w') {|f| f << content }
+      File.open(File.join(self.output_directory, 'rcov.js'), 'w') {|f| f << content }
     end
   end
 end
