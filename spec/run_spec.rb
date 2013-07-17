@@ -35,15 +35,15 @@ describe MetricFu do
     end
 
     it "creates a report yaml file" do
-      expect { metric_fu }.to create_file("tmp/metric_fu/report.yml")
+      expect { metric_fu }.to create_file("#{MetricFu.base_directory}/report.yml")
     end
 
     it "creates a data yaml file" do
-      expect { metric_fu }.to create_file("tmp/metric_fu/_data/*.yml")
+      expect { metric_fu }.to create_file("#{MetricFu.data_directory}/#{Time.now.strftime("%Y%m%d")}.yml")
     end
 
     it "creates a report html file" do
-      expect { metric_fu }.to create_file("tmp/metric_fu/output/index.html")
+      expect { metric_fu }.to create_file("#{MetricFu.output_directory}/index.html")
     end
 
     context "with configured formatter" do
@@ -53,7 +53,7 @@ describe MetricFu do
             config.add_formatter(:yaml)
           end
           metric_fu
-        }.to create_file("tmp/metric_fu/report.yml")
+        }.to create_file("#{MetricFu.base_directory}/report.yml")
       end
 
       it "doesn't output using formatters not configured" do
@@ -62,18 +62,18 @@ describe MetricFu do
             config.add_formatter(:yaml)
           end
           metric_fu
-        }.to_not create_file("tmp/metric_fu/output/index.html")
+        }.to_not create_file("#{MetricFu.output_directory}/index.html")
       end
 
     end
 
     context "with command line formatter" do
       it "outputs using command line formatter" do
-        expect { metric_fu "--format yaml"}.to create_file("tmp/metric_fu/report.yml")
+        expect { metric_fu "--format yaml"}.to create_file("#{MetricFu.base_directory}/report.yml")
       end
 
       it "doesn't output using formatters not configured" do
-        expect { metric_fu "--format yaml"}.to_not create_file("tmp/metric_fu/output/index.html")
+        expect { metric_fu "--format yaml"}.to_not create_file("#{MetricFu.output_directory}/index.html")
       end
 
     end
@@ -87,11 +87,11 @@ describe MetricFu do
       end
 
       it "outputs using command line formatter" do
-        expect { metric_fu "--format yaml"}.to create_file("tmp/metric_fu/report.yml")
+        expect { metric_fu "--format yaml"}.to create_file("#{MetricFu.base_directory}/report.yml")
       end
 
       it "doesn't output using configured formatter (cli takes precedence)" do
-        expect { metric_fu "--format yaml"}.to_not create_file("tmp/metric_fu/output/index.html")
+        expect { metric_fu "--format yaml"}.to_not create_file("#{MetricFu.output_directory}/index.html")
       end
 
     end
@@ -103,7 +103,7 @@ describe MetricFu do
             config.add_formatter(:yaml, "customreport.yml")
           end
           metric_fu
-        }.to create_file("tmp/metric_fu/customreport.yml")
+        }.to create_file("#{MetricFu.base_directory}/customreport.yml")
       end
 
       it "doesn't output using formatters not configured" do
@@ -112,29 +112,29 @@ describe MetricFu do
             config.add_formatter(:yaml, "customreport.yml")
           end
           metric_fu
-        }.to_not create_file("tmp/metric_fu/report.yml")
+        }.to_not create_file("#{MetricFu.base_directory}/report.yml")
       end
 
     end
 
     context "with command line specified formatter + out" do
       it "outputs to the specified path" do
-        expect { metric_fu "--format yaml --out customreport.yml"}.to create_file("tmp/metric_fu/customreport.yml")
+        expect { metric_fu "--format yaml --out customreport.yml"}.to create_file("#{MetricFu.base_directory}/customreport.yml")
       end
 
       it "doesn't output to default path" do
-        expect { metric_fu "--format yaml --out tmp/metric_fu/customreport.yml"}.to_not create_file("tmp/metric_fu/report.yml")
+        expect { metric_fu "--format yaml --out customreport.yml"}.to_not create_file("#{MetricFu.base_directory}/report.yml")
       end
 
     end
 
     context "with command line specified out only" do
       it "outputs to the specified path" do
-        expect { metric_fu "--out customdir --no-open"}.to create_file("tmp/metric_fu/customdir/index.html")
+        expect { metric_fu "--out customdir --no-open"}.to create_file("#{MetricFu.base_directory}/customdir/index.html")
       end
 
       it "doesn't output to default path" do
-        expect { metric_fu "--out customdir --no-open"}.to_not create_file("tmp/metric_fu/output/index.html")
+        expect { metric_fu "--out customdir --no-open"}.to_not create_file("#{MetricFu.output_directory}/index.html")
       end
 
     end

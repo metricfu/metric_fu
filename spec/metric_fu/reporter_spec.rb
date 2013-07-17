@@ -5,6 +5,7 @@ describe MetricFu::Reporter do
   context 'given a single formatter' do
     before do
       @formatter = double('formatter')
+      @formatter.stub(:to_a).and_return([@formatter])
       @reporter = Reporter.new(@formatter)
     end
 

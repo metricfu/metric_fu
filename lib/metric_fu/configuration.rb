@@ -131,6 +131,10 @@ module MetricFu
       @mri ||= !!RedCard.check(:ruby)
     end
 
+    def rubinius?
+      @rubinius ||= !!RedCard.check(:rubinius)
+    end
+
     def platform #:nodoc:
       # TODO, change
       # RbConfig::CONFIG['ruby_install_name'].dup
