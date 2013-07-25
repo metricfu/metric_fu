@@ -6,7 +6,7 @@ module MetricFu
     end
     def data
       [
-        ['rails_best_practices', @rails_best_practices.join(',')]
+        ['rails_best_practices', @rails_best_practices_count.join(',')]
       ]
     end
     def output_filename
