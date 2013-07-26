@@ -62,7 +62,7 @@ describe Cane do
   describe "parse cane empty output" do
     before :each do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @cane = MetricFu::Cane.new('base_dir')
       @cane.instance_variable_set(:@output, '')
     end
@@ -80,7 +80,7 @@ describe Cane do
     before :each do
       lines = sample_cane_output
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @cane = MetricFu::Cane.new('base_dir')
       @cane.instance_variable_set(:@output, lines)
     end

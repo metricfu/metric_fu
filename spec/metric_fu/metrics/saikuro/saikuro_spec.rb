@@ -4,9 +4,9 @@ describe Saikuro do
   describe "to_h method" do
     before :all do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       saikuro = MetricFu::Saikuro.new
-      saikuro.stub!(:metric_directory).and_return("#{resources_path}/saikuro")
+      saikuro.stub(:metric_directory).and_return("#{resources_path}/saikuro")
       saikuro.analyze
       @output = saikuro.to_h
     end
@@ -37,9 +37,9 @@ describe Saikuro do
   describe "per_file_info method" do
     before :all do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @saikuro = MetricFu::Saikuro.new
-      @saikuro.stub!(:metric_directory).and_return("#{resources_path}/saikuro")
+      @saikuro.stub(:metric_directory).and_return("#{resources_path}/saikuro")
       @saikuro.analyze
       @output = @saikuro.to_h
     end
@@ -53,7 +53,7 @@ describe Saikuro do
   describe "format_directories method" do
     it "should format the directories" do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       saikuro = MetricFu::Saikuro.new
 
       MetricFu.saikuro[:input_directory] = ["app", "lib"]

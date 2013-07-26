@@ -39,7 +39,7 @@ describe MetricFu::Generator do
   describe "#create_metric_dir_if_missing " do
     describe "when the metric_dir exists " do
       it 'should not call mkdir_p on FileUtils' do
-        File.stub!(:directory?).and_return(true)
+        File.stub(:directory?).and_return(true)
         FileUtils.should_not_receive(:mkdir_p)
         @concrete_class.create_metric_dir_if_missing
       end
@@ -47,7 +47,7 @@ describe MetricFu::Generator do
 
     describe "when the metric_dir does not exist " do
       it 'should call mkdir_p on FileUtils' do
-        File.stub!(:directory?).and_return(false)
+        File.stub(:directory?).and_return(false)
         FileUtils.should_receive(:mkdir_p)
         @concrete_class.create_metric_dir_if_missing
       end
@@ -57,7 +57,7 @@ describe MetricFu::Generator do
   describe "#create_output_dir_if_missing" do
     describe "when the output_dir exists " do
       it 'should not call mkdir_p on FileUtils' do
-        File.stub!(:directory?).and_return(true)
+        File.stub(:directory?).and_return(true)
         FileUtils.should_not_receive(:mkdir_p)
         @concrete_class.create_output_dir_if_missing
       end
@@ -65,7 +65,7 @@ describe MetricFu::Generator do
 
     describe "when the output_dir does not exist " do
       it 'should call mkdir_p on FileUtils' do
-        File.stub!(:directory?).and_return(false)
+        File.stub(:directory?).and_return(false)
         FileUtils.should_receive(:mkdir_p)
         @concrete_class.create_output_dir_if_missing
       end
@@ -74,7 +74,7 @@ describe MetricFu::Generator do
 
   describe '#metric_directory' do
     it 'should return the results of ConcreteClass#metric_directory' do
-      ConcreteClass.stub!(:metric_directory).and_return('foo')
+      ConcreteClass.stub(:metric_directory).and_return('foo')
       @concrete_class.metric_directory.should == 'foo'
     end
   end

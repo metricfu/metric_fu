@@ -7,7 +7,7 @@ describe Flay do
         config.add_metric(:flay)
         config.configure_metric(:flay, { :dirs_to_flay => ['app', 'lib'], :filetypes => ['rb']  })
       }
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @flay = MetricFu::Flay.new('base_dir')
 
       @flay.should_receive(:`).with("mf-flay  app lib")
@@ -19,7 +19,7 @@ describe Flay do
         config.add_metric(:flay)
         config.configure_metric(:flay, { :dirs_to_flay => [], :minimum_score => 99 })
       }
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @flay = MetricFu::Flay.new('base_dir')
 
       @flay.should_receive(:`).with("mf-flay --mass 99  ")
@@ -44,7 +44,7 @@ Total score (lower is better) = 246
   app/controllers/primary_sites_controller.rb:89
       HERE
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @flay = MetricFu::Flay.new('base_dir')
       @flay.instance_variable_set(:@output, lines)
     end
@@ -88,7 +88,7 @@ Total score (lower is better) = 246
                     "app/controllers/bookmarklet_integration_controller.rb:17"]]
 
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       flay = MetricFu::Flay.new('base_dir')
       flay.instance_variable_set(:@matches, lines)
       @results = flay.to_h

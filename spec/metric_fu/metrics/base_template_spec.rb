@@ -10,8 +10,8 @@ describe MetricFu::Template do
   describe "#erbify" do
     it 'should evaluate a erb doc' do
       section = 'section'
-      File.stub!(:read).and_return('foo')
-      erb = mock('erb')
+      File.stub(:read).and_return('foo')
+      erb = double('erb')
       erb.should_receive(:result)
       ERB.should_receive(:new).with('foo').and_return(erb)
       @template.should_receive(:template).and_return('foo')
@@ -22,7 +22,7 @@ describe MetricFu::Template do
   describe "#template_exists? " do
 
     before(:each) do
-      @section = mock('section')
+      @section = double('section')
       @template.should_receive(:template).
                 with(@section).and_return(@section)
     end
@@ -55,8 +55,8 @@ describe MetricFu::Template do
 
   describe "#template" do
     it 'should generate the filename of the template file' do
-      section = mock('section')
-      section.should_receive(:to_s).any_number_of_times.and_return('section')
+      section = double('section')
+      section.stub(:to_s).and_return('section')
       @template.should_receive(:template_directory).and_return('dir')
       result = @template.send(:template, section)
       result.should == "dir/section.html.erb"
@@ -65,7 +65,7 @@ describe MetricFu::Template do
 
   describe "#output_filename" do
     it 'should generate the filename of the output file' do
-      section = mock('section')
+      section = double('section')
       section.should_receive(:to_s).and_return('section')
       result = @template.send(:output_filename, section)
       result.should == "section.html"
@@ -76,7 +76,7 @@ describe MetricFu::Template do
     it 'should return the contents of a css file' do
       css = 'mycss.css'
       @template.should_receive(:template_directory).and_return('dir')
-      io = mock('io', :read => "css contents")
+      io = double('io', :read => "css contents")
       @template.should_receive(:open).and_yield(io)
       result = @template.send(:inline_css, css)
       result.should == 'css contents'
@@ -86,11 +86,11 @@ describe MetricFu::Template do
   describe "#link_to_filename " do
     describe "when on OS X" do
       before(:each) do
-        config = mock("configuration")
-        config.stub!(:platform).and_return('universal-darwin-9.0')
-        config.stub!(:darwin_txmt_protocol_no_thanks).and_return(false)
-        config.stub!(:link_prefix).and_return(nil)
-        MetricFu.stub!(:configuration).and_return(config)
+        config = double("configuration")
+        config.stub(:platform).and_return('universal-darwin-9.0')
+        config.stub(:darwin_txmt_protocol_no_thanks).and_return(false)
+        config.stub(:link_prefix).and_return(nil)
+        MetricFu.stub(:configuration).and_return(config)
       end
 
       it 'should return a textmate protocol link' do
@@ -116,11 +116,11 @@ describe MetricFu::Template do
 
       describe "but no thanks for txtmt" do
         before(:each) do
-          config = mock("configuration")
-          config.stub!(:platform).and_return('universal-darwin-9.0')
-          config.stub!(:darwin_txmt_protocol_no_thanks).and_return(true)
-          config.stub!(:link_prefix).and_return(nil)
-          MetricFu.stub!(:configuration).and_return(config)
+          config = double("configuration")
+          config.stub(:platform).and_return('universal-darwin-9.0')
+          config.stub(:darwin_txmt_protocol_no_thanks).and_return(true)
+          config.stub(:link_prefix).and_return(nil)
+          MetricFu.stub(:configuration).and_return(config)
           @template.should_receive(:complete_file_path).and_return('filename')
         end
 
@@ -143,11 +143,11 @@ describe MetricFu::Template do
 
     describe "when on other platforms"  do
       before(:each) do
-        config = mock("configuration")
+        config = double("configuration")
         config.should_receive(:platform).and_return('other')
-        config.stub!(:link_prefix).and_return(nil)
-        config.stub!(:darwin_txmt_protocol_no_thanks).and_return(false)
-        MetricFu.stub!(:configuration).and_return(config)
+        config.stub(:link_prefix).and_return(nil)
+        config.stub(:darwin_txmt_protocol_no_thanks).and_return(false)
+        MetricFu.stub(:configuration).and_return(config)
         @template.should_receive(:complete_file_path).and_return('filename')
       end
 
@@ -159,9 +159,9 @@ describe MetricFu::Template do
     end
     describe "when configured with a link_prefix" do
       before(:each) do
-        config = mock("configuration")
+        config = double("configuration")
         config.should_receive(:link_prefix).and_return('http://example.org/files')
-        MetricFu.stub!(:configuration).and_return(config)
+        MetricFu.stub(:configuration).and_return(config)
         @template.should_receive(:complete_file_path).and_return('filename')
       end
 

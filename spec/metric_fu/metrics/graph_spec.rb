@@ -31,18 +31,18 @@ describe MetricFu::Graph do
 
   describe "setting the date on the graph" do
     before(:each) do
-      @graph.stub!(:mf_log)
+      @graph.stub(:mf_log)
     end
 
     it "should set the date once for one data point" do
       Dir.should_receive(:[]).and_return(["metric_fu/tmp/_data/20101105.yml"])
       File.should_receive(:join)
       File.should_receive(:open).and_return("Metrics")
-      mock_grapher = stub
-      mock_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
-      mock_grapher.should_receive(:graph!)
+      double_grapher = double
+      double_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
+      double_grapher.should_receive(:graph!)
 
-      @graph.clazz = [mock_grapher]
+      @graph.clazz = [double_grapher]
       @graph.generate
     end
 
@@ -50,11 +50,11 @@ describe MetricFu::Graph do
       Dir.should_receive(:[]).and_return(["/some/kind/of/weird/directory/somebody/configured/_data/20101105.yml"])
       File.should_receive(:join)
       File.should_receive(:open).and_return("Metrics")
-      mock_grapher = stub
-      mock_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
-      mock_grapher.should_receive(:graph!)
+      double_grapher = double
+      double_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
+      double_grapher.should_receive(:graph!)
 
-      @graph.clazz = [mock_grapher]
+      @graph.clazz = [double_grapher]
       @graph.generate
     end
   end

@@ -3,7 +3,7 @@ describe Flog do
   if MetricFu.configuration.mri?
     before :each do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @flog = MetricFu::Flog.new('base_dir')
     end
 
@@ -11,7 +11,7 @@ describe Flog do
       it "should look for files and flog them" do
         Dir.should_receive(:glob).with("lib/**/*.rb").and_return(["found/file.rb"])
         ::Flog.should_receive(:parse_options).with(["--all"]).and_return("options")
-        ::Flog.should_receive(:new).with("options").and_return(flogger = mock('flogger'))
+        ::Flog.should_receive(:new).with("options").and_return(flogger = double('flogger'))
         flogger.should_receive(:flog).with(["found/file.rb"])
         @flog.emit
       end
@@ -22,7 +22,7 @@ describe Flog do
         first_full_method_name = "ClassName#first_method_name"
         second_full_method_name = "ClassName#second_method_name"
 
-        flogger = mock('flogger', :calls => {first_full_method_name => {:branch => 11.1, :puts => 1.1},
+        flogger = double('flogger', :calls => {first_full_method_name => {:branch => 11.1, :puts => 1.1},
                                              second_full_method_name => {:branch => 22.2, :puts => 2.2}},
                                   :method_locations => {first_full_method_name => '/file/location.rb:11',
                                                         second_full_method_name => '/file/location.rb:22'},
@@ -53,11 +53,11 @@ describe Flog do
 
     describe "to_h method" do
       it "should make-a nice hash" do
-        flogger = mock('flogger', :total => 111.1, :average => 7.3)
+        flogger = double('flogger', :total => 111.1, :average => 7.3)
         @flog.instance_variable_set(:@flogger, flogger)
-        method_containers = {:ignore_me_1 =>  mock('container_1', :highest_score => 11.1, :to_h => 'container_1'),
-                             :ignore_me_2 =>  mock('container_2', :highest_score => 33.3, :to_h => 'container_2'),
-                             :ignore_me_3 =>  mock('container_3', :highest_score => 22.2, :to_h => 'container_3')}
+        method_containers = {:ignore_me_1 =>  double('container_1', :highest_score => 11.1, :to_h => 'container_1'),
+                             :ignore_me_2 =>  double('container_2', :highest_score => 33.3, :to_h => 'container_2'),
+                             :ignore_me_3 =>  double('container_3', :highest_score => 22.2, :to_h => 'container_3')}
         @flog.instance_variable_set(:@method_containers, method_containers)
 
         expected = {:flog => { :total => 111.1,

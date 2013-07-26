@@ -6,7 +6,7 @@ describe Hotspots do
   describe "analyze method" do
     before :each do
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       @yaml =<<END
 --- 
 :reek: 

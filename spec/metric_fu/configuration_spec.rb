@@ -194,7 +194,7 @@ describe MetricFu::Configuration do
 
       before(:each) do
         @config = MetricFu.configuration
-        @config.stub!(:rails?).and_return(true)
+        @config.stub(:rails?).and_return(true)
         @config.reset
         MetricFu.configure
         %w(stats rails_best_practices).each do |metric|
@@ -236,7 +236,7 @@ describe MetricFu::Configuration do
     describe 'if #rails? is false ' do
       before(:each) do
         get_new_config
-        @config.stub!(:rails?).and_return(false)
+        @config.stub(:rails?).and_return(false)
         %w(stats rails_best_practices).each do |metric|
           load_metric metric
         end

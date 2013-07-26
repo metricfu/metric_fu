@@ -32,7 +32,7 @@ LinkTargetsController#authorize_user calls current_user.role multiple times (Dup
 NewlineController#some_method calls current_user.<< "new line\n" multiple times (Duplication)
       HERE
       MetricFu::Configuration.run {}
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       reek = MetricFu::Reek.new
       reek.instance_variable_set(:@output, @lines)
       @matches = reek.analyze

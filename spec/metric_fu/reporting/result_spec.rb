@@ -17,7 +17,7 @@ describe MetricFu::Result do
 
   describe "#as_yaml" do
     it 'should call #result_hash' do
-      result_hash = mock('result_hash')
+      result_hash = double('result_hash')
       result_hash.should_receive(:to_yaml)
 
       @result.should_receive(:result_hash).and_return(result_hash)
@@ -30,10 +30,10 @@ describe MetricFu::Result do
 
   describe "#add" do
     it 'should add a passed hash to the result_hash instance variable' do
-      result_type = mock('result_type')
-      result_type.should_receive(:to_s).any_number_of_times.and_return('type')
+      result_type = double('result_type')
+      result_type.stub(:to_s).and_return('type')
 
-      result_inst = mock('result_inst')
+      result_inst = double('result_inst')
       result_type.should_receive(:new).and_return(result_inst)
 
       result_inst.should_receive(:generate_result).and_return({:a => 'b'})
@@ -42,7 +42,7 @@ describe MetricFu::Result do
       MetricFu.should_receive(:send).with(result_type).and_return({})
       MetricFu.should_receive(:const_get).
                with('Type').and_return(result_type)
-      result_hash = mock('result_hash')
+      result_hash = double('result_hash')
       result_hash.should_receive(:merge!).with({:a => 'b'})
       @result.should_receive(:result_hash).and_return(result_hash)
       @result.add(result_type)

@@ -13,6 +13,7 @@ require 'construct'
 $:.push File.expand_path("../../lib", __FILE__)
 require 'metric_fu'
 include MetricFu
+def mf_log(msg); mf_debug(msg); end
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

@@ -5,7 +5,7 @@ describe Stats do
     it "should gather the raw data" do
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       stats = MetricFu::Stats.new
       stats.should_receive(:`).with("mf-stats > tmp/metric_fu/scratch/stats/stats.txt")
       stats.emit
@@ -35,9 +35,9 @@ describe Stats do
       HERE
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       stats = MetricFu::Stats.new
-      File.should_receive(:open).and_return(mock("file", :read => @lines))
+      File.should_receive(:open).and_return(double("file", :read => @lines))
       @results = stats.analyze
     end
 
@@ -68,7 +68,7 @@ describe Stats do
     it "should put things into a hash" do
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
-      File.stub!(:directory?).and_return(true)
+      File.stub(:directory?).and_return(true)
       stats = MetricFu::Stats.new
       stats.instance_variable_set(:@stats, "the_stats")
       stats.to_h[:stats].should == "the_stats"
