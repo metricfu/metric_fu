@@ -23,7 +23,7 @@ module MetricFu
       end
 
       def write_template(output, file)
-        save_output(output, file)
+        write_output(output, "#{self.output_directory}/#{file}")
       end
 
       def display_results
@@ -51,11 +51,6 @@ module MetricFu
         @template.per_file_data = MetricFu.result.per_file_data
         @template.formatter = self
         @template.write
-      end
-
-      def save_output(output, filename)
-        file = io_for("#{self.output_directory}/#{filename}")
-        file.write output
       end
 
       def save_graphs
