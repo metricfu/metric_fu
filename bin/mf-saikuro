@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby_noexec_wrapper
+require 'rubygems'
+
+require 'metric_fu_requires'
+
+version = MetricFu::MetricVersion.saikuro
+gem 'metric_fu-Saikuro', version
+load Gem.bin_path('metric_fu-Saikuro', 'saikuro', version)

@@ -3,6 +3,7 @@
 * Fixes
   * obey --no-open option (Chris Mason)
   * Don't run the hotspots metric if it has been disabled (Chris Mason)
+  * Run saikuro metrics the same way as the other metrics (Martin Gotink)
 * Patches
   * Make the run specs work without the need to shell out. (Robin Curry)
 * Misc
