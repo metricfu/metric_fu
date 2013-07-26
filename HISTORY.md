@@ -1,3 +1,9 @@
+Changes are below categorized as `Features, Fixes, or Misc`.
+
+Each change should fall into categories that would affect whether the release is major (breaking changes), minor (new behavior), or patch (bug fix). See [semver](http://semver.org/) and [pessimistic versioning](http://docs.rubygems.org/read/chapter/16#page74)
+
+As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.  And _misc_ is either minor or patch, the difference being kind of fuzzy for the purposes of history.  Adding tests would be patch level.
+
 ### Master
 
 * Fixes
