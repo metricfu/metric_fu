@@ -10,7 +10,7 @@ module MetricFu
 
     def analyze
       output = File.open(metric_directory + '/stats.txt').read
-      lines = remove_noise(output)
+      lines = remove_noise(output).compact
 
       @stats = {}
 
@@ -34,6 +34,7 @@ module MetricFu
     end
 
     def set_global_stats(totals)
+      return if totals.nil?
       totals = totals.split("  ").find_all {|el| ! el.empty? }
       @stats[:codeLOC] = totals[0].match(/\d.*/)[0].to_i
       @stats[:testLOC] = totals[1].match(/\d.*/)[0].to_i
