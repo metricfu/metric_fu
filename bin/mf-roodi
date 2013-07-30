@@ -4,8 +4,6 @@ require 'rubygems'
 
 require 'metric_fu_requires'
 
-gem 'ruby2ruby', MetricFu::MetricVersion.ruby2ruby
-gem 'ruby_parser', MetricFu::MetricVersion.ruby_parser
 version = MetricFu::MetricVersion.roodi
 gem 'metric_fu-roodi', version
 load Gem.bin_path('metric_fu-roodi', 'metric_fu-roodi', version)

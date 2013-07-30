@@ -26,24 +26,12 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.md"]
 
   # metric dependencies
-  s.add_runtime_dependency 'flay',                  ['= 2.0.1']
-  s.add_runtime_dependency 'churn',                 ['= 0.0.28']
-  s.add_runtime_dependency 'flog',                  ['= 3.2.2']
-  s.add_runtime_dependency 'reek',                  ['= 1.3.1']
-  s.add_runtime_dependency 'cane',                  ['= 2.5.2']
-    # specifying gem dependencies for
-    # flay, churn, flog, reek, and cane
-    s.add_runtime_dependency 'ruby_parser',         ['~> 3.0', '>= 3.1.1']
-    s.add_runtime_dependency 'sexp_processor',      ['~> 4.0']
-      # reek only
-      s.add_runtime_dependency 'ruby2ruby',         ['~> 2.0', '>= 2.0.2']
-      # cane only
-      s.add_runtime_dependency 'parallel',          ['= 0.6.2']
-      # required by main, a churn dependency
-      s.add_runtime_dependency 'fattr',             ["= 2.2.1"]
-      s.add_runtime_dependency 'arrayfields',       ["= 4.7.4"]
-      s.add_runtime_dependency 'map',               ["= 6.2.0"]
-  s.add_runtime_dependency 'rails_best_practices',  ['= 1.13.2']
+  s.add_runtime_dependency 'flay',                  ['~> 2.0.1']
+  s.add_runtime_dependency 'churn',                 ['~> 0.0.28']
+  s.add_runtime_dependency 'flog',                  ['~> 3.2.2']
+  s.add_runtime_dependency 'reek',                  ['~> 1.3.1']
+  s.add_runtime_dependency 'cane',                  ['~> 2.5.2']
+  s.add_runtime_dependency 'rails_best_practices',  ['~> 1.13.2']
   s.add_runtime_dependency 'metric_fu-Saikuro',     ['>= 1.1.1.0']
   s.add_runtime_dependency 'metric_fu-roodi',       ['>= 2.2.1']
 

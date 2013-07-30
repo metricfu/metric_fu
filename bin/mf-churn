@@ -4,8 +4,6 @@ require 'rubygems'
 
 require 'metric_fu_requires'
 
-gem 'ruby2ruby', MetricFu::MetricVersion.ruby2ruby
-gem 'ruby_parser', MetricFu::MetricVersion.ruby_parser
 version = MetricFu::MetricVersion.churn
 gem 'churn', version
 load Gem.bin_path('churn', 'churn', version)

@@ -4,7 +4,6 @@ require 'rubygems'
 
 require 'metric_fu_requires'
 
-gem 'sexp_processor', MetricFu::MetricVersion.sexp_processor
 version = MetricFu::MetricVersion.rails_best_practices
 gem 'rails_best_practices', version
 load Gem.bin_path('rails_best_practices', 'rails_best_practices', version)

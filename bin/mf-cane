@@ -3,7 +3,6 @@ require 'rubygems'
 
 require 'metric_fu_requires'
 
-gem 'parallel', MetricFu::MetricVersion.parallel
 version = MetricFu::MetricVersion.cane
 gem 'cane', version
 load Gem.bin_path('cane', 'cane', version)
