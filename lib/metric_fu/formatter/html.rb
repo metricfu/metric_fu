@@ -9,12 +9,12 @@ module MetricFu
 
       def finish
         mf_log "** SAVING REPORTS"
-        mf_debug "** SAVING REPORT YAML OUTPUT TO #{MetricFu.base_directory}"
+        mf_debug "** SAVING REPORT YAML OUTPUT TO #{MetricFu::Io::FileSystem.directory('base_directory')}"
         MetricFu::Formatter::YAML.new.finish
 
-        mf_debug "** SAVING REPORT DATA OUTPUT TO #{MetricFu.data_directory}"
+        mf_debug "** SAVING REPORT DATA OUTPUT TO #{MetricFu::Io::FileSystem.directory('data_directory')}"
         MetricFu::Formatter::YAML.new(
-          output: Pathname.pwd.join("#{MetricFu.data_directory}/#{Time.now.strftime("%Y%m%d")}.yml")
+          output: Pathname.pwd.join("#{MetricFu::Io::FileSystem.directory('data_directory')}/#{Time.now.strftime("%Y%m%d")}.yml")
         ).finish
 
         mf_debug "** SAVING TEMPLATIZED REPORT"
@@ -36,7 +36,7 @@ module MetricFu
       protected
 
       def output_directory
-        @output ||= dir_for(@options[:output]) || Pathname.pwd.join(MetricFu.output_directory)
+        @output ||= dir_for(@options[:output]) || Pathname.pwd.join(MetricFu::Io::FileSystem.directory('output_directory'))
       end
 
       # Instantiates a new template class based on the configuration set
@@ -45,7 +45,7 @@ module MetricFu
       # assigns the result_hash to the result_hash in the template, and
       # tells the template to to write itself out.
       def save_templatized_result
-        @template = MetricFu.template_class.new
+        @template = MetricFu::Formatter::Templates.option('template_class').new
         @template.output_directory = self.output_directory
         @template.result = MetricFu.result.result_hash
         @template.per_file_data = MetricFu.result.per_file_data
@@ -56,9 +56,9 @@ module MetricFu
       def save_graphs
         mf_log "** GENERATING GRAPHS"
         mf_debug "** PREPARING TO GRAPH"
-        MetricFu.graphs.each {|graph|
-          mf_debug "** Graphing #{graph} with #{MetricFu.graph_engine}"
-          MetricFu.graph.add(graph, MetricFu.graph_engine, self.output_directory)
+        MetricFu.configuration.graphs.each {|graph|
+          mf_debug "** Graphing #{graph} with #{MetricFu.configuration.graph_engine}"
+          MetricFu.graph.add(graph, MetricFu.configuration.graph_engine, self.output_directory)
         }
         mf_debug "** GENERATING GRAPH"
         MetricFu.graph.generate
@@ -73,7 +73,7 @@ module MetricFu
       # @return Boolean
       #   Should we open in the browser or not?
       def open_in_browser?
-        MetricFu.configuration.platform.include?('darwin') &&
+        MetricFu.configuration.osx? &&
           ! MetricFu.configuration.is_cruise_control_rb?
       end
 

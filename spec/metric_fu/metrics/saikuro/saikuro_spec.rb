@@ -3,10 +3,11 @@ require "spec_helper"
 describe Saikuro do
   describe "to_h method" do
     before :all do
-      MetricFu::Configuration.run {}
-      File.stub(:directory?).and_return(true)
-      saikuro = MetricFu::Saikuro.new
-      saikuro.stub(:metric_directory).and_return("#{resources_path}/saikuro")
+      options = {}
+      saikuro = MetricFu::Saikuro.new(options)
+      def saikuro.metric_directory
+        "#{resources_path}/saikuro"
+      end
       saikuro.analyze
       @output = saikuro.to_h
     end
@@ -33,17 +34,18 @@ describe Saikuro do
       @output[:saikuro][:methods].first[:lines].should == 15
     end
   end
-  
+
   describe "per_file_info method" do
     before :all do
-      MetricFu::Configuration.run {}
-      File.stub(:directory?).and_return(true)
-      @saikuro = MetricFu::Saikuro.new
-      @saikuro.stub(:metric_directory).and_return("#{resources_path}/saikuro")
+      options = {}
+      @saikuro = MetricFu::Saikuro.new(options)
+      def @saikuro.metric_directory
+        "#{resources_path}/saikuro"
+      end
       @saikuro.analyze
       @output = @saikuro.to_h
     end
-    
+
     it "doesn't try to get information if the file does not exist" do
       File.should_receive(:exists?).at_least(:once).and_return(false)
       @saikuro.per_file_info('ignore_me')
@@ -52,11 +54,10 @@ describe Saikuro do
 
   describe "format_directories method" do
     it "should format the directories" do
-      MetricFu::Configuration.run {}
-      File.stub(:directory?).and_return(true)
-      saikuro = MetricFu::Saikuro.new
+      options = {:input_directory  =>["app", "lib"]}
+      saikuro = MetricFu::Saikuro.new(options)
 
-      MetricFu.saikuro[:input_directory] = ["app", "lib"]
+      MetricFu::Metric.get_metric(:saikuro).run_options
 
       saikuro.format_directories.should == "\"app | lib\""
     end

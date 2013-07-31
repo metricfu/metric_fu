@@ -70,7 +70,7 @@ module MetricFu
 
     # Returns the directory where the Generator will write any output
     def self.metric_directory
-      File.join(MetricFu.scratch_directory, class_name)
+      File.join(MetricFu::Io::FileSystem.directory('scratch_directory'), class_name)
     end
 
     def create_metric_dir_if_missing #:nodoc:
@@ -80,14 +80,14 @@ module MetricFu
     end
 
     def create_output_dir_if_missing #:nodoc:
-      unless File.directory?(MetricFu.output_directory)
-        FileUtils.mkdir_p(MetricFu.output_directory, :verbose => false)
+      unless File.directory?(MetricFu::Io::FileSystem.directory('output_directory'))
+        FileUtils.mkdir_p(MetricFu::Io::FileSystem.directory('output_directory'), :verbose => false)
       end
     end
 
     def create_data_dir_if_missing #:nodoc:
-      unless File.directory?(MetricFu.data_directory)
-        FileUtils.mkdir_p(MetricFu.data_directory, :verbose => false)
+      unless File.directory?(MetricFu::Io::FileSystem.directory('data_directory'))
+        FileUtils.mkdir_p(MetricFu::Io::FileSystem.directory('data_directory'), :verbose => false)
       end
     end
 
@@ -97,7 +97,7 @@ module MetricFu
       self.class.metric_directory
     end
 
-    def remove_excluded_files(paths, globs_to_remove = MetricFu.file_globs_to_ignore)
+    def remove_excluded_files(paths, globs_to_remove = MetricFu::Io::FileSystem.file_globs_to_ignore)
       files_to_remove = []
       globs_to_remove.each do |glob|
         files_to_remove.concat(Dir[glob])

@@ -4,19 +4,15 @@
 $metric_file_loaded = true
 
 # example configuration
-# MetricFu::Configuration.run do |config|
+# MetricFu.reconfigure do |metric|
+#   next unless metric.metric_name == :rcov
+#   metric.enabled = true
 #   coverage_file = File.expand_path("coverage/rcov/rcov.txt", Dir.pwd)
-#   config.add_metric(:rcov)
-#   config.add_graph(:rcov)
-#   config.configure_metric(:rcov, {:external => coverage_file})
-#   config.cane = {:abc_max => 15, :line_length => 80, :no_doc => 'y', :no_readme => 'y'}
+#   metric.run_options.merge!(:external => coverage_file)
 # end
-# or
-# MetricFu::Configuration.run do |config|
-#   config.metrics -= [ :rcov ]
-# end
-# you may enable running rcov manually with
-# MetricFu.run_rcov
+# MetricFu::Metric.get_metric(:cane).run_options = {
+#   :abc_max => 15, :line_length => 80, :no_doc => 'y', :no_readme => 'y'
+#   }
 #
 # By default, metric_fu will use the built-in html formatter
 # to generate HTML reports for each metric with pretty graphs.

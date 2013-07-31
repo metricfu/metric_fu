@@ -14,7 +14,7 @@ module MetricFu
 
 
     def output_directory
-      @output_directory || MetricFu.output_directory
+      @output_directory || MetricFu::Io::FileSystem.directory('output_directory')
     end
 
 
@@ -56,7 +56,7 @@ module MetricFu
     # @return String
     #   A file path
     def template(section)
-      if MetricFu.metrics.include?(section) # expects a symbol
+      if MetricFu::Metric.enabled_metrics.map(&:metric_name).include?(section) # expects a symbol
         File.join(template_dir(section.to_s), "#{section}.html.erb")
       else
         File.join(template_directory,  section.to_s + ".html.erb")
@@ -156,7 +156,7 @@ module MetricFu
     def file_url(name, line) # :nodoc:
       return '' unless name
       filename = complete_file_path(name)
-      link_prefix = MetricFu.configuration.link_prefix
+      link_prefix = MetricFu::Formatter::Templates.option('link_prefix')
       if link_prefix
         "#{link_prefix}/#{name.gsub(/:.*$/, '')}"
       elsif render_as_txmt_protocol?
@@ -176,14 +176,18 @@ module MetricFu
       filename.gsub(/^\//, '')
     end
     def render_as_txmt_protocol? # :nodoc:
-      config = MetricFu.configuration
-      return false unless config.platform.include?('darwin')
-      return !config.darwin_txmt_protocol_no_thanks
+      if MetricFu.configuration.osx?
+        !MetricFu::Formatter::Templates.option('darwin_txmt_protocol_no_thanks')
+      else
+        false
+      end
     end
     def render_as_mvim_protocol? # :nodoc:
-      config = MetricFu.configuration
-      return false unless config.platform.include?('darwin')
-      return !config.darwin_mvim_protocol_no_thanks
+      if MetricFu.configuration.osx?
+        !MetricFu::Formatter::Templates.option('darwin_mvim_protocol_no_thanks')
+      else
+        false
+      end
     end
 
     # Provides a brain dead way to cycle between two values during

@@ -17,7 +17,7 @@ describe MetricFu::Formatter::YAML do
     it "creates a report yaml file" do
       expect {
       MetricFu::Formatter::YAML.new.finish
-      }.to create_file("#{MetricFu.base_directory}/report.yml")
+      }.to create_file("#{directory('base_directory')}/report.yml")
     end
 
   end
@@ -31,7 +31,7 @@ describe MetricFu::Formatter::YAML do
     it "creates a report yaml file to the custom output path" do
       expect {
       MetricFu::Formatter::YAML.new(output: @output).finish
-      }.to create_file("#{MetricFu.base_directory}/customreport.yml")
+      }.to create_file("#{directory('base_directory')}/customreport.yml")
     end
 
   end

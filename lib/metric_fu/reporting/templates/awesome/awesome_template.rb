@@ -91,7 +91,7 @@ class AwesomeTemplate < MetricFu::Template
           out << "&nbsp;"
         end
         out << "</td>"
-        if MetricFu.configuration.syntax_highlighting
+        if MetricFu::Formatter::Templates.option('syntax_highlighting')
           line_for_display = convert_ruby_to_html(line, line_number)
         else
           line_for_display = "<a name='n#{line_number}' href='n#{line_number}'>#{line_number}</a>#{line}"

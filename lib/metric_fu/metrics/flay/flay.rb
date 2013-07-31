@@ -3,9 +3,9 @@ module MetricFu
   class Flay < Generator
 
     def emit
-      minimum_score_parameter = MetricFu.flay[:minimum_score] ? "--mass #{MetricFu.flay[:minimum_score]} " : ""
+      minimum_score_parameter = options[:minimum_score] ? "--mass #{options[:minimum_score]} " : ""
 
-      command = %Q(mf-flay #{minimum_score_parameter} #{MetricFu.flay[:dirs_to_flay].join(" ")})
+      command = %Q(mf-flay #{minimum_score_parameter} #{options[:dirs_to_flay].join(" ")})
       mf_debug "** #{command}"
       @output = `#{command}`
     end

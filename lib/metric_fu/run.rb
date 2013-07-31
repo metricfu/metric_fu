@@ -11,10 +11,8 @@ module MetricFu
       display_results if options[:open]
     end
 
-    # ensure :hotspots runs last
-    def report_metrics(metrics=MetricFu.metrics)
-      MetricFu.configuration.metrics.sort_by! {|x| x == :hotspots ? 1 : 0 }
-      MetricFu.configuration.metrics
+    def report_metrics(metrics=MetricFu::Metric.enabled_metrics)
+      metrics.map(&:metric_name)
     end
     def measure
       reporter.start
@@ -45,9 +43,8 @@ module MetricFu
           mf_debug "using metric #{metric}"
         else
           mf_debug "disabling metric #{metric}"
-          MetricFu.configuration.metrics -= [ metric ]
-          MetricFu.configuration.graphs -= [ metric ]
-          mf_debug "active metrics are #{MetricFu.configuration.metrics.inspect}"
+          MetricFu::Metric.get_metric(metric).enabled = false
+          mf_debug "active metrics are #{MetricFu::Metric.enabled_metrics.inspect}"
         end
       end
     end

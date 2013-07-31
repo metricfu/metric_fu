@@ -1,45 +1,24 @@
 require 'pathname'
 require 'optparse'
-require 'rbconfig'
-class RubyParser
-  alias_method :original_process, :process
-  def process(s,f,t)
-    original_process(s,f,t)
-  rescue => e
-    if e.message =~ /wrong number of arguments/
-      original_process(s,f)
-    else
-      raise
-    end
-  end
-end
 module MetricFu
-
   class Flog < Generator
 
     def emit
       files = []
-      MetricFu.flog[:dirs_to_flog].each do |directory|
+      options[:dirs_to_flog].each do |directory|
         directory = "." if directory=='./'
         dir_files = Dir.glob("#{directory}/**/*.rb")
         dir_files = remove_excluded_files(dir_files)
         files += dir_files
       end
-      options = ::Flog.parse_options [
+      parse_options = ::Flog.parse_options [
         "--all",
-        MetricFu.flog[:continue] ? "--continue" : nil,
+        options[:continue] ? "--continue" : nil,
       ].compact
 
-      @flogger = ::Flog.new options
+      @flogger = ::Flog.new parse_options
       @flogger.flog files
 
-    rescue LoadError => e
-      message = "#{e.class}\t#{e.message}\n\t#{e.backtrace.join('\n\t')}"
-      if MetricFu.configuration.mri?
-        mf_log "Flog Error: #{message}"
-      else
-        mf_log "Flog tasks only available in MRI: #{message}"
-      end
     end
 
     def analyze

@@ -3,7 +3,7 @@ require "spec_helper"
 describe MetricFu::Grapher do
   describe "require_graphing_gem" do
     it "should give a warning if trying to use gchart but gem is not installed" do
-      MetricFu::Configuration.run {|config| config.graph_engine = :gchart}
+      MetricFu.configuration.configure_graph_engine(:gchart)
       MetricFu::Grapher.should_receive(:require).with('gchart').and_raise(LoadError)
       MetricFu::Grapher.should_receive(:mf_log).with(/If you want to use google charts/)
       MetricFu::Grapher.require_graphing_gem
@@ -33,7 +33,10 @@ end
 
 describe "Gchart graphers" do
   before :each do
-    MetricFu::Configuration.run {|config| config.graph_engine = :gchart}
+    MetricFu.configuration.configure_graph_engine(:gchart)
+  end
+  def output_directory
+    directory('output_directory')
   end
 
   describe "FlayGchartGrapher graph! method" do
@@ -44,7 +47,7 @@ describe "Gchart graphers" do
         :title => URI.encode("Flay: duplication"),
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'flay.png'),
+        :filename => File.join(output_directory, 'flay.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -63,7 +66,7 @@ describe "Gchart graphers" do
         :custom => "chdlp=t",
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'flog.png'),
+        :filename => File.join(output_directory, 'flog.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -80,7 +83,7 @@ describe "Gchart graphers" do
         :axis_with_labels => 'x,y',
         :axis_labels => [grapher.labels.values, [0,20,40,60,80,100]],
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'rcov.png'),
+        :filename => File.join(output_directory, 'rcov.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -97,7 +100,7 @@ describe "Gchart graphers" do
         :bar_colors => MetricFu::GchartGrapher::COLORS,
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'reek.png'),
+        :filename => File.join(output_directory, 'reek.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -112,7 +115,7 @@ describe "Gchart graphers" do
         :title => URI.encode("Roodi: potential design problems"),
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'roodi.png'),
+        :filename => File.join(output_directory, 'roodi.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -130,7 +133,7 @@ describe "Gchart graphers" do
         :custom => "chdlp=t",
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'stats.png'),
+        :filename => File.join(output_directory, 'stats.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
@@ -148,7 +151,7 @@ describe "Gchart graphers" do
         :custom => "chdlp=t",
         :axis_with_labels => 'x,y',
         :format => 'file',
-        :filename => File.join(MetricFu.output_directory, 'rails_best_practices.png'),
+        :filename => File.join(output_directory, 'rails_best_practices.png'),
       }
       Gchart.should_receive(:line).with(hash_including(expected))
       grapher.graph!
