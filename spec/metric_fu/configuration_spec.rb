@@ -98,7 +98,7 @@ describe MetricFu::Configuration do
       it 'should set @flay to {:dirs_to_flay => @code_dirs}' do
         load_metric 'flay'
         @config.send(:flay).
-                should == {:dirs_to_flay => ['lib'], :filetypes=>["rb"], :minimum_score => 100}
+                should == {:dirs_to_flay => ['lib'], :filetypes=>["rb"]}
       end
 
       it 'should set @reek to {:dirs_to_reek => @code_dirs}' do
