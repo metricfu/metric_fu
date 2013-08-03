@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'metric_fu/cli/helper'
 MetricFu.run_rcov
+MetricFu.configure
 
 describe MetricFu::Cli::Helper do
 
@@ -55,25 +56,11 @@ describe MetricFu::Cli::Helper do
     end
 
     if MetricFu.configuration.mri?
-      context "on Ruby 1.8.7" do
 
-        before { helper.stub(:ruby).and_return("1.8.7") }
-
-        it "disables rails_best_practices" do
-          defaults[:rails_best_practices].should be_false
-        end
-
-      end
-
-      context "on Ruby 1.9" do
-
-        before { helper.stub(:ruby).and_return("1.9.3") }
-
-        xit "enables Rails Best Practices" do
+        it "enables Rails Best Practices" do
           defaults[:rails_best_practices].should be_true
         end
 
-      end
     end
 
   end

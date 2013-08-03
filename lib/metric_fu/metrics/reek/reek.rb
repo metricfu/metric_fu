@@ -4,9 +4,9 @@ module MetricFu
     REEK_REGEX = /^(\S+) (.*) \((.*)\)$/
 
     def emit
-      files_to_reek = MetricFu.reek[:dirs_to_reek].map{|dir| Dir[File.join(dir, "**/*.rb")] }
+      files_to_reek = options[:dirs_to_reek].map{|dir| Dir[File.join(dir, "**/*.rb")] }
       files = remove_excluded_files(files_to_reek.flatten)
-      config_file_param = MetricFu.reek[:config_file_pattern] ? "--config #{MetricFu.reek[:config_file_pattern]}" : ''
+      config_file_param = options[:config_file_pattern] ? "--config #{options[:config_file_pattern]}" : ''
       command = %Q(mf-reek #{config_file_param} #{files.join(" ")})
       mf_debug "** #{command}"
       @output = `#{command}`

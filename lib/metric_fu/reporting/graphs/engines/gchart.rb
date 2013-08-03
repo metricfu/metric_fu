@@ -58,7 +58,7 @@ module MetricFu
   class Grapher
 
     def self.require_graphing_gem
-      if MetricFu.graph_engine == :gchart
+      if MetricFu.configuration.graph_engine == :gchart
         require 'gchart'
         include MetricFu::GchartGrapher
       end

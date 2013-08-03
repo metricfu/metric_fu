@@ -6,34 +6,40 @@ describe MetricFu::Configuration do
     ENV['CC_BUILD_ARTIFACTS'] = nil
     @config = MetricFu.configuration
     @config.reset
-    MetricFu.configure
     MetricFu.run_rcov
-    @config.stub :create_directories # no need to create directories for the tests
+    MetricFu.configure
+    mri_only_metrics = MetricFu.mri_only_metrics.reject {|metric| MetricFu::Metric.get_metric(metric).enabled }
+    MetricFu.stub(:mri_only_metrics).and_return(mri_only_metrics)
+    MetricFu::Io::FileSystem.stub(:create_directories) # no need to create directories for the tests
     @config
   end
 
+  def directory(name)
+    MetricFu::Io::FileSystem.directory(name)
+  end
+
   def base_directory
-    @config.send(:base_directory)
+    directory('base_directory')
   end
 
   def output_directory
-    @config.send(:output_directory)
+    directory('output_directory')
   end
 
   def scratch_directory
-    @config.send(:scratch_directory)
+    directory('scratch_directory')
   end
 
   def template_directory
-    @config.send(:template_directory)
+    directory('template_directory')
   end
 
   def template_class
-    @config.send(:template_class)
+    MetricFu::Formatter::Templates.option('template_class')
   end
 
   def metric_fu_root
-    @config.send(:metric_fu_root_directory)
+    directory('root_directory')
   end
   def load_metric(metric)
     load File.join(MetricFu.metrics_dir, metric, 'init.rb')
@@ -97,27 +103,31 @@ describe MetricFu::Configuration do
 
       it 'should set @flay to {:dirs_to_flay => @code_dirs}' do
         load_metric 'flay'
-        @config.send(:flay).
-                should == {:dirs_to_flay => ['lib'], :filetypes=>["rb"]}
+        expect(MetricFu::Metric.get_metric(:flay).run_options).to eq(
+                {:dirs_to_flay => ['lib'], :filetypes=>["rb"], :minimum_score=>nil}
+        )
       end
 
       it 'should set @reek to {:dirs_to_reek => @code_dirs}' do
         load_metric 'reek'
-        @config.send(:reek).
-                should == {:config_file_pattern=>nil, :dirs_to_reek => ['lib']}
+        expect(MetricFu::Metric.get_metric(:reek).run_options).to eq(
+                {:config_file_pattern=>nil, :dirs_to_reek => ['lib']}
+        )
       end
 
       it 'should set @roodi to {:dirs_to_roodi => @code_dirs}' do
         load_metric 'roodi'
-        @config.send(:roodi).
-                should == { :dirs_to_roodi => MetricFu.code_dirs,
-                    :roodi_config => "#{MetricFu.root_dir}/config/roodi_config.yml"}
+        expect(MetricFu::Metric.get_metric(:roodi).run_options).to eq(
+                { :dirs_to_roodi => directory('code_dirs'),
+                    :roodi_config => "#{directory('root_directory')}/config/roodi_config.yml"}
+                )
       end
 
       it 'should set @churn to {}' do
         load_metric 'churn'
-        @config.send(:churn).
-                should == { :start_date => %q("1 year ago"), :minimum_churn_count => 10}
+        expect(MetricFu::Metric.get_metric(:churn).run_options).to eq(
+                { :start_date => %q("1 year ago"), :minimum_churn_count => 10}
+        )
       end
 
 
@@ -134,8 +144,8 @@ describe MetricFu::Configuration do
                               "-Ispec"
                             ]) do
         load_metric 'rcov'
-        @config.send(:rcov).
-                should ==  { :environment => 'test',
+        expect(MetricFu::Metric.get_metric(:rcov).run_options).to eq(
+                { :environment => 'test',
                             :test_files =>  Dir['{spec,test}/**/*_{spec,test}.rb'],
                             :rcov_opts => [
                               "--sort coverage",
@@ -148,6 +158,7 @@ describe MetricFu::Configuration do
                               "-Ispec"
                             ],
                             :external => nil}
+        )
       end
 
       it 'should set @saikuro to { :output_directory => @scratch_directory + "/saikuro",
@@ -158,33 +169,36 @@ describe MetricFu::Configuration do
                                    :error_cyclo => "7",
                                    :formater => "text" }' do
         load_metric 'saikuro'
-        @config.send(:saikuro).
-                should ==  { :output_directory => "#{scratch_directory}/saikuro",
+        expect(MetricFu::Metric.get_metric(:saikuro).run_options).to eq(
+                { :output_directory => "#{scratch_directory}/saikuro",
                       :input_directory => ['lib'],
                       :cyclo => "",
                       :filter_cyclo => "0",
                       :warn_cyclo => "5",
                       :error_cyclo => "7",
                       :formater => "text"}
+                      )
       end
 
       if MetricFu.configuration.mri?
         it 'should set @flog to {:dirs_to_flog => @code_dirs}' do
           load_metric 'flog'
-          @config.send(:flog).
-                  should == {:dirs_to_flog => ['lib']}
+          expect(MetricFu::Metric.get_metric(:flog).run_options).to eq(
+                  {:dirs_to_flog => ['lib']}
+                  )
         end
         it 'should set @cane to ' +
                             %q(:dirs_to_cane => @code_dirs, :abc_max => 15, :line_length => 80, :no_doc => 'n', :no_readme => 'y') do
           load_metric 'cane'
-          @config.send(:cane).
-            should == {
-              :dirs_to_cane => MetricFu.code_dirs,
+          expect(MetricFu::Metric.get_metric(:cane).run_options).to eq(
+            {
+              :dirs_to_cane => directory('code_dirs'),
               :filetypes => ["rb"],
               :abc_max => 15,
               :line_length => 80,
               :no_doc => "n",
               :no_readme => "n"}
+              )
         end
       end
 
@@ -204,32 +218,31 @@ describe MetricFu::Configuration do
 
       describe '#set_metrics ' do
         it 'should set the metrics to include stats' do
-          @config.metrics.should include(:stats)
+          MetricFu::Metric.enabled_metrics.map(&:name).should include(:stats)
         end
       end
 
       describe '#set_graphs ' do
         it 'should set the graphs to include rails_best_practices' do
-          @config.graphs.should include(:rails_best_practices)
+          expect(MetricFu::Metric.get_metric(:rails_best_practices).has_graph?).to be_true
         end
       end
 
       describe '#set_code_dirs ' do
         it 'should set the @code_dirs instance var to ["app", "lib"]' do
-          @config.send(:code_dirs).
+          directory('code_dirs').
                   should == ['app','lib']
         end
       end
       it 'should set @stats to {}' do
         load_metric 'stats'
-        @config.send(:stats).
+        MetricFu::Metric.get_metric(:stats).run_options.
                 should == {}
       end
 
       it 'should set @rails_best_practices to {}' do
         load_metric 'rails_best_practices'
-        @config.send(:rails_best_practices).
-                should == {}
+        expect(MetricFu::Metric.get_metric(:rails_best_practices).run_options).to eql({})
       end
     end
 
@@ -243,57 +256,11 @@ describe MetricFu::Configuration do
       end
 
       it 'should set the available metrics' do
-        @config.metrics.should =~ [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane] - MetricFu.mri_only_metrics
+        MetricFu::Metric.enabled_metrics.map(&:name).should =~ [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane] - MetricFu.mri_only_metrics
       end
 
       it 'should set the @code_dirs instance var to ["lib"]' do
-        @config.send(:code_dirs).should == ['lib']
-      end
-    end
-  end
-
-  describe '#add_attr_accessors_to_self' do
-
-    before(:each) { get_new_config }
-
-    (
-      [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro] -
-      MetricFu.mri_only_metrics
-    ).each do |metric|
-      it "should have a reader for #{metric}" do
-        expect {
-          @config.send(metric.to_sym)
-        }.to_not raise_error
-      end
-
-      it "should have a writer for #{metric}=" do
-        expect {
-          @config.send((metric.to_s + '=').to_sym, '')
-        }.to_not raise_error
-      end
-    end
-  end
-
-  describe '#add_class_methods_to_metric_fu' do
-
-    before(:each) { get_new_config }
-
-    (
-      [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane] -
-      MetricFu.mri_only_metrics
-
-    ).each do |metric|
-      it "should add a #{metric} class method to the MetricFu module " do
-        MetricFu.should respond_to(metric)
-      end
-    end
-
-    (
-      [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane] -
-      MetricFu.mri_only_metrics
-    ).each do |graph|
-      it "should add a #{graph} class metrhod to the MetricFu module" do
-        MetricFu.should respond_to(graph)
+        directory('code_dirs').should == ['lib']
       end
     end
   end
@@ -330,12 +297,12 @@ describe MetricFu::Configuration do
     end
   end
 
-  describe '#add_formatter' do
+  describe '#configure_formatter' do
     before(:each) { get_new_config }
 
     context 'given a built-in formatter' do
       before do
-        @config.add_formatter('html')
+        @config.configure_formatter('html')
       end
 
       it 'adds to the list of formatters' do
@@ -346,7 +313,7 @@ describe MetricFu::Configuration do
     context 'given a custom formatter by class name' do
       before do
         stub_const('MyCustomFormatter', Class.new() { def initialize(*); end })
-        @config.add_formatter('MyCustomFormatter')
+        @config.configure_formatter('MyCustomFormatter')
       end
 
       it 'adds to the list of formatters' do
@@ -357,9 +324,9 @@ describe MetricFu::Configuration do
     context 'given multiple formatters' do
       before do
         stub_const('MyCustomFormatter', Class.new() { def initialize(*); end })
-        @config.add_formatter('html')
-        @config.add_formatter('yaml')
-        @config.add_formatter('MyCustomFormatter')
+        @config.configure_formatter('html')
+        @config.configure_formatter('yaml')
+        @config.configure_formatter('MyCustomFormatter')
       end
 
       it 'adds each to the list of formatters' do

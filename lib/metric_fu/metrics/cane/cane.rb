@@ -19,19 +19,19 @@ module MetricFu
     private
 
     def abc_max_param
-      MetricFu.cane[:abc_max] ? " --abc-max #{MetricFu.cane[:abc_max]}" : ""
+      options[:abc_max] ? " --abc-max #{options[:abc_max]}" : ""
     end
 
     def style_measure_param
-      MetricFu.cane[:line_length] ? " --style-measure #{MetricFu.cane[:line_length]}" : ""
+      options[:line_length] ? " --style-measure #{options[:line_length]}" : ""
     end
 
     def no_doc_param
-      MetricFu.cane[:no_doc] == 'y' ? " --no-doc" : ""
+      options[:no_doc] == 'y' ? " --no-doc" : ""
     end
 
     def no_readme_param
-      MetricFu.cane[:no_readme] == 'y' ? " --no-readme" : ""
+      options[:no_readme] == 'y' ? " --no-readme" : ""
     end
 
     def violations_by_category

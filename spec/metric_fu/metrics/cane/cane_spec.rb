@@ -2,58 +2,52 @@ require 'spec_helper'
 
 describe Cane do
   describe "emit method" do
-    def configure_cane_with(options={})
-      MetricFu::Configuration.run {|config|
-        config.add_metric(:cane)
-        config.configure_metric(:cane, options)
-      }
-    end
 
     it "should execute cane command" do
-      configure_cane_with({})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane")
       output = @cane.emit
     end
 
     it "should use abc max option" do
-      configure_cane_with({abc_max: 20})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {abc_max: 20}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane --abc-max 20")
       output = @cane.emit
     end
 
     it "should use style max line length option" do
-      configure_cane_with({line_length: 100})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {line_length: 100}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane --style-measure 100")
       output = @cane.emit
     end
 
     it "should use no-doc if specified" do
-      configure_cane_with({no_doc: 'y'})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {no_doc: 'y'}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane --no-doc")
       output = @cane.emit
     end
 
     it "should include doc violations if no_doc != 'y'" do
-      configure_cane_with({no_doc: 'n'})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {no_doc: 'n'}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane")
       output = @cane.emit
     end
 
     it "should use no-readme if specified" do
-      configure_cane_with({no_readme: 'y'})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {no_readme: 'y'}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane --no-readme")
       output = @cane.emit
     end
 
     it "should include README violations if no_readme != 'y'" do
-      configure_cane_with({no_readme: 'n'})
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {no_readme: 'n'}
+      @cane = MetricFu::Cane.new(options)
       @cane.should_receive(:`).with("mf-cane")
       output = @cane.emit
     end
@@ -61,9 +55,10 @@ describe Cane do
 
   describe "parse cane empty output" do
     before :each do
-      MetricFu::Configuration.run {}
+      # MetricFu::Configuration.run {}
       File.stub(:directory?).and_return(true)
-      @cane = MetricFu::Cane.new('base_dir')
+      options = {}
+      @cane = MetricFu::Cane.new(options)
       @cane.instance_variable_set(:@output, '')
     end
 

@@ -2,11 +2,11 @@ module MetricFu
 
   class Saikuro < Generator
     def emit
-      options_string = MetricFu.saikuro.inject("") do |options, option|
+      options_string = options.inject("") do |options, option|
         option[0] == :input_directory ? options : options + "--#{option.join(' ')} "
       end
 
-      MetricFu.saikuro[:input_directory].each do |input_dir|
+      options[:input_directory].each do |input_dir|
         options_string += "--input_directory #{input_dir} "
       end
 
@@ -16,7 +16,7 @@ module MetricFu
     end
 
     def format_directories
-      dirs = MetricFu.saikuro[:input_directory].join(" | ")
+      dirs = options[:input_directory].join(" | ")
       "\"#{dirs}\""
     end
 

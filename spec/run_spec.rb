@@ -6,23 +6,40 @@ describe MetricFu do
   let(:helper)  { MetricFu::Cli::Helper.new }
 
   before(:all) do
-    MetricFu::Configuration.run {|config| config.graph_engine = :bluff}
+    MetricFu.configuration.configure_graph_engine(:bluff)
   end
 
   before do
     setup_fs
   end
 
+  def base_directory
+    directory('base_directory')
+  end
+
+  def output_directory
+    directory('output_directory')
+  end
+
+  def data_directory
+    directory('data_directory')
+  end
+
   context "given configured metrics, when run" do
+
     before do
 
       # TODO: Should probably use some sort of fake metric
       # to speed up tests. For now, just configuring with a
       # limited set, so we can test the basic functionality
       # without significantly slowing down the specs.
-      MetricFu::Configuration.run do |config|
-        @default_configured_metrics = config.metrics.dup
-        config.metrics = [:churn]
+      MetricFu.configuration.configure_metrics do |metric|
+        if metric.name == :churn
+          metric.enable
+          metric.activated = true
+        else
+          metric.enabled = false
+        end
       end
 
     end
@@ -35,45 +52,45 @@ describe MetricFu do
     end
 
     it "creates a report yaml file" do
-      expect { metric_fu }.to create_file("#{MetricFu.base_directory}/report.yml")
+      expect { metric_fu }.to create_file("#{base_directory}/report.yml")
     end
 
     it "creates a data yaml file" do
-      expect { metric_fu }.to create_file("#{MetricFu.data_directory}/#{Time.now.strftime("%Y%m%d")}.yml")
+      expect { metric_fu }.to create_file("#{data_directory}/#{Time.now.strftime("%Y%m%d")}.yml")
     end
 
     it "creates a report html file" do
-      expect { metric_fu }.to create_file("#{MetricFu.output_directory}/index.html")
+      expect { metric_fu }.to create_file("#{output_directory}/index.html")
     end
 
     context "with configured formatter" do
       it "outputs using configured formatter" do
         expect {
           MetricFu::Configuration.run do |config|
-            config.add_formatter(:yaml)
+            config.configure_formatter(:yaml)
           end
           metric_fu
-        }.to create_file("#{MetricFu.base_directory}/report.yml")
+        }.to create_file("#{base_directory}/report.yml")
       end
 
       it "doesn't output using formatters not configured" do
         expect {
           MetricFu::Configuration.run do |config|
-            config.add_formatter(:yaml)
+            config.configure_formatter(:yaml)
           end
           metric_fu
-        }.to_not create_file("#{MetricFu.output_directory}/index.html")
+        }.to_not create_file("#{output_directory}/index.html")
       end
 
     end
 
     context "with command line formatter" do
       it "outputs using command line formatter" do
-        expect { metric_fu "--format yaml"}.to create_file("#{MetricFu.base_directory}/report.yml")
+        expect { metric_fu "--format yaml"}.to create_file("#{base_directory}/report.yml")
       end
 
       it "doesn't output using formatters not configured" do
-        expect { metric_fu "--format yaml"}.to_not create_file("#{MetricFu.output_directory}/index.html")
+        expect { metric_fu "--format yaml"}.to_not create_file("#{output_directory}/index.html")
       end
 
     end
@@ -82,16 +99,16 @@ describe MetricFu do
 
       before do
         MetricFu::Configuration.run do |config|
-          config.add_formatter(:html)
+          config.configure_formatter(:html)
         end
       end
 
       it "outputs using command line formatter" do
-        expect { metric_fu "--format yaml"}.to create_file("#{MetricFu.base_directory}/report.yml")
+        expect { metric_fu "--format yaml"}.to create_file("#{base_directory}/report.yml")
       end
 
       it "doesn't output using configured formatter (cli takes precedence)" do
-        expect { metric_fu "--format yaml"}.to_not create_file("#{MetricFu.output_directory}/index.html")
+        expect { metric_fu "--format yaml"}.to_not create_file("#{output_directory}/index.html")
       end
 
     end
@@ -100,41 +117,41 @@ describe MetricFu do
       it "outputs using configured out" do
         expect {
           MetricFu::Configuration.run do |config|
-            config.add_formatter(:yaml, "customreport.yml")
+            config.configure_formatter(:yaml, "customreport.yml")
           end
           metric_fu
-        }.to create_file("#{MetricFu.base_directory}/customreport.yml")
+        }.to create_file("#{base_directory}/customreport.yml")
       end
 
       it "doesn't output using formatters not configured" do
         expect {
           MetricFu::Configuration.run do |config|
-            config.add_formatter(:yaml, "customreport.yml")
+            config.configure_formatter(:yaml, "customreport.yml")
           end
           metric_fu
-        }.to_not create_file("#{MetricFu.base_directory}/report.yml")
+        }.to_not create_file("#{base_directory}/report.yml")
       end
 
     end
 
     context "with command line specified formatter + out" do
       it "outputs to the specified path" do
-        expect { metric_fu "--format yaml --out customreport.yml"}.to create_file("#{MetricFu.base_directory}/customreport.yml")
+        expect { metric_fu "--format yaml --out customreport.yml"}.to create_file("#{base_directory}/customreport.yml")
       end
 
       it "doesn't output to default path" do
-        expect { metric_fu "--format yaml --out customreport.yml"}.to_not create_file("#{MetricFu.base_directory}/report.yml")
+        expect { metric_fu "--format yaml --out customreport.yml"}.to_not create_file("#{base_directory}/report.yml")
       end
 
     end
 
     context "with command line specified out only" do
       it "outputs to the specified path" do
-        expect { metric_fu "--out customdir --no-open"}.to create_file("#{MetricFu.base_directory}/customdir/index.html")
+        expect { metric_fu "--out customdir --no-open"}.to create_file("#{base_directory}/customdir/index.html")
       end
 
       it "doesn't output to default path" do
-        expect { metric_fu "--out customdir --no-open"}.to_not create_file("#{MetricFu.output_directory}/index.html")
+        expect { metric_fu "--out customdir --no-open"}.to_not create_file("#{output_directory}/index.html")
       end
 
     end
@@ -142,7 +159,6 @@ describe MetricFu do
 
     after do
       MetricFu::Configuration.run do |config|
-        config.metrics = @default_configured_metrics
         config.formatters.clear
       end
 

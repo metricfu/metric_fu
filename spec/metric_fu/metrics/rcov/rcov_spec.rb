@@ -3,16 +3,16 @@ require "spec_helper"
 describe MetricFu::Rcov do
 
   before :each do
-    MetricFu.configure
-    MetricFu.run_rcov
-    File.stub(:directory?).and_return(true)
-    @rcov = MetricFu::Rcov.new('base_dir')
+    MetricFu.configuration.configure_metric(:rcov) do |rcov|
+      rcov.enabled = true
+    end
+    @default_options = MetricFu::Metric.get_metric(:rcov).run_options
   end
 
   describe "emit" do
     before :each do
-      @rcov.stub(:mf_log)
-      MetricFu.rcov[:external] = nil
+      options = {:external =>  nil}
+      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
     end
 
     it "should clear out previous output and make output folder" do
@@ -25,7 +25,8 @@ describe MetricFu::Rcov do
     it "should set the RAILS_ENV" do
       FileUtils.stub(:rm_rf)
       Dir.stub(:mkdir)
-      MetricFu.rcov[:environment] = "metrics"
+      options = {:environment => 'metrics'}
+      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
       @rcov.should_receive(:`).with(/RAILS_ENV=metrics/)
       @rcov.emit
     end
@@ -33,7 +34,8 @@ describe MetricFu::Rcov do
 
   describe "with RCOV_OUTPUT fed into" do
     before :each do
-      MetricFu.rcov[:external] = nil
+      options = {:external =>  nil}
+      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
       File.should_receive(:open).
             with(MetricFu::Rcov.metric_directory + '/rcov.txt').
             and_return(double("io", :read => RCOV_OUTPUT))
@@ -65,8 +67,8 @@ describe MetricFu::Rcov do
   end
   describe "with external configuration option set" do
     before :each do
-      @rcov.stub(:mf_log)
-      MetricFu.rcov[:external] = "coverage/rcov.txt"
+      options = {:external =>  'coverage/rcov.txt'}
+      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
     end
 
     it "should emit nothing if external configuration option is set" do
@@ -76,7 +78,7 @@ describe MetricFu::Rcov do
 
     it "should open the external rcov analysis file" do
       File.should_receive(:open).
-            with(MetricFu.rcov[:external]).
+            with('coverage/rcov.txt').
             and_return(double("io", :read => RCOV_OUTPUT))
       @files = @rcov.analyze
     end
@@ -176,6 +178,3 @@ lib/templates/standard/standard_template.rb
 HERE
 
 end
-
-
-

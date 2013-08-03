@@ -11,10 +11,8 @@ module MetricFu
       display_results if options[:open]
     end
 
-    # ensure :hotspots runs last
-    def report_metrics(metrics=MetricFu.metrics)
-      MetricFu.configuration.metrics.sort_by! {|x| x == :hotspots ? 1 : 0 }
-      MetricFu.configuration.metrics
+    def report_metrics(metrics=MetricFu::Metric.enabled_metrics)
+      metrics.map(&:name)
     end
     def measure
       reporter.start
@@ -45,24 +43,23 @@ module MetricFu
           mf_debug "using metric #{metric}"
         else
           mf_debug "disabling metric #{metric}"
-          MetricFu.configuration.metrics -= [ metric ]
-          MetricFu.configuration.graphs -= [ metric ]
-          mf_debug "active metrics are #{MetricFu.configuration.metrics.inspect}"
+          MetricFu::Metric.get_metric(metric).enabled = false
+          mf_debug "active metrics are #{MetricFu::Metric.enabled_metrics.inspect}"
         end
       end
     end
     def configure_formatters(options)
       # Configure from command line if any.
       if options[:format]
-        MetricFu.formatters.clear # Command-line format takes precedence.
+        MetricFu.configuration.formatters.clear # Command-line format takes precedence.
         Array(options[:format]).each do |format, o|
-          MetricFu.configuration.add_formatter(format, o)
+          MetricFu.configuration.configure_formatter(format, o)
         end
       end
       # If no formatters specified, use defaults.
       if MetricFu.configuration.formatters.empty?
         Array(MetricFu::Formatter::DEFAULT).each do |format, o|
-          MetricFu.configuration.add_formatter(format, o)
+          MetricFu.configuration.configure_formatter(format, o)
         end
       end
     end

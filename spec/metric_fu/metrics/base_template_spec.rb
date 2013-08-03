@@ -87,9 +87,10 @@ describe MetricFu::Template do
     describe "when on OS X" do
       before(:each) do
         config = double("configuration")
+        config.stub(:osx?).and_return(true)
         config.stub(:platform).and_return('universal-darwin-9.0')
-        config.stub(:darwin_txmt_protocol_no_thanks).and_return(false)
-        config.stub(:link_prefix).and_return(nil)
+        MetricFu::Formatter::Templates.stub(:option).with('darwin_txmt_protocol_no_thanks').and_return(false)
+        MetricFu::Formatter::Templates.stub(:option).with('link_prefix').and_return(nil)
         MetricFu.stub(:configuration).and_return(config)
       end
 
@@ -117,9 +118,11 @@ describe MetricFu::Template do
       describe "but no thanks for txtmt" do
         before(:each) do
           config = double("configuration")
+          config.stub(:osx?).and_return(true)
           config.stub(:platform).and_return('universal-darwin-9.0')
-          config.stub(:darwin_txmt_protocol_no_thanks).and_return(true)
           config.stub(:link_prefix).and_return(nil)
+          MetricFu::Formatter::Templates.stub(:option).with('darwin_txmt_protocol_no_thanks').and_return(true)
+          MetricFu::Formatter::Templates.stub(:option).with('link_prefix').and_return(nil)
           MetricFu.stub(:configuration).and_return(config)
           @template.should_receive(:complete_file_path).and_return('filename')
         end
@@ -144,9 +147,8 @@ describe MetricFu::Template do
     describe "when on other platforms"  do
       before(:each) do
         config = double("configuration")
-        config.should_receive(:platform).and_return('other')
-        config.stub(:link_prefix).and_return(nil)
-        config.stub(:darwin_txmt_protocol_no_thanks).and_return(false)
+        config.should_receive(:osx?).and_return(false)
+        MetricFu::Formatter::Templates.stub(:option).with('link_prefix').and_return(nil)
         MetricFu.stub(:configuration).and_return(config)
         @template.should_receive(:complete_file_path).and_return('filename')
       end
@@ -160,7 +162,7 @@ describe MetricFu::Template do
     describe "when configured with a link_prefix" do
       before(:each) do
         config = double("configuration")
-        config.should_receive(:link_prefix).and_return('http://example.org/files')
+          MetricFu::Formatter::Templates.stub(:option).with('link_prefix').and_return('http://example.org/files')
         MetricFu.stub(:configuration).and_return(config)
         @template.should_receive(:complete_file_path).and_return('filename')
       end

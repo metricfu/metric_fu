@@ -17,20 +17,24 @@ def resources_path
   "#{MetricFu.root_dir}/spec/resources"
 end
 
+def directory(name)
+  MetricFu::Io::FileSystem.directory(name)
+end
+
 def setup_fs
   if !MetricFu.configuration.rubinius? # fakefs doesn't seem to work on rubinius...
     FakeFS.activate!
     FakeFS::FileSystem.clone('lib')
     FakeFS::FileSystem.clone('.metrics')
-    FileUtils.mkdir_p(Pathname.pwd.join(MetricFu.base_directory))
-    FileUtils.mkdir_p(Pathname.pwd.join(MetricFu.output_directory))
+    FileUtils.mkdir_p(Pathname.pwd.join(directory('base_directory')))
+    FileUtils.mkdir_p(Pathname.pwd.join(directory('output_directory')))
   else
     # Have to use the file system, so let's shift the
     # output directories so that we don't interfere with
     # existing historical metric data.
-    MetricFu.stub(:base_directory).and_return("tmp/metric_fu/test")
-    MetricFu.stub(:output_directory).and_return("tmp/metric_fu/test/output")
-    MetricFu.stub(:data_directory).and_return("tmp/metric_fu/test/_data")
+    MetricFu::Io::FileSystem.stub(:directory).with('base_directory').and_return("tmp/metric_fu/test")
+    MetricFu::Io::FileSystem.stub(:directory).with('output_directory').and_return("tmp/metric_fu/test/output")
+    MetricFu::Io::FileSystem.stub(:directory).with('data_directory').and_return("tmp/metric_fu/test/_data")
   end
 end
 
@@ -40,11 +44,11 @@ def cleanup_fs
     FakeFS.deactivate!
   else
     # Not ideal, but workaround for rubinius...
-    FileUtils.rm_rf("#{MetricFu.base_directory}/report.yml")
-    FileUtils.rm_rf(Dir.glob("#{MetricFu.output_directory}/*.html"))
-    FileUtils.rm_rf(Dir.glob("#{MetricFu.output_directory}/*.js"))
-    FileUtils.rm_rf("#{MetricFu.data_directory}/#{Time.now.strftime("%Y%m%d")}.yml")
-    FileUtils.rm_rf(Dir["#{MetricFu.base_directory}/customdir"])
-    FileUtils.rm_rf("#{MetricFu.base_directory}/customreport.yml")
+    FileUtils.rm_rf("#{directory('base_directory')}/report.yml")
+    FileUtils.rm_rf(Dir.glob("#{directory('output_directory')}/*.html"))
+    FileUtils.rm_rf(Dir.glob("#{directory('output_directory')}/*.js"))
+    FileUtils.rm_rf("#{directory('data_directory')}/#{Time.now.strftime("%Y%m%d")}.yml")
+    FileUtils.rm_rf(Dir["#{directory('base_directory')}/customdir"])
+    FileUtils.rm_rf("#{directory('base_directory')}/customreport.yml")
   end
 end

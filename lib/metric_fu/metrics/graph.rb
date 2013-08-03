@@ -12,7 +12,7 @@ module MetricFu
       self.clazz = []
     end
 
-    def add(graph_type, graph_engine, output_directory = MetricFu.output_directory)
+    def add(graph_type, graph_engine, output_directory = MetricFu::Io::FileSystem.directory('output_directory'))
       grapher_name = graph_type.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } + graph_engine.to_s.capitalize + "Grapher"
       self.clazz.push MetricFu.const_get(grapher_name).new.tap{|g| g.output_directory = output_directory }
     end
@@ -21,7 +21,7 @@ module MetricFu
     def generate
       return if self.clazz.empty?
       mf_log "Generating graphs"
-      Dir[File.join(MetricFu.data_directory, '*.yml')].sort.each do |metric_file|
+      Dir[File.join(MetricFu::Io::FileSystem.directory('data_directory'), '*.yml')].sort.each do |metric_file|
         mf_log "Generating graphs for #{metric_file}"
         date_parts = year_month_day_from_filename(metric_file)
         metrics = YAML::load(File.open(metric_file))

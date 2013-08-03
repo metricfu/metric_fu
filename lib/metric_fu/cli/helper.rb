@@ -32,7 +32,7 @@ module MetricFu
       end
 
       def metrics
-        MetricFu.configuration.metrics.sort_by(&:to_s)
+        MetricFu::Metric.metrics.map(&:name).sort_by(&:to_s)
       end
 
       def process_options(argv=[])

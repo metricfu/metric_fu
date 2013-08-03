@@ -3,11 +3,8 @@ require "spec_helper"
 describe Reek do
   describe "emit" do
     it "should include config parameters" do
-      MetricFu::Configuration.run do |config|
-        config.add_metric(:reek)
-        config.configure_metric(:reek,{:config_file_pattern => 'lib/config/*.reek', :dirs_to_reek => []})
-      end
-      reek = MetricFu::Reek.new
+      options = {:config_file_pattern => 'lib/config/*.reek', :dirs_to_reek => []}
+      reek = MetricFu::Reek.new(options)
       reek.should_receive(:`).with(/--config lib\/config\/\*\.reek/).and_return("")
       reek.emit
     end

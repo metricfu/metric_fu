@@ -1,7 +1,22 @@
-MetricFu::Configuration.run do |config|
-  config.add_metric(:roodi)
-  config.add_graph(:roodi)
-  config.configure_metric(:roodi,
-      { :dirs_to_roodi => MetricFu.code_dirs,
-                    :roodi_config => "#{MetricFu.root_dir}/config/roodi_config.yml"})
+module MetricFu
+  class MetricRoodi < Metric
+
+    def name
+      :roodi
+    end
+
+    def default_run_options
+      { :dirs_to_roodi => MetricFu::Io::FileSystem.directory('code_dirs'),
+                    :roodi_config => "#{MetricFu::Io::FileSystem.directory('root_directory')}/config/roodi_config.yml"}
+    end
+
+    def has_graph?
+      true
+    end
+
+    def enable
+      super
+    end
+
+  end
 end

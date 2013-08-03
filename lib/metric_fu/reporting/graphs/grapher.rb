@@ -8,7 +8,7 @@ module MetricFu
     end
 
     def output_directory
-      @output_directory || MetricFu.output_directory
+      @output_directory || MetricFu::Io::FileSystem.directory('output_directory')
     end
 
     def self.require_graphing_gem

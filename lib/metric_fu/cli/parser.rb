@@ -54,7 +54,7 @@ module MetricFu
                 "This option applies to the previously",
                 "specified --format, or the default format",
                 "if no format is specified. Paths are relative to",
-                "#{Pathname.pwd.join(MetricFu.base_directory)}",
+                "#{Pathname.pwd.join(MetricFu::Io::FileSystem.directory('base_directory'))}",
                 "Check the specific formatter\'s docs to see",
                 "whether to pass a file or a dir.") do |o|
               @result[:format] ||= MetricFu::Formatter::DEFAULT

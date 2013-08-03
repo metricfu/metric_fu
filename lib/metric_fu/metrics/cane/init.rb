@@ -1,14 +1,32 @@
-MetricFu::Configuration.run do |config|
-  require 'cane'
-  config.add_metric(:cane)
-  config.add_graph(:cane)
-  config.configure_metric(:cane, {
-    :dirs_to_cane => MetricFu.code_dirs,
-    :abc_max => 15,
-    :line_length => 80,
-    :no_doc => 'n',
-    :no_readme => 'n',
-    :filetypes => ['rb']
-  })
-end
+module MetricFu
+  class MetricCane < Metric
 
+    def name
+      :cane
+    end
+
+    def default_run_options
+      {
+        :dirs_to_cane => MetricFu::Io::FileSystem.directory('code_dirs'),
+        :abc_max => 15,
+        :line_length => 80,
+        :no_doc => 'n',
+        :no_readme => 'n',
+        :filetypes => ['rb']
+      }
+    end
+
+    def has_graph?
+      true
+    end
+
+    def enable
+      if MetricFu.configuration.supports_ripper? && !MetricFu.configuration.ruby18?
+        super
+      else
+        MetricFu.configuration.mf_debug("Cane is only available in MRI. It requires ripper and 1.9 hash syntax support")
+      end
+    end
+
+  end
+end

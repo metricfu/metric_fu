@@ -20,5 +20,27 @@ module MetricFu
 
     end
 
+    module Templates
+      MetricFu.reporting_require { 'templates/awesome/awesome_template' }
+
+      module_function
+
+      def options
+        @options ||= {}
+      end
+      def option(name)
+        options.fetch(name) { raise "No such template option: #{name}" }
+      end
+
+      def configure_template(config)
+        @options = {}
+        @options['template_class'] = AwesomeTemplate
+        @options['link_prefix'] = nil
+        @options['darwin_txmt_protocol_no_thanks'] = true
+        # # turning off syntax_highlighting may avoid some UTF-8 issues
+        @options['syntax_highlighting'] = true
+      end
+
+    end
   end
 end

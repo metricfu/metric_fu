@@ -1,7 +1,22 @@
-MetricFu::Configuration.run do |config|
-  config.add_metric(:reek)
-  config.add_graph(:reek)
-  config.configure_metric(:reek,
-      { :dirs_to_reek => MetricFu.code_dirs,
-                    :config_file_pattern => nil})
+module MetricFu
+  class MetricReek < Metric
+
+    def name
+      :reek
+    end
+
+    def default_run_options
+      { :dirs_to_reek => MetricFu::Io::FileSystem.directory('code_dirs'),
+                    :config_file_pattern => nil}
+    end
+
+    def has_graph?
+      true
+    end
+
+    def enable
+      super
+    end
+
+  end
 end

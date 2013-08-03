@@ -20,7 +20,7 @@ module MetricFu
 
     def emit
       if run_rcov?
-        mf_debug "** Running the specs/tests in the [#{MetricFu.rcov[:environment]}] environment"
+        mf_debug "** Running the specs/tests in the [#{options[:environment]}] environment"
         mf_debug "** #{command}"
         `#{command}`
       end
@@ -38,14 +38,14 @@ module MetricFu
       FileUtils.rm_rf(MetricFu::Rcov.metric_directory, :verbose => false)
       Dir.mkdir(MetricFu::Rcov.metric_directory)
       output = ">> #{MetricFu::Rcov.metric_directory}/rcov.txt"
-      test_files = FileList[*MetricFu.rcov[:test_files]].join(' ')
-      rcov_opts = MetricFu.rcov[:rcov_opts].join(' ')
-      %Q(RAILS_ENV=#{MetricFu.rcov[:environment]} rcov #{test_files} #{rcov_opts} #{output})
+      test_files = FileList[*options[:test_files]].join(' ')
+      rcov_opts = options[:rcov_opts].join(' ')
+      %Q(RAILS_ENV=#{options[:environment]} rcov #{test_files} #{rcov_opts} #{output})
     end
 
 
     def analyze
-      output_file = MetricFu.rcov[:external] ? MetricFu.rcov[:external] : MetricFu::Rcov.metric_directory + '/rcov.txt'
+      output_file = options[:external] ? options[:external] : MetricFu::Rcov.metric_directory + '/rcov.txt'
       output = File.open(output_file).read
       output = output.split(NEW_FILE_MARKER)
 
@@ -132,7 +132,7 @@ module MetricFu
     end
 
     def run_rcov?
-      !(MetricFu.rcov[:external])
+      !(options[:external])
     end
 
   end
