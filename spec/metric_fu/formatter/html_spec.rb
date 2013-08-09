@@ -12,6 +12,10 @@ describe MetricFu::Formatter::HTML do
     # for some platforms.
     @metric_with_graph = MetricFu.configuration.mri? ? :cane : :flay
     @metric_without_graph = :hotspots
+    MetricFu.configuration.configure_metrics.each do |metric|
+      metric.enabled = true if [@metric_with_graph, @metric_without_graph].include?(metric.name)
+    end
+
     MetricFu.result.add(@metric_with_graph) # metric w/ graph
     MetricFu.result.add(@metric_without_graph) # metric w/out graph
   end
@@ -67,7 +71,8 @@ describe MetricFu::Formatter::HTML do
 
     context 'when on OS X' do
       before do
-        MetricFu.configuration.stub(:platform).and_return('darwin')
+        MetricFu.configuration.stub(:osx?).and_return(true)
+        MetricFu.configuration.stub(:is_cruise_control_rb?).and_return(false)
       end
 
       it "can open the results in the browser" do
@@ -117,7 +122,8 @@ describe MetricFu::Formatter::HTML do
 
     context 'when on OS X' do
       before do
-        MetricFu.configuration.stub(:platform).and_return('darwin')
+        MetricFu.configuration.stub(:osx?).and_return(true)
+        MetricFu.configuration.stub(:is_cruise_control_rb?).and_return(false)
       end
 
       it "can open the results in the browser from the custom output directory" do

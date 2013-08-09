@@ -15,5 +15,6 @@ group :test do
     gem 'simplecov-rcov-text'
   end
   gem "fakefs", :require => "fakefs/safe"
+  gem 'json'
 end
 gemspec :path => File.expand_path('..', __FILE__)

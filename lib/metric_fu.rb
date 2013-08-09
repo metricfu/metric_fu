@@ -35,4 +35,13 @@ module MetricFu
   end
 
   LOADER.setup
+
+  def self.reset
+    # TODO Don't like how this method needs to know
+    # all of these class variables that are defined
+    # in separate classes.
+    @configuration = nil
+    @graph = nil
+    @result = nil
+  end
 end

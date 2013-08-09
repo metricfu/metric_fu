@@ -8,6 +8,7 @@ end
 require 'rspec/autorun'
 require 'date'
 require 'construct'
+require 'json'
 
 # add lib to the load path just like rubygems does
 $:.push File.expand_path("../../lib", __FILE__)
@@ -28,5 +29,9 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     cleanup_test_files
+  end
+
+  config.after(:each) do
+    MetricFu.reset
   end
 end

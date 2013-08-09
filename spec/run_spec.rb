@@ -161,11 +161,7 @@ describe MetricFu do
       MetricFu::Configuration.run do |config|
         config.formatters.clear
       end
-
-      cleanup_fs
     end
-
-
   end
 
   context "given other options" do
@@ -185,6 +181,10 @@ describe MetricFu do
       out.should include 'invalid option'
     end
 
+  end
+
+  after do
+    cleanup_fs
   end
 
   def metric_fu(options = "--no-open")

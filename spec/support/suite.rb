@@ -35,6 +35,8 @@ def setup_fs
     MetricFu::Io::FileSystem.stub(:directory).with('base_directory').and_return("tmp/metric_fu/test")
     MetricFu::Io::FileSystem.stub(:directory).with('output_directory').and_return("tmp/metric_fu/test/output")
     MetricFu::Io::FileSystem.stub(:directory).with('data_directory').and_return("tmp/metric_fu/test/_data")
+    MetricFu::Io::FileSystem.stub(:directory).with('code_dirs').and_return(%w(lib))
+    MetricFu::Io::FileSystem.stub(:directory).with('scratch_directory').and_return('tmp/metric_fu/test/scratch')
   end
 end
 
