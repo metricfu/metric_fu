@@ -65,6 +65,7 @@ module MetricFu
             p.on_tail("-h", "--help", "Show this message") {puts p ; exit}
             short = @used_short.include?("v") ? "-V" : "-v"
             p.on_tail(short, "--version", "Print version") {puts @version ; exit} unless @version.nil?
+            p.on_tail("--debug-info", "Print debug info") { debug_info; exit }
             @default_values = @result.clone # save default values to reset @result in subsequent calls
           end
 
@@ -76,6 +77,16 @@ module MetricFu
 
           validate(@result) if self.respond_to?("validate")
           @result
+        end
+
+        def debug_info
+          puts "Ruby"
+          puts "  Version:  #{RUBY_VERSION}"
+          puts "  Platform: #{RUBY_PLATFORM}"
+          puts "  Engine:   #{RUBY_ENGINE}"
+          puts "\nMetricFu"
+          puts "  Version: #{@version}"
+          puts "\n  Dependencies #{`gem dependency metric_fu`}"
         end
 
         # Build a nicely formatted list of built-in
