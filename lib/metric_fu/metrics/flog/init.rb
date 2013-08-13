@@ -15,6 +15,7 @@ module MetricFu
 
     def activate
       require 'flog'
+      require 'flog_cli'
       super
     end
 

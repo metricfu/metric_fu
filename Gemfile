@@ -4,7 +4,7 @@ gem 'rake'
 # alternative graphing gem
 gem "googlecharts"
 group :development do
-
+  gem 'debugger'
 end
 group :test do
   gem "rspec", '>2'
