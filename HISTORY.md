@@ -12,6 +12,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
   * Distinguish between an activated metric library and an enabled metric.
     * An enabled metric will be run.
     * An activated metric has had its library required.
+  * Update flog to ~> 4.1.1, this is needed to use keyword parameters in ruby 2. (George Erickson)
 * Fixes
 * Misc
   * Moved environmental concerns into an Environment module ( Benjamin Fleischer / Robin Curry #91, #111)
