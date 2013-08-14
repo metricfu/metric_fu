@@ -5,7 +5,9 @@ describe Reek do
     it "should include config parameters" do
       options = {:config_file_pattern => 'lib/config/*.reek', :dirs_to_reek => []}
       reek = MetricFu::Reek.new(options)
-      reek.should_receive(:`).with(/--config lib\/config\/\*\.reek/).and_return("")
+      files_to_analyze = ['lib/foo.rb','lib/bar.rb']
+      reek.stub(:files_to_analyze).and_return(files_to_analyze)
+      reek.should_receive(:`).with(/--config lib\/config\/\*\.reek lib\/foo.rb lib\/bar.rb/).and_return("")
       reek.emit
     end
   end

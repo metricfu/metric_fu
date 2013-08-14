@@ -4,39 +4,18 @@ module MetricFu
     REEK_REGEX = /^(\S+) (.*) \((.*)\)$/
 
     def emit
-      files_to_reek = options[:dirs_to_reek].map{|dir| Dir[File.join(dir, "**/*.rb")] }
-      files = remove_excluded_files(files_to_reek.flatten)
-      config_file_param = options[:config_file_pattern] ? "--config #{options[:config_file_pattern]}" : ''
-      command = %Q(mf-reek #{config_file_param} #{files.join(" ")})
-      mf_debug "** #{command}"
-      @output = `#{command}`
-      @output = massage_for_reek_12 if reek_12?
+      files = files_to_analyze
+      if files.empty?
+        mf_log "Skipping Reek, no files found to analyze"
+        @output = ""
+      else
+        command = %Q(mf-reek #{cli_options(files)})
+        mf_debug "** #{command}"
+        @output = `#{command}`
+        @output = massage_for_reek_12 if reek_12?
+      end
     end
 
-    def reek_12?
-      return false if @output.length == 0
-      (@output =~ /^"/) != 0
-    end
-
-    def massage_for_reek_12
-      section_break = ''
-      @output.split("\n").map do |line|
-        case line
-        when /^  /
-          "#{line.gsub(/^  /, '')}\n"
-        else
-          parts = line.split(" -- ")
-          if parts[1].nil?
-            "#{line}\n"
-          else
-            warnings = parts[1].gsub(/ \(.*\):/, ':')
-            result = "#{section_break}\"#{parts[0]}\" -- #{warnings}\n"
-            section_break = "\n"
-            result
-          end
-        end
-      end.join
-    end
 
     def analyze
       @matches = @output.chomp.split("\n\n").map{|m| m.split("\n") }
@@ -78,6 +57,44 @@ module MetricFu
                                                     :description => "#{smell_data[:type]} - #{smell_data[:message]}"}
         end
       end
+    end
+
+    def reek_12?
+      return false if @output.length == 0
+      (@output =~ /^"/) != 0
+    end
+
+    def massage_for_reek_12
+      section_break = ''
+      @output.split("\n").map do |line|
+        case line
+        when /^  /
+          "#{line.gsub(/^  /, '')}\n"
+        else
+          parts = line.split(" -- ")
+          if parts[1].nil?
+            "#{line}\n"
+          else
+            warnings = parts[1].gsub(/ \(.*\):/, ':')
+            result = "#{section_break}\"#{parts[0]}\" -- #{warnings}\n"
+            section_break = "\n"
+            result
+          end
+        end
+      end.join
+    end
+
+    private
+
+    def files_to_analyze
+      dirs_to_reek = options[:dirs_to_reek]
+      files_to_reek = dirs_to_reek.map{|dir| Dir[File.join(dir, "**","*.rb")] }.flatten
+      remove_excluded_files(files_to_reek)
+    end
+
+    def cli_options(files)
+      config_file_param = options[:config_file_pattern] ? "--config #{options[:config_file_pattern]}" : ''
+      cli_options = "#{config_file_param} #{files.join(' ')}"
     end
 
   end
