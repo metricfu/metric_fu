@@ -19,7 +19,7 @@
   <% @rails_best_practices[:problems].each do |problem| %>
     <tr class='<%= cycle("light", "dark", count) %>'>
       <td><%= link_to_filename(problem[:file], problem[:line]) %></td>
-      <td><%= problem[:problem] %></td>
+      <td><a href =<%= problem[:url] %>><%= problem[:problem] %></a></td>
     </tr>
     <% count += 1 %>
   <% end %>

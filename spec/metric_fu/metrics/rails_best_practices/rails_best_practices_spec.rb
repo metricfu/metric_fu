@@ -1,43 +1,22 @@
 require "spec_helper"
 
 describe RailsBestPractices do
+
   describe "emit method" do
-    it "should gather the raw data" do
-      MetricFu::Configuration.run {}
-      practices = MetricFu::RailsBestPractices.new
-      practices.should_receive(:`).with("mf-rails_best_practices --without-color .")
-      practices.emit
+    let(:analyzer) { ::RailsBestPractices::Analyzer.new('.', { 'silent' => true }) }
+    context "RailsBestPractices provides the expected API" do
+      it { analyzer.should respond_to :analyze }
+      it { analyzer.should respond_to :errors }
     end
   end
 
   describe "analyze method" do
-    before :each do
-      output = <<-HERE.gsub(/^[^\S\n]*/, "")
-      ./app/views/admin/testimonials/_form.html.erb:17 - replace instance variable with local variable
-      ./app/controllers/admin/campaigns_controller.rb:24,45,68,85 - use before_filter for show,edit,update,destroy
-
-      go to http://wiki.github.com/railsbp/rails_best_practices to see how to solve these errors.
-
-      Found 2 errors.
-      HERE
-      MetricFu::Configuration.run {}
-      practices = MetricFu::RailsBestPractices.new
-      practices.instance_variable_set(:@output, output)
-      @results = practices.analyze
-    end
-
-    it "should get the total" do
-      @results[:total].should == ["Found 2 errors."]
-    end
-
-    it "should get the problems" do
-      @results[:problems].size.should == 2
-      @results[:problems].first.should == { :line => "17",
-        :problem => "replace instance variable with local variable",
-        :file => "app/views/admin/testimonials/_form.html.erb" }
-      @results[:problems][1].should == { :line => "24,45,68,85",
-        :problem => "use before_filter for show,edit,update,destroy",
-        :file => "app/controllers/admin/campaigns_controller.rb" }
+    let(:error) { ::RailsBestPractices::Core::Error.new }
+    context "RailsBestPractices provdies the expected API" do
+      it { error.should respond_to :filename }
+      it { error.should respond_to :line_number }
+      it { error.should respond_to :message }
+      it { error.should respond_to :url }
     end
   end
 
