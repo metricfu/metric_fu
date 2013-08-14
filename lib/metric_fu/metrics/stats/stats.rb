@@ -3,14 +3,14 @@ module MetricFu
   class Stats < Generator
 
     def emit
-      command = %Q(mf-stats > #{metric_directory + '/stats.txt'})
-      mf_debug "** #{command}"
-      @output = `#{command}`
+      require 'code_metrics/statistics'
+      @output = MfDebugger::Logger.capture_output do
+        CodeMetrics::Statistics.new(*dirs).to_s
+      end
     end
 
     def analyze
-      output = File.open(metric_directory + '/stats.txt').read
-      lines = remove_noise(output).compact
+      lines = remove_noise(@output).compact
 
       @stats = {}
 
@@ -55,6 +55,20 @@ module MetricFu
         end
         info_line
       end
+    end
+
+    # @return [Array<[ 'Acceptance specs', 'spec/acceptance' ]>]
+    def dirs
+      require 'code_metrics/stats_directories'
+      require 'code_metrics/statistics'
+      stats_dirs = CodeMetrics::StatsDirectories.new
+      options.fetch(:additional_test_directories).each do |option|
+        stats_dirs.add_test_directories(option.fetch(:glob_pattern), option.fetch(:file_pattern))
+      end
+      options.fetch(:additional_app_directories).each do |option|
+        stats_dirs.add_directories(option.fetch(:glob_pattern), option.fetch(:file_pattern))
+      end
+      stats_dirs.directories
     end
 
   end

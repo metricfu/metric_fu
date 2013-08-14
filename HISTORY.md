@@ -12,6 +12,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
   * Distinguish between an activated metric library and an enabled metric.
     * An enabled metric will be run.
     * An activated metric has had its library required.
+  * Code Statistics metrics always runs now, relies on the code_metrics gem extracted from Rails. Does not shell out. ( Benjamin Fleischer, #108 )
 * Fixes
   * Skip reek of no files are found to run against.  Otherwise, reek hangs trying to read from STDIN (Benjamin Fleischer, #119, #121)
   * Reek will now find files on Windows.  Remove *nix-specific '/' directory separators from Reek file glob.  (Benjamin Fleischer, #119, #121)

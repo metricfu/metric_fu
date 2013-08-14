@@ -7,7 +7,6 @@ describe Stats do
       MetricFu.configure.reset
       File.stub(:directory?).and_return(true)
       stats = MetricFu::Stats.new
-      stats.should_receive(:`).with("mf-stats > tmp/metric_fu/scratch/stats/stats.txt")
       stats.emit
     end
   end
@@ -37,7 +36,7 @@ describe Stats do
       MetricFu.configure.reset
       File.stub(:directory?).and_return(true)
       stats = MetricFu::Stats.new
-      File.should_receive(:open).and_return(double("file", :read => @lines))
+      stats.instance_variable_set('@output', @lines)
       @results = stats.analyze
     end
 

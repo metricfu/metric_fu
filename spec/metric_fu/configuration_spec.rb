@@ -238,8 +238,10 @@ describe MetricFu::Configuration do
       end
       it 'should set @stats to {}' do
         load_metric 'stats'
-        MetricFu::Metric.get_metric(:stats).run_options.
-                should == {}
+        expect(MetricFu::Metric.get_metric(:stats).run_options).to eq({
+          :additional_test_directories=>[{:glob_pattern=>"./spec/**/*_spec.rb", :file_pattern=>"spec"}],
+          :additional_app_directories=>[{:glob_pattern=>"./engines/**/*.rb", :file_pattern=>""}]
+        })
       end
 
       it 'should set @rails_best_practices to {}' do
@@ -258,10 +260,10 @@ describe MetricFu::Configuration do
       end
 
       it 'should set the available metrics' do
-        MetricFu::Metric.enabled_metrics.map(&:name).should =~ [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane] - MetricFu.mri_only_metrics
+        MetricFu::Metric.enabled_metrics.map(&:name).should =~ [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane, :stats] - MetricFu.mri_only_metrics
       end
 
-      it 'should set the @code_dirs instance var to ["lib"]' do
+      it 'should set the registered code_dirs to ["lib"]' do
         directory('code_dirs').should == ['lib']
       end
     end
