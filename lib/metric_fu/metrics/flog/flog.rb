@@ -1,37 +1,30 @@
 require 'pathname'
 require 'optparse'
+
 module MetricFu
   class Flog < Generator
 
     def emit
-      files = []
-      Array(options[:dirs_to_flog]).each do |directory|
-        directory = "." if directory=='./'
-        dir_files = Dir.glob("#{directory}/**/*.rb")
-        dir_files = remove_excluded_files(dir_files)
-        files += dir_files
-      end
-      parse_options = ::Flog.parse_options [
+      parse_options = FlogCLI.parse_options [
         "--all",
         options[:continue] ? "--continue" : nil,
       ].compact
-
-      @flogger = ::Flog.new parse_options
-      @flogger.flog files
-
+      @flogger = FlogCLI.new parse_options
+      @flogger.flog *options[:dirs_to_flog]
     end
 
     def analyze
       @method_containers = {}
-      @flogger.calls.each do |full_method_name, operators|
+      @flogger.calculate
+      @flogger.each_by_score do |full_method_name, score, operators|
         container_name = full_method_name.split('#').first
         path = @flogger.method_locations[full_method_name]
         if @method_containers[container_name]
-          @method_containers[container_name].add_method(full_method_name, operators, @flogger.totals[full_method_name], path)
+          @method_containers[container_name].add_method(full_method_name, operators, score, path)
           @method_containers[container_name].add_path(path)
         else
           mc = MethodContainer.new(container_name, path)
-          mc.add_method(full_method_name, operators, @flogger.totals[full_method_name], path)
+          mc.add_method(full_method_name, operators, score, path)
           @method_containers[container_name] = mc
         end
       end
@@ -39,7 +32,7 @@ module MetricFu
 
     def to_h
       sorted_containers = @method_containers.values.sort_by {|c| c.highest_score}.reverse
-      {:flog => { :total => @flogger.total,
+      {:flog => { :total => @flogger.total_score,
                   :average => @flogger.average,
                   :method_containers => sorted_containers.map {|method_container| method_container.to_h}}}
     end

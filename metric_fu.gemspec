@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   # metric dependencies
   s.add_runtime_dependency 'flay',                  ['~> 2.0.1']
   s.add_runtime_dependency 'churn',                 ['~> 0.0.28']
-  s.add_runtime_dependency 'flog',                  ['~> 3.2.2']
+  s.add_runtime_dependency 'flog',                  ['~> 4.1.1']
   s.add_runtime_dependency 'reek',                  ['~> 1.3.1']
   s.add_runtime_dependency 'cane',                  ['~> 2.5.2']
   s.add_runtime_dependency 'rails_best_practices',  ['~> 1.13.2']
