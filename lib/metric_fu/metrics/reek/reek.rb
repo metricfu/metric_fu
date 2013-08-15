@@ -1,7 +1,11 @@
 module MetricFu
 
-  class Reek < Generator
+  class ReekGenerator < Generator
     REEK_REGEX = /^(\S+) (.*) \((.*)\)$/
+
+    def self.metric
+      :reek
+    end
 
     def emit
       files = files_to_analyze

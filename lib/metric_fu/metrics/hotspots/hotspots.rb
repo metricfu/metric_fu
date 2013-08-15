@@ -1,7 +1,11 @@
 MetricFu.metrics_require   { 'hotspots/hotspot_analyzer' }
 module MetricFu
 
-  class Hotspots < Generator
+  class HotspotsGenerator < Generator
+
+    def self.metric
+      :hotspots
+    end
 
     def initialize(options={})
       super

@@ -1,6 +1,9 @@
-require 'rails_best_practices'
 module MetricFu
-  class RailsBestPractices < Generator
+  class RailsBestPracticesGenerator < Generator
+
+    def self.metric
+      :rails_best_practices
+    end
 
     def emit
       mf_debug "** Rails Best Practices"

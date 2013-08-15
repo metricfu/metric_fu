@@ -1,6 +1,10 @@
 module MetricFu
 
-  class Stats < Generator
+  class StatsGenerator < Generator
+
+    def self.metric
+      :stats
+    end
 
     def emit
       require 'code_metrics/statistics'

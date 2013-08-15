@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Stats do
+describe StatsGenerator do
   describe "emit method" do
     it "should gather the raw data" do
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
       File.stub(:directory?).and_return(true)
-      stats = MetricFu::Stats.new
+      stats = MetricFu::StatsGenerator.new
       stats.emit
     end
   end
@@ -35,7 +35,7 @@ describe Stats do
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
       File.stub(:directory?).and_return(true)
-      stats = MetricFu::Stats.new
+      stats = MetricFu::StatsGenerator.new
       stats.instance_variable_set('@output', @lines)
       @results = stats.analyze
     end
@@ -68,7 +68,7 @@ describe Stats do
       ENV['CC_BUILD_ARTIFACTS'] = nil
       MetricFu.configure.reset
       File.stub(:directory?).and_return(true)
-      stats = MetricFu::Stats.new
+      stats = MetricFu::StatsGenerator.new
       stats.instance_variable_set(:@stats, "the_stats")
       stats.to_h[:stats].should == "the_stats"
     end

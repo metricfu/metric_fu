@@ -2,7 +2,11 @@ require 'pathname'
 require 'optparse'
 
 module MetricFu
-  class Flog < Generator
+  class FlogGenerator < Generator
+
+    def self.metric
+      :flog
+    end
 
     def emit
       parse_options = FlogCLI.parse_options [

@@ -1,6 +1,10 @@
 module MetricFu
 
-  class Churn < Generator
+  class ChurnGenerator < Generator
+
+    def self.metric
+      :churn
+    end
 
     def emit
       @output = generate_churn_metrics

@@ -40,6 +40,20 @@ module MetricFu
       create_data_dir_if_missing
     end
 
+    @generators = []
+    # @return all subclassed generators [Array<MetricFu::Generator>]
+    def self.generators
+      @generators
+    end
+
+    def self.get_generator(metric)
+      generators.find{|generator|generator.metric.to_s == metric.to_s.downcase}
+    end
+
+    def self.inherited(subclass)
+      @generators << subclass
+    end
+
     # Creates a new generator and returns the output of the
     # #generate_result method.  This is the typical way to
     # generate a new MetricFu result. For more information see

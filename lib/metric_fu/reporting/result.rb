@@ -38,14 +38,14 @@ module MetricFu
     #   The hash to add to the aggregate result_hash
     def add(result_type)
       mf_debug "result requested #{result_type}"
-      clazz = MetricFu.const_get(result_type.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase })
-      mf_debug "result class found #{clazz}"
       metric_options = metric_options_for_result_type(result_type)
-      inst = clazz.new(metric_options)
+      generator_class =  MetricFu::Generator.get_generator(result_type)
+      mf_debug "result class found #{generator_class}"
+      generator = generator_class.new(metric_options)
 
-      result_hash.merge!(inst.generate_result)
+      result_hash.merge!(generator.generate_result)
 
-      inst.per_file_info(per_file_data) if inst.respond_to?(:per_file_info)
+      generator.per_file_info(per_file_data) if generator.respond_to?(:per_file_info)
     end
 
     private

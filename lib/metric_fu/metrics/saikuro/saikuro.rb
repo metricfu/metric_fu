@@ -1,6 +1,11 @@
 module MetricFu
 
   class Saikuro < Generator
+
+    def self.metric
+      :saikuro
+    end
+
     def emit
       options_string = options.inject("") do |options, option|
         option[0] == :input_directory ? options : options + "--#{option.join(' ')} "

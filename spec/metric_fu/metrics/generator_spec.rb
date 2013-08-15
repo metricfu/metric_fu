@@ -6,6 +6,10 @@ describe MetricFu::Generator do
 
 
   class ConcreteClass < MetricFu::Generator
+    def self.metric
+      :concrete
+    end
+
     def emit
     end
 

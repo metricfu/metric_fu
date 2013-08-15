@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe Flay do
+describe MetricFu::FlayGenerator do
   describe "emit method" do
     it "should look at the dirs" do
       options = { :dirs_to_flay => ['app', 'lib'], :filetypes => ['rb']  }
       File.stub(:directory?).and_return(true)
-      @flay = MetricFu::Flay.new(options)
+      @flay = MetricFu::FlayGenerator.new(options)
 
       @flay.should_receive(:`).with("mf-flay  app lib")
       output = @flay.emit
@@ -14,7 +14,7 @@ describe Flay do
     it "should limit flay scores by the minimum_score" do
       options = { :dirs_to_flay => [], :minimum_score => 99 }
       File.stub(:directory?).and_return(true)
-      @flay = MetricFu::Flay.new(options)
+      @flay = MetricFu::FlayGenerator.new(options)
 
       @flay.should_receive(:`).with("mf-flay --mass 99  ")
       output = @flay.emit
@@ -39,7 +39,7 @@ Total score (lower is better) = 246
       HERE
       MetricFu::Configuration.run {}
       File.stub(:directory?).and_return(true)
-      @flay = MetricFu::Flay.new('base_dir')
+      @flay = MetricFu::FlayGenerator.new('base_dir')
       @flay.instance_variable_set(:@output, lines)
     end
 
@@ -83,7 +83,7 @@ Total score (lower is better) = 246
 
       MetricFu::Configuration.run {}
       File.stub(:directory?).and_return(true)
-      flay = MetricFu::Flay.new('base_dir')
+      flay = MetricFu::FlayGenerator.new('base_dir')
       flay.instance_variable_set(:@matches, lines)
       @results = flay.to_h
     end

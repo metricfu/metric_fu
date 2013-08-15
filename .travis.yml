@@ -12,6 +12,6 @@ rvm:
   # - 1.9.2 # code_metric 0.1.0 requires ruby 1.9.3 or greater
   - jruby-19mode # JRuby in 1.9 mode
   - rbx-19mode
-matrix:
-  allow_failures:
-    - rvm: rbx-19mode
+# matrix:
+#   allow_failures:
+#     - rvm: rbx-19mode

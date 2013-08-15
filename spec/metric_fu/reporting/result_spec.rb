@@ -39,8 +39,8 @@ describe MetricFu::Result do
       result_inst.should_receive(:generate_result).and_return({:a => 'b'})
       result_inst.should_receive(:respond_to?).and_return(false)
 
-      MetricFu.should_receive(:const_get).
-               with('Type').and_return(result_type)
+      MetricFu::Generator.should_receive(:get_generator).
+               with(result_type).and_return(result_type)
       result_hash = double('result_hash')
       result_hash.should_receive(:merge!).with({:a => 'b'})
       @result.should_receive(:result_hash).and_return(result_hash)

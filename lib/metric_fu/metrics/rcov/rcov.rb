@@ -3,8 +3,12 @@ require 'fileutils'
 
 module MetricFu
 
-  class Rcov < Generator
+  class RcovGenerator < Generator
     NEW_FILE_MARKER = /^={80}$/.freeze
+
+    def self.metric
+      :rcov
+    end
 
     class Line
       attr_accessor :content, :was_run
@@ -36,9 +40,9 @@ module MetricFu
     end
 
     def default_command
-      FileUtils.rm_rf(MetricFu::Rcov.metric_directory, :verbose => false)
-      Dir.mkdir(MetricFu::Rcov.metric_directory)
-      output = ">> #{MetricFu::Rcov.metric_directory}/rcov.txt"
+      FileUtils.rm_rf(MetricFu::RcovGenerator.metric_directory, :verbose => false)
+      Dir.mkdir(MetricFu::RcovGenerator.metric_directory)
+      output = ">> #{MetricFu::RcovGenerator.metric_directory}/rcov.txt"
       test_files = FileList[*options[:test_files]].join(' ')
       rcov_opts = options[:rcov_opts].join(' ')
       %Q(RAILS_ENV=#{options[:environment]} rcov #{test_files} #{rcov_opts} #{output})
@@ -46,7 +50,7 @@ module MetricFu
 
 
     def analyze
-      output_file = options[:external] ? options[:external] : MetricFu::Rcov.metric_directory + '/rcov.txt'
+      output_file = options[:external] ? options[:external] : MetricFu::RcovGenerator.metric_directory + '/rcov.txt'
       output = File.open(output_file).read
       output = output.split(NEW_FILE_MARKER)
 

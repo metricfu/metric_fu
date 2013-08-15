@@ -1,6 +1,10 @@
 module MetricFu
 
-  class Flay < Generator
+  class FlayGenerator < Generator
+
+    def self.metric
+      :flay
+    end
 
     def emit
       minimum_score_parameter = options[:minimum_score] ? "--mass #{options[:minimum_score]} " : ""

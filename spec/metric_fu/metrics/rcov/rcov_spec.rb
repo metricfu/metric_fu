@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe MetricFu::Rcov do
+describe MetricFu::RcovGenerator do
 
   before :each do
     MetricFu.configuration.configure_metric(:rcov) do |rcov|
@@ -12,13 +12,13 @@ describe MetricFu::Rcov do
   describe "emit" do
     before :each do
       options = {:external =>  nil}
-      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
+      @rcov = MetricFu::RcovGenerator.new(@default_options.merge(options))
     end
 
     it "should clear out previous output and make output folder" do
       @rcov.stub(:`)
-      FileUtils.should_receive(:rm_rf).with(MetricFu::Rcov.metric_directory, :verbose => false)
-      Dir.should_receive(:mkdir).with(MetricFu::Rcov.metric_directory)
+      FileUtils.should_receive(:rm_rf).with(MetricFu::RcovGenerator.metric_directory, :verbose => false)
+      Dir.should_receive(:mkdir).with(MetricFu::RcovGenerator.metric_directory)
       @rcov.emit
     end
 
@@ -26,7 +26,7 @@ describe MetricFu::Rcov do
       FileUtils.stub(:rm_rf)
       Dir.stub(:mkdir)
       options = {:environment => 'metrics'}
-      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
+      @rcov = MetricFu::RcovGenerator.new(@default_options.merge(options))
       @rcov.should_receive(:`).with(/RAILS_ENV=metrics/)
       @rcov.emit
     end
@@ -35,9 +35,9 @@ describe MetricFu::Rcov do
   describe "with RCOV_OUTPUT fed into" do
     before :each do
       options = {:external =>  nil}
-      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
+      @rcov = MetricFu::RcovGenerator.new(@default_options.merge(options))
       File.should_receive(:open).
-            with(MetricFu::Rcov.metric_directory + '/rcov.txt').
+            with(MetricFu::RcovGenerator.metric_directory + '/rcov.txt').
             and_return(double("io", :read => RCOV_OUTPUT))
       @files = @rcov.analyze
     end
@@ -68,7 +68,7 @@ describe MetricFu::Rcov do
   describe "with external configuration option set" do
     before :each do
       options = {:external =>  'coverage/rcov.txt'}
-      @rcov = MetricFu::Rcov.new(@default_options.merge(options))
+      @rcov = MetricFu::RcovGenerator.new(@default_options.merge(options))
     end
 
     it "should emit nothing if external configuration option is set" do

@@ -1,7 +1,7 @@
 require 'multi_json'
 require "spec_helper"
 
-describe Hotspots do
+describe MetricFu::HotspotsGenerator do
 
   describe "analyze method" do
     before :each do
@@ -59,14 +59,14 @@ END
     end
 
     it "should be empty on error" do
-      hotspots = MetricFu::Hotspots.new
+      hotspots = MetricFu::HotspotsGenerator.new
       hotspots.instance_variable_set(:@analyzer, nil)
       result = hotspots.analyze
       result.should == {}
     end
 
     it "should return yaml results" do
-      hotspots = MetricFu::Hotspots.new
+      hotspots = MetricFu::HotspotsGenerator.new
       analyzer = HotspotAnalyzer.new(@yaml)
       hotspots.instance_variable_set(:@analyzer, analyzer)
       result = hotspots.analyze
@@ -75,7 +75,7 @@ END
     end
 
     it "should put the changes into a hash" do
-      hotspots = MetricFu::Hotspots.new
+      hotspots = MetricFu::HotspotsGenerator.new
       analyzer = HotspotAnalyzer.new(@yaml)
       hotspots.instance_variable_set(:@analyzer, analyzer)
       hotspots.analyze
@@ -84,7 +84,7 @@ END
     end
     # really testing the output of analyzed_problems#worst_items
     it "should return the worst item granularities: files, classes, methods" do
-      hotspots = MetricFu::Hotspots.new
+      hotspots = MetricFu::HotspotsGenerator.new
       analyzer = HotspotAnalyzer.new(@yaml)
       hotspots.instance_variable_set(:@analyzer, analyzer)
       hotspots.analyze.keys.should =~ [:files, :classes, :methods]

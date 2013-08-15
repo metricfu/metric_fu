@@ -1,6 +1,10 @@
 module MetricFu
-  class Cane < Generator
+  class CaneGenerator < Generator
     attr_reader :violations, :total_violations
+
+    def self.metric
+      :cane
+    end
 
     def emit
       command = %Q{mf-cane#{abc_max_param}#{style_measure_param}#{no_doc_param}#{no_readme_param}}

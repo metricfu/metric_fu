@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe Reek do
+describe MetricFu::ReekGenerator do
   describe "emit" do
     it "should include config parameters" do
       options = {:config_file_pattern => 'lib/config/*.reek', :dirs_to_reek => []}
-      reek = MetricFu::Reek.new(options)
+      reek = MetricFu::ReekGenerator.new(options)
       files_to_analyze = ['lib/foo.rb','lib/bar.rb']
       reek.stub(:files_to_analyze).and_return(files_to_analyze)
       reek.should_receive(:`).with(/--config lib\/config\/\*\.reek lib\/foo.rb lib\/bar.rb/).and_return("")
@@ -32,7 +32,7 @@ NewlineController#some_method calls current_user.<< "new line\n" multiple times 
       HERE
       MetricFu::Configuration.run {}
       File.stub(:directory?).and_return(true)
-      reek = MetricFu::Reek.new
+      reek = MetricFu::ReekGenerator.new
       reek.instance_variable_set(:@output, @lines)
       @matches = reek.analyze
     end
@@ -69,10 +69,10 @@ NewlineController#some_method calls current_user.<< "new line\n" multiple times 
 
 end
 
-describe Reek do
+describe MetricFu::ReekGenerator do
   before :each do
     MetricFu::Configuration.run {}
-    @reek = MetricFu::Reek.new
+    @reek = MetricFu::ReekGenerator.new
     @lines11 = <<-HERE
 "app/controllers/activity_reports_controller.rb" -- 4 warnings:
 ActivityReportsController#authorize_user calls current_user.primary_site_ids multiple times (Duplication)

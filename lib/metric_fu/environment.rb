@@ -60,12 +60,10 @@ module MetricFu
 
     def supports_ripper?
       @supports_ripper ||= begin
-                             begin
-                               require 'ripper'
-                               true
-                             rescue LoadError
-                               false
-                             end
+                             require 'ripper'
+                             true
+                           rescue LoadError
+                             false
                            end
     end
     def platform #:nodoc:
