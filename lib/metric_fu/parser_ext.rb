@@ -1,5 +1,6 @@
 # For Flog
 # TODO: Do we still need this?
+require 'ruby_parser'
 class RubyParser
   alias_method :original_process, :process
   def process(s,f,t)

@@ -18,12 +18,11 @@ module MetricFu
       true
     end
 
-    def activate
-      require 'flay'
+    def enable
       super
     end
 
-    def enable
+    def activate
       super
     end
 

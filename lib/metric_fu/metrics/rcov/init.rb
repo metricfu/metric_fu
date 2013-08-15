@@ -21,7 +21,12 @@ module MetricFu
       MetricFu.configuration.mf_debug("rcov is not available. See README")
     end
 
+    def activate
+      super
+    end
+
     private
+
     def rcov_opts
       rcov_opts = [
         "--sort coverage",
@@ -35,5 +40,6 @@ module MetricFu
       rcov_opts << "-Ispec" if File.exist?("spec")
       rcov_opts
     end
+
   end
 end

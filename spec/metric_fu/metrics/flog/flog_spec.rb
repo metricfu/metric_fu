@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe Flog do
+
+  MetricFu.configuration.configure_metrics
+  break p "Skipping flog tests, not activated" unless MetricFu::Metric.get_metric(:flog).activated
+
   before :each do
     File.stub(:directory?).and_return(true)
     options = MetricFu::Metric.get_metric(:flog).run_options

@@ -1,3 +1,4 @@
+require 'set'
 # Encapsulates the configuration options for each metric
 module MetricFu
   class Metric
@@ -6,6 +7,7 @@ module MetricFu
 
     def initialize
       self.enabled = false
+      @libraries = Set.new
       @configured_run_options = {}
     end
 
@@ -15,9 +17,10 @@ module MetricFu
 
     # TODO: Confirm this catches load errors from requires in subclasses, such as for flog
     def activate
+      @libraries.each {|library| require(library) }
       self.activated = true
-    rescue LoadError
-      MetricFu.configuration.mf_debug("#{name} library unavailable, not activated")
+    rescue LoadError => e
+      MetricFu.configuration.mf_log("#{name} metric not activated, #{e.message}")
     end
 
     # @return metric name [Symbol]
@@ -89,6 +92,11 @@ module MetricFu
     def not_implemented
       raise "Required method #{caller[0]} not implemented in #{__FILE__}"
     end
+
+    def activate_library(file)
+      @libraries << file.strip
+    end
+
 
   end
 end

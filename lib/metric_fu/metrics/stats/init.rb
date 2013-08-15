@@ -21,5 +21,10 @@ module MetricFu
       super
     end
 
+    def activate
+      activate_library 'code_metrics'
+      super
+    end
+
   end
 end

@@ -28,5 +28,9 @@ module MetricFu
       end
     end
 
+    def activate
+      super
+    end
+
   end
 end
