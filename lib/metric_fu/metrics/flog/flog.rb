@@ -1,5 +1,6 @@
 require 'pathname'
 require 'optparse'
+require 'flog_cli'
 
 module MetricFu
   class Flog < Generator
