@@ -1,0 +1,14 @@
+---
+:reek:
+  :matches:
+  - :file_path: lib/client/client.rb
+    :code_smells:
+    - :type: Large Class
+      :message: has at least 27 methods
+      :method: Devver::Client
+    - :type: Long Method
+      :message: has approx 6 statements
+      :method: Devver::Client#client_requested_sync
+    - :type: Large Class
+      :message: has at least 20 methods
+      :method: Devver::Foo

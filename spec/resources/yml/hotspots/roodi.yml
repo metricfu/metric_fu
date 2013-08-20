@@ -1,0 +1,13 @@
+:roodi:
+  :total:
+  - Found 164 errors.
+  :problems:
+  - :line: "158"
+    :file: lib/client/client.rb
+    :problem: Method name "process" cyclomatic complexity is 10.  It should be 8 or less.
+  - :line: "232"
+    :file: lib/client/client.rb
+    :problem: Method name "process_ready" cyclomatic complexity is 15.  It should be 8 or less.
+  - :line: "288"
+    :file: lib/client/foobar.rb
+    :problem: Method name "send_tests" cyclomatic complexity is 10.  It should be 8 or less.

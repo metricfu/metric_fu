@@ -1,0 +1,36 @@
+:saikuro:
+  :files:
+  - :classes:
+    - :complexity: 19
+      :methods:
+      - :complexity: 1
+        :lines: 9
+        :name: Client#client_requested_sync
+      - :complexity: 1
+        :lines: 9
+        :name: Client#method_that_is_not_mentioned_elsewhere_in_stats
+      :lines: 92
+      :class_name: Devver::Client
+    :filename: client.rb
+:reek:
+  :matches:
+  - :file_path: lib/client/client.rb
+    :code_smells:
+    - :type: Large Class
+      :message: has at least 27 methods
+      :method: Devver::Client
+    - :type: Long Method
+      :message: has approx 6 statements
+      :method: Devver::Client#client_requested_sync
+:flog:
+  :total: 1817.6
+  :pages:
+  - :path: /lib/client/client.rb
+    :highest_score: 37.9
+    :average_score: 13.6
+    :scanned_methods:
+    - :operators:
+      - :operator: "[]"
+        :score: 11.1
+      :score: 37.9
+      :name: Client#client_requested_sync

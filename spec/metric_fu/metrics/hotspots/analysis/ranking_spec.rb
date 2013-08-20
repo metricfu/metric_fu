@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Ranking do
+describe MetricFu::Ranking do
 
   context "with many items" do
 

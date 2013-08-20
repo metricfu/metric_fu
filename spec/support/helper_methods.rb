@@ -7,3 +7,12 @@ def metric_not_activated?(metric_name)
     true
   end
 end
+
+
+def read_resource(path_in_resources)
+  File.read("#{resources_path}/#{path_in_resources}")
+end
+def metric_data(path_in_resources)
+  metric_path = read_resource("yml/#{path_in_resources}")
+  YAML.load( metric_path )
+end

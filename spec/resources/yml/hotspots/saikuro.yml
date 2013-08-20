@@ -1,0 +1,27 @@
+:saikuro:
+  :files:
+  - :classes:
+    - :complexity: 0
+      :methods: []
+      :lines: 3
+      :class_name: Shorty
+    - :complexity: 19
+      :methods:
+      - :complexity: 9
+        :lines: 6
+        :name: Shorty::Supr#self.handle_full_or_hash_option
+      - :complexity: 1
+        :lines: 9
+        :name: Shorty::Supr#initialize
+      :lines: 92
+      :class_name: Shorty::Supr
+    :filename: supr.rb
+  - :classes:
+    - :complexity: 12
+      :methods:
+      - :complexity: 8
+        :lines: 10
+        :name: Shorty::Bitly#info
+      :lines: 104
+      :class_name: Shorty::Bitly
+    :filename: bitly.rb

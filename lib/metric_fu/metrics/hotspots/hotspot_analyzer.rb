@@ -11,9 +11,6 @@ module MetricFu
     COMMON_COLUMNS = %w{metric}
     GRANULARITIES =  %w{file_path class_name method_name}
 
-    # TODO , UNUSED
-    # attr_accessor :table
-
     def tool_analyzers
       MetricFu::Hotspot.analyzers
     end
@@ -25,7 +22,6 @@ module MetricFu
       setup(result_hash)
     end
 
-    # def worst_items; previous method name
     def hotspots
       analyzed_problems.worst_items
     end
@@ -33,14 +29,6 @@ module MetricFu
     def analyzed_problems
       @analyzed_problems = MetricFu::HotspotAnalyzedProblems.new(@rankings, @analyzer_tables)
     end
-    # just for testing
-    # TODO remove the delegators
-    # and refactor the tests
-    alias_method :worst_items, :hotspots
-    extend Forwardable
-    def_delegators  :@analyzer_tables, :table
-    def_delegators  :@analyzed_problems, :problems_with, :location
-    def_delegators  :@rankings, :worst_files, :worst_methods, :worst_classes
 
     private
 
@@ -52,7 +40,7 @@ module MetricFu
       # TODO There is likely a clash that will happen between
       # column names eventually. We should probably auto-prefix
       # them (e.g. "roodi_problem")
-      analyzer_columns = COMMON_COLUMNS + GRANULARITIES + tool_analyzers.map{|analyzer| analyzer.columns}.flatten
+      analyzer_columns = COMMON_COLUMNS + GRANULARITIES + tool_analyzers.map(&:columns).flatten
       # though the tool_analyzers aren't returned, they are processed in
       # various places here, then by the analyzer tables
       # then by the rankings
@@ -64,32 +52,9 @@ module MetricFu
       @analyzer_tables.generate_records
       @rankings = MetricFu::HotspotRankings.new(@analyzer_tables.tool_tables)
       @rankings.calculate_scores(tool_analyzers, GRANULARITIES)
-      # just for testing
       # TODO does it not need to return something here?
       analyzed_problems
     end
-
-    # TODO remove, UNUSED
-    # def most_common_column(column_name, size)
-    #   #grouping = Ruport::Data::Grouping.new(@table,
-    #   #                                      :by => column_name,
-    #   #                                      :order => lambda { |g| -g.size})
-    #   get_grouping(@table, :by => column_name, :order => lambda {|g| -g.size})
-    #   values = []
-    #   grouping.each do |value, _|
-    #     values << value if value!=nil
-    #     if(values.size==size)
-    #       break
-    #     end
-    #   end
-    #   return nil if values.empty?
-    #   if(values.size == 1)
-    #     return values.first
-    #   else
-    #     return values
-    #   end
-    # end
-
 
 
   end
