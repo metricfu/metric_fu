@@ -1,5 +1,4 @@
-class RoodiHotspot < MetricFu::Hotspot
-  include MetricFu::HotspotScoringStrategies
+class MetricFu::RoodiHotspot < MetricFu::Hotspot
 
   COLUMNS = %w{problems}
 
@@ -11,16 +10,16 @@ class RoodiHotspot < MetricFu::Hotspot
     :roodi
   end
 
-  def map(row)
-    MetricFu::HotspotScoringStrategies.present(row)
+  def map_strategy
+    :present
   end
 
-  def reduce(scores)
-    MetricFu::HotspotScoringStrategies.sum(scores)
+  def reduce_strategy
+    :sum
   end
 
-  def score(metric_ranking, item)
-    MetricFu::HotspotScoringStrategies.percentile(metric_ranking, item)
+  def score_strategy
+    :percentile
   end
 
   def generate_records(data, table)
@@ -37,16 +36,6 @@ class RoodiHotspot < MetricFu::Hotspot
   def present_group(group)
     occurences = group.size
     "found #{occurences} design problems"
-  end
-
-  def present_group_details(group)
-    occurences = group.size
-    message = "found #{occurences} design problems<br/>"
-    group.each do |item|
-      problem    = item.data["problems"]
-      message << "* #{problem}<br/>"
-    end
-    message
   end
 
 end

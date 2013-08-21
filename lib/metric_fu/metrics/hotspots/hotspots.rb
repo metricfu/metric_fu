@@ -11,10 +11,6 @@ module MetricFu
       super
     end
 
-    def self.verify_dependencies!
-      true
-    end
-
     def emit
       @analyzer = MetricFu::HotspotAnalyzer.new(MetricFu.result.result_hash)
     end

@@ -1,5 +1,4 @@
-class FlayHotspot < MetricFu::Hotspot
-  include MetricFu::HotspotScoringStrategies
+class MetricFu::FlayHotspot < MetricFu::Hotspot
 
   COLUMNS = %w{flay_reason flay_matching_reason}
 
@@ -11,16 +10,16 @@ class FlayHotspot < MetricFu::Hotspot
     :flay
   end
 
-  def map(row)
-    MetricFu::HotspotScoringStrategies.present(row)
+  def map_strategy
+    :present
   end
 
-  def reduce(scores)
-    MetricFu::HotspotScoringStrategies.sum(scores)
+  def reduce_strategy
+    :sum
   end
 
-  def score(metric_ranking, item)
-    MetricFu::HotspotScoringStrategies.percentile(metric_ranking, item)
+  def score_strategy
+    :percentile
   end
 
   def generate_records(data, table)
@@ -50,18 +49,6 @@ class FlayHotspot < MetricFu::Hotspot
   def present_group(group)
     occurences = group.size
     "found #{occurences} code duplications"
-  end
-
-  def present_group_details(group)
-    occurences = group.size
-    message = "found #{occurences} code duplications<br/>"
-    group.each do |item|
-      problem    = item.data["flay_reason"]
-      problem    = problem.gsub(/^[0-9]*\)/,'')
-      problem    = problem.gsub(/files\:/,' <br>&nbsp;&nbsp;&nbsp;files:')
-      message << "* #{problem}<br/>"
-    end
-    message
   end
 
 end

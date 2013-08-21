@@ -7,11 +7,10 @@ module MetricFu
       @analyzer_tables = analyzer_tables
     end
     def worst_items
-      limit = nil
       worst_items = {}
-      worst_items[:files]   = worst(@hotspot_rankings.worst_files(limit),   :file)
-      worst_items[:classes] = worst(@hotspot_rankings.worst_classes(limit), :class)
-      worst_items[:methods] = worst(@hotspot_rankings.worst_methods(limit), :method)
+      worst_items[:files]   = worst(@hotspot_rankings.worst_files,   :file)
+      worst_items[:classes] = worst(@hotspot_rankings.worst_classes, :class)
+      worst_items[:methods] = worst(@hotspot_rankings.worst_methods, :method)
       worst_items
     end
 
@@ -30,11 +29,11 @@ module MetricFu
     # @todo redo as item,value, options = {}
     # Note that the other option for 'details' is :detailed (this isn't
     # at all clear from this method itself
-    def problems_with(item, value, details = :summary, exclude_details = [])
+    def problems_with(item, value)
       sub_table = get_sub_table(item, value)
       #grouping = Ruport::Data::Grouping.new(sub_table, :by => 'metric')
       grouping = get_grouping(sub_table, :by => 'metric')
-      MetricFu::HotspotProblems.new(grouping, details, exclude_details).problems
+      MetricFu::HotspotProblems.new(grouping).problems
     end
 
     def location(item, value)

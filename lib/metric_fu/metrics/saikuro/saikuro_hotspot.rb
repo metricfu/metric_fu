@@ -1,5 +1,4 @@
-class SaikuroHotspot < MetricFu::Hotspot
-  include MetricFu::HotspotScoringStrategies
+class MetricFu::SaikuroHotspot < MetricFu::Hotspot
 
   COLUMNS = %w{lines complexity}
 
@@ -11,16 +10,16 @@ class SaikuroHotspot < MetricFu::Hotspot
     :saikuro
   end
 
-  def map(row)
-    row.complexity
+  def map_strategy
+    :complexity
   end
 
-  def reduce(scores)
-    MetricFu::HotspotScoringStrategies.average(scores)
+  def reduce_strategy
+    :average
   end
 
-  def score(metric_ranking, item)
-    MetricFu::HotspotScoringStrategies.identity(metric_ranking, item)
+  def score_strategy
+    :identity
   end
 
   def generate_records(data, table)
@@ -46,12 +45,6 @@ class SaikuroHotspot < MetricFu::Hotspot
   end
 
   def present_group(group)
-    occurences = group.size
-    complexity = get_mean(group.column("complexity"))
-    "#{"average " if occurences > 1}complexity is %.1f" % complexity
-  end
-
-  def present_group_details(group)
     occurences = group.size
     complexity = get_mean(group.column("complexity"))
     "#{"average " if occurences > 1}complexity is %.1f" % complexity

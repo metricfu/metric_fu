@@ -97,12 +97,6 @@ module MetricFu
       @file_paths ||= @table.column('file_path').uniq
     end
 
-    # These tables are an optimization. They contain subsets of the master table.
-    # TODO - these should be pushed into the Table class now
-    def optimized_tables
-      @optimized_tables ||= make_table_hash(@columns)
-    end
-
     def file_tables
       @file_tables  ||= make_table_hash(@columns)
     end

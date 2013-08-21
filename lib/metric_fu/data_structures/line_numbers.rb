@@ -16,6 +16,8 @@ module MetricFu
         @locations = {}
         file_sexp = rp.parse(contents)
         case file_sexp[0]
+        when nil
+          mf_log "No ruby code found in #{file_path}"
         when :class
           process_class(file_sexp)
         when :module

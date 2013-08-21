@@ -16,15 +16,15 @@ describe MetricFu::Graph do
   end
 
   describe "responding to #add with gchart enabled" do
-    it 'should instantiate a grapher and push it to clazz' do
-      @graph.clazz.should_receive(:push).with(an_instance_of(RcovGchartGrapher))
+    it 'should instantiate a grapher and push it to graphers' do
+      @graph.graphers.should_receive(:push).with(an_instance_of(RcovGchartGrapher))
       @graph.add("rcov", 'gchart')
     end
   end
 
   describe "responding to #add with gchart enabled" do
-    it 'should instantiate a grapher and push it to clazz' do
-      @graph.clazz.should_receive(:push).with(an_instance_of(RcovGchartGrapher))
+    it 'should instantiate a grapher and push it to graphers' do
+      @graph.graphers.should_receive(:push).with(an_instance_of(RcovGchartGrapher))
       @graph.add("rcov", 'gchart')
     end
   end
@@ -42,7 +42,7 @@ describe MetricFu::Graph do
       double_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
       double_grapher.should_receive(:graph!)
 
-      @graph.clazz = [double_grapher]
+      @graph.graphers = [double_grapher]
       @graph.generate
     end
 
@@ -54,7 +54,7 @@ describe MetricFu::Graph do
       double_grapher.should_receive(:get_metrics).with("Metrics", "11/5")
       double_grapher.should_receive(:graph!)
 
-      @graph.clazz = [double_grapher]
+      @graph.graphers = [double_grapher]
       @graph.generate
     end
   end

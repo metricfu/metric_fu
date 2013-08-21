@@ -30,17 +30,17 @@ describe MetricFu::AnalyzerTables do
     end
 
     it "should have codeLOC" do
-      row = @table.rows_with('stat_name' => :codeLOC).first
+      row = @table.find{|row| row['stat_name'] == :codeLOC}
       row['stat_value'].should == 4222
     end
 
     it "should have testLOC" do
-      row = @table.rows_with('stat_name' => :testLOC).first
+      row = @table.find{|row| row['stat_name'] == :testLOC}
       row['stat_value'].should == 2111
     end
 
     it "should have code_to_test_ratio" do
-      row = @table.rows_with('stat_name' => :code_to_test_ratio).first
+      row = @table.find{|row| row['stat_name'] == :code_to_test_ratio}
       row['stat_value'].should == 2
     end
 
@@ -60,11 +60,11 @@ describe MetricFu::AnalyzerTables do
     end
 
     specify "all records should have class name" do
-      @table.rows_with(:class_name => nil).should have(0).rows
+      @table.select{|rows| rows.fetch(:class_name, :no_key) == nil }.should have(0).rows
     end
 
     specify "one record should not have method name" do
-      @table.rows_with(:method_name => nil).should have(1).rows
+      @table.select{|rows| rows.fetch(:method_name, :no_key) == nil }.should have(0).rows
     end
 
   end

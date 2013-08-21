@@ -39,15 +39,15 @@ describe MetricFu::HotspotRankings do
     end
 
     it "gives worst method" do
-      rankings(@result_hash).worst_methods(1).should == ["Client#client_requested_sync"]
+      rankings(@result_hash).worst_methods[0].should == "Client#client_requested_sync"
     end
 
     it "gives worst class" do
-      rankings(@result_hash).worst_classes(1).should == ["Client"]
+      rankings(@result_hash).worst_classes[0].should == "Client"
     end
 
     it "gives worst file" do
-      rankings(@result_hash).worst_files(1).should == ["lib/client/client.rb"]
+      rankings(@result_hash).worst_files[0].should == "lib/client/client.rb"
     end
 
   end
@@ -58,11 +58,11 @@ describe MetricFu::HotspotRankings do
     end
 
     it "gives worst method" do
-      rankings(@result_hash).worst_methods(1).should == ["Supr#self.handle_full_or_hash_option"]
+      rankings(@result_hash).worst_methods[0].should == "Supr#self.handle_full_or_hash_option"
     end
 
     it "gives worst class" do
-      rankings(@result_hash).worst_classes(1).should == ["Bitly"]
+      rankings(@result_hash).worst_classes[0].should == "Bitly"
     end
 
   end
@@ -73,15 +73,15 @@ describe MetricFu::HotspotRankings do
     end
 
     it "gives worst method" do
-      rankings(@result_hash).worst_methods(1).should == ["main#none"]
+      rankings(@result_hash).worst_methods[0].should == "main#none"
     end
 
     it "gives worst class" do
-      rankings(@result_hash).worst_classes(1).should == ["main"]
+      rankings(@result_hash).worst_classes[0].should == "main"
     end
 
     it "gives worst file" do
-      rankings(@result_hash).worst_files(1).should == ["lib/generators/rcov.rb:57"]
+      rankings(@result_hash).worst_files[0].should == "lib/generators/rcov.rb:57"
     end
 
   end
@@ -93,7 +93,7 @@ describe MetricFu::HotspotRankings do
     end
 
     it "gives worst file" do
-      rankings(@result_hash).worst_files(1).should == ["lib/client/client.rb"]
+      rankings(@result_hash).worst_files[0].should == "lib/client/client.rb"
     end
 
   end

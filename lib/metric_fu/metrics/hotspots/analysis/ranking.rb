@@ -7,12 +7,8 @@ module MetricFu
       @items_to_score = {}
     end
 
-    def top(num=nil)
-      if(num.is_a?(Numeric))
-        sorted_items[0,num]
-      else
-        sorted_items
-      end
+    def top
+      sorted_items
     end
 
     def percentile(item)
@@ -22,7 +18,7 @@ module MetricFu
     end
 
     def_delegator :@items_to_score, :has_key?, :scored?
-    def_delegators :@items_to_score, :[], :[]=, :length, :each, :delete
+    def_delegators :@items_to_score, :[], :[]=, :length, :each, :delete, :fetch
 
     private
 

@@ -1,18 +1,14 @@
 module MetricFu
   class HotspotProblems
 
-    def initialize(grouping, details, exclude_details)
-      @grouping, @details, @exclude_details = grouping, details, exclude_details
+    def initialize(grouping)
+      @grouping = grouping
     end
 
     def problems
       problems = {}
       @grouping.each do |metric, table|
-        if @details == :summary || @exclude_details.include?(metric)
-          problems[metric] = MetricFu::Hotspot.analyzer_for_metric(metric).present_group(table)
-        else
-          problems[metric] = MetricFu::Hotspot.analyzer_for_metric(metric).present_group_details(table)
-        end
+        problems[metric] = MetricFu::Hotspot.analyzer_for_metric(metric).present_group(table)
       end
       problems
     end

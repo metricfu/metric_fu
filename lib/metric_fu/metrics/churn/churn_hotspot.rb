@@ -1,5 +1,4 @@
-class ChurnHotspot < MetricFu::Hotspot
-  include MetricFu::HotspotScoringStrategies
+class MetricFu::ChurnHotspot < MetricFu::Hotspot
 
   COLUMNS = %w{times_changed}
 
@@ -11,15 +10,19 @@ class ChurnHotspot < MetricFu::Hotspot
     :churn
   end
 
-  def map(row)
-    MetricFu::HotspotScoringStrategies.present(row)
+  def map_strategy
+    :present
   end
 
-  def reduce(scores)
-    MetricFu::HotspotScoringStrategies.sum(scores)
+  def reduce_strategy
+    :sum
   end
 
-  def score(metric_ranking, item)
+  def score_strategy
+    :calculate_score
+  end
+
+  def calculate_score(metric_ranking, item)
     flat_churn_score = 0.50
     metric_ranking.scored?(item) ? flat_churn_score : 0
   end
@@ -36,10 +39,6 @@ class ChurnHotspot < MetricFu::Hotspot
   end
 
   def present_group(group)
-    "detected high level of churn (changed #{group[0].times_changed} times)"
-  end
-
-  def present_group_details(group)
     "detected high level of churn (changed #{group[0].times_changed} times)"
   end
 

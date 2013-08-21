@@ -20,11 +20,6 @@ module MetricFu
       `#{command}`
     end
 
-    def format_directories
-      dirs = options[:input_directory].join(" | ")
-      "\"#{dirs}\""
-    end
-
     def analyze
       @files = sort_files(assemble_files)
       @classes = sort_classes(assemble_classes(@files))

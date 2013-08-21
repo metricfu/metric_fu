@@ -10,8 +10,6 @@ describe MetricFu::Configuration do
       rcov.enabled = true
     end
     MetricFu.configure
-    mri_only_metrics = MetricFu.mri_only_metrics.reject {|metric| MetricFu::Metric.get_metric(metric).enabled }
-    MetricFu.stub(:mri_only_metrics).and_return(mri_only_metrics)
     MetricFu::Io::FileSystem.stub(:create_directories) # no need to create directories for the tests
     @config
   end
@@ -216,14 +214,8 @@ describe MetricFu::Configuration do
         @config.stub(:rails?).and_return(true)
         @config.reset
         MetricFu.configure
-        %w(stats rails_best_practices).each do |metric|
+        %w(rails_best_practices).each do |metric|
           load_metric metric
-        end
-      end
-
-      describe '#set_metrics ' do
-        it 'should set the metrics to include stats' do
-          MetricFu::Metric.enabled_metrics.map(&:name).should include(:stats)
         end
       end
 
@@ -239,13 +231,6 @@ describe MetricFu::Configuration do
                   should == ['app','lib']
         end
       end
-      it 'should set @stats to {}' do
-        load_metric 'stats'
-        expect(MetricFu::Metric.get_metric(:stats).run_options).to eq({
-          :additional_test_directories=>[{:glob_pattern=>"./spec/**/*_spec.rb", :file_pattern=>"spec"}],
-          :additional_app_directories=>[{:glob_pattern=>"./engines/**/*.rb", :file_pattern=>""}]
-        })
-      end
 
       it 'should set @rails_best_practices to {}' do
         load_metric 'rails_best_practices'
@@ -257,13 +242,9 @@ describe MetricFu::Configuration do
       before(:each) do
         get_new_config
         @config.stub(:rails?).and_return(false)
-        %w(stats rails_best_practices).each do |metric|
+        %w(rails_best_practices).each do |metric|
           load_metric metric
         end
-      end
-
-      it 'should set the available metrics' do
-        MetricFu::Metric.enabled_metrics.map(&:name).should =~ [:churn, :flog, :flay, :reek, :roodi, :rcov, :hotspots, :saikuro, :cane, :stats] - MetricFu.mri_only_metrics
       end
 
       it 'should set the registered code_dirs to ["lib"]' do

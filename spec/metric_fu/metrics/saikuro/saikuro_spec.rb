@@ -52,17 +52,6 @@ describe Saikuro do
     end
   end
 
-  describe "format_directories method" do
-    it "should format the directories" do
-      options = {:input_directory  =>["app", "lib"]}
-      saikuro = MetricFu::Saikuro.new(options)
-
-      MetricFu::Metric.get_metric(:saikuro).run_options
-
-      saikuro.format_directories.should == "\"app | lib\""
-    end
-  end
-
   describe Saikuro::SFile do
     describe "getting elements from a Saikuro result file" do
      it "should parse nested START/END sections" do

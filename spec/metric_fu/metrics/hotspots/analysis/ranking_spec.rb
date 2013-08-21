@@ -4,21 +4,12 @@ describe MetricFu::Ranking do
 
   context "with many items" do
 
-    specify "it should give top x items" do
+    specify "#top" do
       ranking = Ranking.new
       ranking[:a] = 10
       ranking[:b] = 50
       ranking[:c] = 1
-      ranking.top(2).should == [:b,:a]
-    end
-
-    specify "if gives all items if param is not numeric" do
-      ranking = Ranking.new
-      ranking[:a] = 10
-      ranking[:b] = 50
-      ranking[:c] = 1
-      ranking.top(nil).should == [:b,:a, :c]
-      ranking.top(:all).should == [:b,:a, :c]
+      ranking.top.should == [:b,:a, :c]
     end
 
     specify "lowest item is at 0 percentile" do

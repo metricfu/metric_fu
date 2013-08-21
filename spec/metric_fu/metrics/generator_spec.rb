@@ -83,20 +83,6 @@ describe MetricFu::Generator do
     end
   end
 
-  describe 'ConcreteClass#generate_result' do
-    it 'should create a new instance of ConcreteClass' do
-      ConcreteClass.should_receive(:new).and_return(@concrete_class)
-      @concrete_class.should_receive(:generate_result).and_return(true)
-      ConcreteClass.generate_result
-    end
-
-    it 'should call #generate_result on the new ConcreteClass' do
-      ConcreteClass.should_receive(:new).and_return(@concrete_class)
-      @concrete_class.should_receive(:generate_result).and_return(true)
-      ConcreteClass.generate_result
-    end
-  end
-
   describe '@concrete_class should have hook methods for '\
            +'[before|after]_[emit|analyze|to_h]' do
 

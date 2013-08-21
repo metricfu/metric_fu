@@ -19,16 +19,6 @@ module MetricFu
     end
   end
 
-  # TODO: Remove this method.  It is really a test concern for identifying
-  #   metrics turned off for environmental reasons
-  def self.mri_only_metrics
-    if MetricFu.configuration.mri?
-      []
-    else
-      [:cane, :flog, :rails_best_practices]
-    end
-  end
-
   # = Configuration
   #
   # The Configuration class, as it sounds, provides methods for

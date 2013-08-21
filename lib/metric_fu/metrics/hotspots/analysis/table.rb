@@ -1,9 +1,10 @@
-%w(record code_issue).each do |path|
+%w(record).each do |path|
   MetricFu.metrics_require   { "hotspots/analysis/#{path}" }
 end
 
 module MetricFu
   class Table
+    include Enumerable
 
     def initialize(opts = {})
       @rows = []
@@ -15,7 +16,7 @@ module MetricFu
 
     def <<(row)
       record = nil
-      if row.is_a?(MetricFu::Record) || row.is_a?(MetricFu::CodeIssue)
+      if row.is_a?(MetricFu::Record)
         record = row
       else
         record = MetricFu::Record.new(row, @columns)
@@ -54,48 +55,7 @@ module MetricFu
       @metric_index.to_a
     end
 
-    def rows_with(conditions)
-      if optimized_conditions?(conditions)
-        optimized_select(conditions)
-      else
-        slow_select(conditions)
-      end
-    end
-
-    def delete_at(index)
-      @rows.delete_at(index)
-    end
-
-    def to_a
-      @rows
-    end
-
-    def map
-      new_table = MetricFu::Table.new(:column_names => @columns)
-      @rows.map do |row|
-        new_table << (yield row)
-      end
-      new_table
-    end
-
     private
-
-    def optimized_conditions?(conditions)
-      conditions.keys.length == 1 && conditions.keys.first.to_sym == :metric
-    end
-
-    def optimized_select(conditions)
-      metric = (conditions['metric'] || conditions[:metric]).to_s
-      @metric_index[metric].to_a.clone
-    end
-
-    def slow_select(conditions)
-      @rows.select do |row|
-        conditions.all? do |key, value|
-          row.has_key?(key.to_s) && row[key.to_s] == value
-        end
-      end
-    end
 
     def updated_key_index(record)
       if record.has_key?('metric')

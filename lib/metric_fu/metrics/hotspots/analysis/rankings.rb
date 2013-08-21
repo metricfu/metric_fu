@@ -14,19 +14,19 @@ module MetricFu
       end
     end
 
-    def worst_methods(size = nil)
+    def worst_methods
       @method_ranking.delete(nil)
-      @method_ranking.top(size)
+      @method_ranking.top
     end
 
-    def worst_classes(size = nil)
+    def worst_classes
       @class_ranking.delete(nil)
-      @class_ranking.top(size)
+      @class_ranking.top
     end
 
-    def worst_files(size = nil)
+    def worst_files
       @file_ranking.delete(nil)
-      @file_ranking.top(size)
+      @file_ranking.top
     end
 
     private

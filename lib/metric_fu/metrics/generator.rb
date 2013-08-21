@@ -54,20 +54,6 @@ module MetricFu
       @generators << subclass
     end
 
-    # Creates a new generator and returns the output of the
-    # #generate_result method.  This is the typical way to
-    # generate a new MetricFu result. For more information see
-    # the #generate_result instance method.
-    #
-    # @params options Hash
-    #   A currently unused hash to configure the Generator
-    #
-    # @see generate_result
-    def self.generate_result(options={})
-      generator = self.new(options)
-      generator.generate_result
-    end
-
     # Provides the unqualified class name of an implemented concrete
     # class, as a string.  For example:
     #

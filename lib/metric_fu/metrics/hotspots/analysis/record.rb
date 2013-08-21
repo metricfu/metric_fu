@@ -5,15 +5,14 @@ module MetricFu
 
     def initialize(data, columns)
       @data = data
-      @columns = columns
     end
 
     def method_missing(name, *args, &block)
       key = name.to_s
-      if @data.has_key?(key)
+      if key == 'fetch'
+        @data.send(name, *args, &block)
+      elsif @data.has_key?(key)
         @data[key]
-      elsif @columns.member?(key)
-        nil
       else
         super(name, *args, &block)
       end
@@ -27,16 +26,8 @@ module MetricFu
       @data[key]
     end
 
-    def keys
-      @data.keys
-    end
-
     def has_key?(key)
       @data.has_key?(key)
-    end
-
-    def attributes
-      @columns
     end
 
   end
