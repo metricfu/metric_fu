@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'coderay'
 MetricFu.metrics_require { 'base_template' }
+MetricFu.lib_require { 'utility' }
 
 class AwesomeTemplate < MetricFu::Template
 
@@ -44,7 +45,7 @@ class AwesomeTemplate < MetricFu::Template
   end
 
   def convert_ruby_to_html(ruby_text, line_number)
-    tokens = CodeRay.scan(ruby_text, :ruby)
+    tokens = CodeRay.scan(MetricFu::Utility.clean_ascii_text(ruby_text), :ruby)
     options = { :css => :class, :style => :alpha }
     if line_number.to_i > 0
       options = options.merge({:line_numbers => :inline, :line_number_start => line_number.to_i })

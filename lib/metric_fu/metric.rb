@@ -20,7 +20,7 @@ module MetricFu
       @libraries.each {|library| require(library) }
       self.activated = true
     rescue LoadError => e
-      MetricFu.configuration.mf_log("#{name} metric not activated, #{e.message}")
+      mf_log "#{name} metric not activated, #{e.message}"
     end
 
     # @return metric name [Symbol]
