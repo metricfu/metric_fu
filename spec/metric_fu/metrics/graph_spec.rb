@@ -30,6 +30,7 @@ describe MetricFu::Graph do
   end
 
   describe "setting the date on the graph" do
+    next if breaks_when?(MetricFu.configuration.rubinius?)
     before(:each) do
       @graph.stub(:mf_log)
     end

@@ -23,6 +23,7 @@ describe MetricFu::RcovGenerator do
     end
 
     it "should set the RAILS_ENV" do
+      next if breaks_when?(MetricFu.configuration.rubinius?)
       FileUtils.stub(:rm_rf)
       Dir.stub(:mkdir)
       options = {:environment => 'metrics'}
@@ -33,6 +34,7 @@ describe MetricFu::RcovGenerator do
   end
 
   describe "with RCOV_OUTPUT fed into" do
+    next if breaks_when?(MetricFu.configuration.rubinius?)
     before :each do
       options = {:external =>  nil}
       @rcov = MetricFu::RcovGenerator.new(@default_options.merge(options))

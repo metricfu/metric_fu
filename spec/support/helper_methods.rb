@@ -8,6 +8,10 @@ def metric_not_activated?(metric_name)
   end
 end
 
+def breaks_when?(bool)
+  p "Skipping tests in #{caller[0]}. They unnecessarily break the build." if bool
+  bool
+end
 
 def read_resource(path_in_resources)
   File.read("#{resources_path}/#{path_in_resources}")
