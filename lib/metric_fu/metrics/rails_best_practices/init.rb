@@ -23,7 +23,6 @@ module MetricFu
 
     def activate
       activate_library('rails_best_practices')
-      activate_library('metric_fu/sexp_ext')
       super
     end
 
