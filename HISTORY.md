@@ -9,6 +9,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
 * Features
 * Fixes
 * Misc
+  * Check for app/lib existance as opposed to using rails? (George Erickson)
 
 ### MetricFu [4.4.1 / 2013-08-29](https://github.com/metricfu/metric_fu/compare/v4.4.0...v4.4.1)
 

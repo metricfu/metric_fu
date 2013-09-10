@@ -48,12 +48,8 @@ module MetricFu
 
       # Add the 'app' directory if we're running within rails.
       def set_code_dirs(config)
-        # TODO: Rather than check if we're running against a rails app,
-        #   shouldn't we just check if the directories exist?
-        if config.rails?
-          @directories['code_dirs'] = %w(app lib)
-        else
-          @directories['code_dirs'] = %w(lib)
+        @directories['code_dirs'] = %w(app lib).select do |dir|
+          Dir.exists? dir
         end
       end
 
