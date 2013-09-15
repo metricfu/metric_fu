@@ -10,11 +10,10 @@ describe MetricFu::Template do
   describe "#erbify" do
     it 'should evaluate a erb doc' do
       section = 'section'
-      File.stub(:read).and_return('foo')
       erb = double('erb')
       erb.should_receive(:result)
-      ERB.should_receive(:new).with('foo').and_return(erb)
       @template.should_receive(:template).and_return('foo')
+      @template.should_receive(:erb_template_source).with('foo').and_return(erb)
       @template.send(:erbify, section)
     end
   end

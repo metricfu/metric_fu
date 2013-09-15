@@ -1,4 +1,3 @@
-require 'pathname'
 require 'erb'
 module MetricFu
 
@@ -7,7 +6,7 @@ module MetricFu
   # methods to make templating a bit easier.  However, classes do not
   # have to inherit from here in order to provide a template.  The only
   # requirement for a template class is that it provides a #write method
-  # to actually write out the template.  See StandardTemplate for an
+  # to actually write out the template.  See AwesomeTemplate for an
   # example.
   class Template
     attr_accessor :result, :per_file_data, :formatter, :output_directory
@@ -27,8 +26,21 @@ module MetricFu
     # @return String
     #   The erb evaluated string
     def erbify(section)
-      erb_doc = File.read(template(section))
-      ERB.new(erb_doc).result(binding)
+      template_file = template(section)
+      erb           = erb_template_source(template_file)
+      erb.result(binding)
+    rescue => e
+      message = "Error: #{e.class}; message #{e.message}. "
+      message << "Failed evaluating erb template "
+      message << "for section #{section} and template #{template_file}."
+      raise message
+    end
+
+    def erb_template_source(template_file)
+      erb_doc       = File.read(template_file)
+      erb           = ERB.new(erb_doc)
+      erb.filename  = template_file
+      erb
     end
 
     # Copies an instance variable mimicing the name of the section
@@ -64,9 +76,11 @@ module MetricFu
         File.join(template_directory,  section.to_s + ".html.erb")
       end
     end
+
     def template_dir(metric)
       File.join(MetricFu.metrics_dir, metric, metric_template_dir)
     end
+
     # e.g. template_awesome, template_standard
     def metric_template_dir
       template_name = self.class.name.sub('Template', '')[/^([A-Z][a-z]+)+/].downcase
@@ -106,7 +120,8 @@ module MetricFu
     # @return String
     #   The contents of the css file
     def inline_css(css)
-      open(File.join(template_directory, css)) { |f| f.read }
+      css_file = File.join(template_directory, css)
+      open(css_file) {|f| f.read }
     end
 
     # Provides a link to open a file through the textmate protocol
@@ -121,7 +136,9 @@ module MetricFu
     # @return String
     #   An anchor link to a textmate reference or a file reference
     def link_to_filename(name, line = nil, link_content = nil)
-      "<a href='#{file_url(name, line)}'>#{link_content(name, line, link_content)}</a>"
+      href = file_url(name, line)
+      link_text = link_content(name, line, link_content)
+      "<a href='#{href}'>#{link_text}</a>"
     end
 
     def round_to_tenths(decimal)
@@ -177,6 +194,7 @@ module MetricFu
     def remove_leading_slash(filename)
       filename.gsub(/^\//, '')
     end
+
     def render_as_txmt_protocol? # :nodoc:
       if MetricFu.configuration.osx?
         !MetricFu::Formatter::Templates.option('darwin_txmt_protocol_no_thanks')
@@ -184,6 +202,7 @@ module MetricFu
         false
       end
     end
+
     def render_as_mvim_protocol? # :nodoc:
       if MetricFu.configuration.osx?
         !MetricFu::Formatter::Templates.option('darwin_mvim_protocol_no_thanks')
@@ -227,7 +246,7 @@ module MetricFu
     end
 
     def snake_case_to_title_case(string)
-     string.split('_').collect{|word| word[0] = word[0..0].upcase; word}.join(" ")
+      string.split('_').collect{|word| word[0] = word[0..0].upcase; word}.join(" ")
     end
 
     # belive me, I tried to meta program this with an inherited hook
