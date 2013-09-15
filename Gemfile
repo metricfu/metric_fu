@@ -14,7 +14,7 @@ group :test do
     # https://github.com/kina/simplecov-rcov-text
     gem 'simplecov-rcov-text'
   end
-  gem "fakefs", :require => "fakefs/safe"
+  gem "fakefs", :require => "fakefs/safe", :platform => :ruby
   gem 'json'
 end
 gemspec :path => File.expand_path('..', __FILE__)

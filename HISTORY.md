@@ -9,6 +9,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
 * Features
 * Fixes
   * Return valid line locations for code with either no AST or nil nodes (Benjamin Fleischer, #137)
+  * Only use FakeFS on MRI.  Avoid intermittent failures on JRuby or Rubinius (Benjamin Fleischer, #135)
 * Misc
   * Extract SexpNode class from LineNumbers to handle Sexp Processing (Benjamin Fleischer, #137)
 

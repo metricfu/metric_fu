@@ -1,5 +1,4 @@
 require "spec_helper"
-require 'fakefs/safe'
 
 describe MetricFu::Formatter::HTML do
 

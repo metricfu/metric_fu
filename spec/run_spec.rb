@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'fakefs/safe'
 require 'metric_fu/cli/client'
 
 describe MetricFu do

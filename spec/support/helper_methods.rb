@@ -16,7 +16,17 @@ end
 def read_resource(path_in_resources)
   File.read("#{resources_path}/#{path_in_resources}")
 end
+
 def metric_data(path_in_resources)
   metric_path = read_resource("yml/#{path_in_resources}")
   YAML.load( metric_path )
+end
+
+def resources_path
+  "#{MetricFu.root_dir}/spec/resources"
+  # directory(name)
+end
+
+def compare_paths(path1, path2)
+  File.join(MetricFu.root_dir, path1).should == File.join(MetricFu.root_dir, path2)
 end
