@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe Saikuro do
+describe MetricFu::SaikuroGenerator do
   describe "to_h method" do
     before :all do
       options = {}
-      saikuro = MetricFu::Saikuro.new(options)
+      saikuro = MetricFu::SaikuroGenerator.new(options)
       def saikuro.metric_directory
         "#{resources_path}/saikuro"
       end
@@ -38,7 +38,7 @@ describe Saikuro do
   describe "per_file_info method" do
     before :all do
       options = {}
-      @saikuro = MetricFu::Saikuro.new(options)
+      @saikuro = MetricFu::SaikuroGenerator.new(options)
       def @saikuro.metric_directory
         "#{resources_path}/saikuro"
       end
@@ -52,11 +52,11 @@ describe Saikuro do
     end
   end
 
-  describe Saikuro::SFile do
+  describe MetricFu::SaikuroScratchFile do
     describe "getting elements from a Saikuro result file" do
      it "should parse nested START/END sections" do
        path = "#{resources_path}/saikuro_sfiles/thing.rb_cyclo.html"
-        sfile = Saikuro::SFile.new path
+        sfile = MetricFu::SaikuroScratchFile.new path
        sfile.elements.map { |e| e.complexity }.sort.should eql(["0","0","2"])
       end
     end
