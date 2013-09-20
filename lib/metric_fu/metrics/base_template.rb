@@ -157,9 +157,9 @@ module MetricFu
     end
 
     def display_location(location)
-      class_name, method_name = location.class_name, location.method_name
+      class_name, method_name = location.fetch('class_name'), location.fetch('method_name')
       str = ""
-      str += link_to_filename(location.file_name, location.line_number)
+      str += link_to_filename(location.fetch('file_name'), location.fetch('line_number'))
       str += " : " if method_name || class_name
       if(method_name)
         str += "#{method_name}"

@@ -44,6 +44,7 @@ module MetricFu
       }
     end
 
+    # COLLECT AND PROCESS RAW HOTSPOT METRICS
     def build_lookups!
       @class_and_method_to_file ||= {}
       # Build a mapping from [class,method] => filename
@@ -58,6 +59,7 @@ module MetricFu
       end
     end
 
+    # COLLECT AND PROCESS RAW HOTSPOT METRICS
     def process_rows!
       # Correct incorrect rows in the table
       table.each do |row|
@@ -74,6 +76,7 @@ module MetricFu
     end
 
 
+    # COLLECT AND PROCESS RAW HOTSPOT METRICS
     def fix_row_file_path!(row)
       # We know that Saikuro rows are broken
       # next unless row['metric'] == :saikuro

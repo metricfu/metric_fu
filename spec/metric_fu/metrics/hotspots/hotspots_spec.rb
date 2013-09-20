@@ -1,4 +1,3 @@
-require 'multi_json'
 require "spec_helper"
 
 describe MetricFu::HotspotsGenerator do
@@ -7,90 +6,48 @@ describe MetricFu::HotspotsGenerator do
     before :each do
       MetricFu::Configuration.run {}
       File.stub(:directory?).and_return(true)
-      @yaml =<<END
---- 
-:reek: 
-  :matches: 
-  - :file_path: lib/client/client.rb
-    :code_smells: 
-    - :type: Large Class
-      :message: has at least 27 methods
-      :method: Devver::Client
-    - :type: Long Method
-      :message: has approx 6 statements
-      :method: Devver::Client#client_requested_sync
-:flog: 
-  :method_containers: 
-  - :highest_score: 61.5870319141946
-    :path: /lib/client/client.rb
-    :methods: 
-      Client#client_requested_sync: 
-        :path: /lib/client/client.rb
-        :score: 37.9270319141946
-        :operators: 
-          :+: 1.70000000000001
-          :/: 1.80000000000001
-          :method_at_line: 1.90000000000001
-          :puts: 1.70000000000001
-          :assignment: 33.0000000000001
-          :in_method?: 1.70000000000001
-          :message: 1.70000000000001
-          :branch: 12.6
-          :<<: 3.40000000000001
-          :each: 1.50000000000001
-          :lit_fixnum: 1.45
-          :raise: 1.80000000000001
-          :each_pair: 1.3
-          :*: 1.60000000000001
-          :to_f: 2.00000000000001
-          :each_with_index: 3.00000000000001
-          :[]: 22.3000000000001
-          :new: 1.60000000000001
-    :average_score: 11.1209009055421
-    :total_score: 1817.6
-    :name: Client#client_requested_sync
-:churn: 
-  :changes: 
-  - :file_path: lib/client/client.rb
-    :times_changed: 54
-  - :file_path: lib/client/foo.rb
-    :times_changed: 52
-END
+      @yaml = metric_data('hotspots/generator.yml')
     end
 
     it "should be empty on error" do
       hotspots = MetricFu::HotspotsGenerator.new
       hotspots.instance_variable_set(:@analyzer, nil)
       result = hotspots.analyze
-      result.should == {}
-    end
-
-    it "should return yaml results" do
-      hotspots = MetricFu::HotspotsGenerator.new
-      analyzer = HotspotAnalyzer.new(@yaml)
-      hotspots.instance_variable_set(:@analyzer, analyzer)
-      result = hotspots.analyze
-      expected = MultiJson.load("{\"methods\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":\"Client#client_requested_sync\",\"file_path\":\"lib/client/client.rb\",\"hash\":7919384682,\"simple_method_name\":\"#client_requested_sync\"},\"details\":{\"reek\":\"found 1 code smells\",\"flog\":\"complexity is 37.9\"}}],\"classes\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":7995629750},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\"}}],\"files\":[{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":-5738801681},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\",\"churn\":\"detected high level of churn (changed 54 times)\"}},{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/foo.rb\",\"hash\":-7081271905},\"details\":{\"churn\":\"detected high level of churn (changed 52 times)\"}}]}")
-      compare_hashes(MultiJson.load(MultiJson.dump(hotspots.to_h[:hotspots])), expected)
+      result.should == {:files => [], :classes => [], :methods => []}
     end
 
     it "should put the changes into a hash" do
+      MetricFu.result.should_receive(:result_hash).and_return(@yaml)
       hotspots = MetricFu::HotspotsGenerator.new
-      analyzer = HotspotAnalyzer.new(@yaml)
-      hotspots.instance_variable_set(:@analyzer, analyzer)
       hotspots.analyze
-      expected =  MultiJson.load("{\"methods\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":\"Client#client_requested_sync\",\"file_path\":\"lib/client/client.rb\",\"hash\":7919384682,\"simple_method_name\":\"#client_requested_sync\"},\"details\":{\"reek\":\"found 1 code smells\",\"flog\":\"complexity is 37.9\"}}],\"classes\":[{\"location\":{\"class_name\":\"Client\",\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":7995629750},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\"}}],\"files\":[{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/client.rb\",\"hash\":-5738801681},\"details\":{\"reek\":\"found 2 code smells\",\"flog\":\"complexity is 37.9\",\"churn\":\"detected high level of churn (changed 54 times)\"}},{\"location\":{\"class_name\":null,\"method_name\":null,\"file_path\":\"lib/client/foo.rb\",\"hash\":-7081271905},\"details\":{\"churn\":\"detected high level of churn (changed 52 times)\"}}]}")
-      compare_hashes(MultiJson.load(MultiJson.dump(hotspots.to_h[:hotspots])), expected)
+      result = hotspots.to_h[:hotspots]
+      expected = metric_data('hotspots/generator_analysis.yml')
+      # ensure expected granularities
+      expect(result.keys).to eq(expected.keys)
+
+      # for each granularity's location details
+      result.each do |granularity,location_details|
+        # map 2d array for this granularity of [details, location]
+        expected_result = expected.fetch(granularity).map {|ld| [ld.fetch('details'), ld.fetch('location')] }
+        # verify all the location details for this granularity match elements of expected_result
+        location_details.each do |location_detail|
+          location = location_detail.fetch('location')
+          details  = location_detail.fetch('details')
+          # get the location_detail array where the  where the locations (second element) match
+          expected_location_details = expected_result.rassoc(location)
+          # get the details (first element) from the expected location_details array
+          expected_details = expected_location_details[0]
+          expect(details).to eq(expected_details)
+        end
+      end
     end
+
     # really testing the output of analyzed_problems#worst_items
     it "should return the worst item granularities: files, classes, methods" do
       hotspots = MetricFu::HotspotsGenerator.new
       analyzer = HotspotAnalyzer.new(@yaml)
-      hotspots.instance_variable_set(:@analyzer, analyzer)
-      hotspots.analyze.keys.should =~ [:files, :classes, :methods]
+      expect(hotspots.analyze.keys).to eq([:files, :classes, :methods])
     end
   end
-end
-def compare_hashes(got,expected)
-  got.hash == expected.hash
+
 end

@@ -2,11 +2,11 @@
 <p>Meta analysis of your metrics to find hotspots in your code.</p>
 <br/>
 
-<% if !@hotspots || @hotspots.size == 0 %>
+<% if @hotspots.nil? || @hotspots.size.zero? %>
   No Hotspots were found.
-<% elsif @hotspots && @hotspots.size > 0 %>
+<% else %>
 
-  <% granularities = [:files, :classes, :methods] %>
+  <% granularities = %w[files classes methods] %>
   <table>
     <tr valign="top">
     <% granularities.each do |granularity| %>
@@ -15,21 +15,21 @@
     <% end %>
     </tr>
 
-    <% items = [] %>
+    <% hotspots = [] %>
     <% granularities.each_index do |index| %>
       <% granularity = granularities[index] %>
-      <% items << @hotspots[granularity] %>
+      <% hotspots << @hotspots[granularity] %>
     <% end %>
 
-    <% items_length = 0 %>
+    <% hotspots_length = 0 %>
     <% columns = [0, 1, 2] %>
-    <% while (items_length < items[0].length || items_length < items[1].length || items_length < items[2].length) do %>
+    <% while (hotspots_length < hotspots[0].length || hotspots_length < hotspots[1].length || hotspots_length < hotspots[2].length) do %>
       <tr  valign="top">
         <% columns.each do |column| %>
-          <% item = items[column].length >= items_length ? items[column][items_length] : nil %>
+          <% item = hotspots[column].length >= hotspots_length ? hotspots[column][hotspots_length] : nil %>
           <% if item %>
-            <% location = item[:location] %>
-            <% file, line =  location.file_name, location.line_number %>
+            <% location = item.fetch('location') %>
+            <% file, line =  location.fetch('file_name'), location.fetch('line_number') %>
             <td>
             <b>
               <%= display_location(location) %>
@@ -43,7 +43,7 @@
             <% end %>
             <br/><br/>
             <!-- TODO HOTSPOTS for metric fu nice metric_link method -->
-            <% item[:details].each do |metric, info| %>
+            <% item.fetch('details').each do |metric, info| %>
               <%#= metric_link(@stat, metric, h(metric.to_s.capitalize)) + ": " + h(info)%><br/>
               <%= "#{metric.to_s.capitalize}: #{info}" %><br/>
             <% end %>
@@ -52,7 +52,7 @@
           <td> &nbsp; </td>
           <% end %>
         <% end %>
-        <% items_length += 1 %>
+        <% hotspots_length += 1 %>
       </tr>
     <% end %>
 

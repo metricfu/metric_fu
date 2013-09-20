@@ -12,15 +12,20 @@ module MetricFu
     end
 
     def emit
-      @analyzer = MetricFu::HotspotAnalyzer.new(MetricFu.result.result_hash)
+      # no-op
     end
 
     def analyze
-      @hotspots = @analyzer && @analyzer.hotspots || {}
+      analyzer = MetricFu::HotspotAnalyzer.new(MetricFu.result.result_hash)
+      @hotspots = analyzer.hotspots
     end
 
     def to_h
-      {:hotspots => @hotspots}
+      result = {:hotspots => {}}
+      @hotspots.each do |granularity, hotspots|
+        result[:hotspots][granularity.to_s] = hotspots.map(&:to_hash)
+      end
+      result
     end
   end
 

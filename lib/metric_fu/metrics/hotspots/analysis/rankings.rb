@@ -39,8 +39,15 @@ module MetricFu
 
     def calculate_score_for_granularity(analyzer, granularity)
       metric_ranking = calculate_metric_scores(granularity, analyzer)
-      add_to_master_ranking(ranking(granularity), metric_ranking, analyzer)
+
+      add_to_master_ranking(
+        ranking(granularity),
+        metric_ranking,
+        analyzer
+      )
     end
+
+    # CALCULATES METRIC HOTSPOT SCORES / RANKINGS PER map/reduce in HOTSPOT subclasses
     def calculate_metric_scores(granularity, analyzer)
       metric_ranking = MetricFu::Ranking.new
       metric_violations = @tool_tables[analyzer.name]

@@ -1,8 +1,8 @@
 module MetricFu
   class HotspotProblems
 
-    def initialize(grouping)
-      @grouping = grouping
+    def initialize(sub_table)
+      @grouping = group_by(sub_table, 'metric')
     end
 
     def problems
@@ -11,6 +11,10 @@ module MetricFu
         problems[metric] = MetricFu::Hotspot.analyzer_for_metric(metric).present_group(table)
       end
       problems
+    end
+
+    def group_by(sub_table, by = 'metric')
+      MetricFu::HotspotGroupings.new(sub_table, :by => by).get_grouping
     end
 
   end

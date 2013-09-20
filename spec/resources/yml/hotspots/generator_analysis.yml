@@ -1,0 +1,53 @@
+---
+files:
+- location:
+    class_name:
+    method_name:
+    file_path: lib/client/client.rb:42
+    file_name: lib/client/client.rb
+    line_number: '42'
+    hash_key: '["lib/client/client.rb:42", nil, nil]'
+  details:
+    flog: complexity is 37.9
+    reek: found 2 code smells
+- location:
+    class_name:
+    method_name:
+    file_path: lib/client/client.rb
+    file_name: lib/client/client.rb
+    line_number:
+    hash_key: '["lib/client/client.rb", nil, nil]'
+  details:
+    churn: detected high level of churn (changed 54 times)
+- location:
+    class_name:
+    method_name:
+    file_path: lib/client/foo.rb
+    file_name: lib/client/foo.rb
+    line_number:
+    hash_key: '["lib/client/foo.rb", nil, nil]'
+  details:
+    churn: detected high level of churn (changed 52 times)
+classes:
+- location:
+    class_name: Client
+    method_name:
+    file_path: lib/client/client.rb:42
+    file_name: lib/client/client.rb
+    line_number: '42'
+    hash_key: '["lib/client/client.rb:42", "Client", nil]'
+  details:
+    flog: complexity is 37.9
+    reek: found 2 code smells
+methods:
+- location:
+    class_name: Client
+    method_name: Client#client_requested_sync
+    file_path: lib/client/client.rb:42
+    file_name: lib/client/client.rb
+    line_number: '42'
+    hash_key: '["lib/client/client.rb:42", "Client", "Client#client_requested_sync"]'
+    simple_method_name: '#client_requested_sync'
+  details:
+    flog: complexity is 37.9
+    reek: found 1 code smells

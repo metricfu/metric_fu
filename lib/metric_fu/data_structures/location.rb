@@ -3,34 +3,58 @@ module MetricFu
     include Comparable
 
     attr_accessor :file_path, :file_name, :line_number,
-                  :class_name, :method_name, :simple_method_name, :hash
+                  :class_name, :method_name, :simple_method_name, :hash, :hash_key
 
     def self.get(file_path, class_name, method_name)
       location = new(file_path, class_name, method_name)
       @@locations ||= {}
-      @@locations.fetch(location.to_key) do
-        @@locations[location.to_key] = location
+      @@locations.fetch(location.hash_key) do
+        @@locations[location.hash_key] = location
         location.finalize
         location
       end
     end
 
     def initialize(file_path, class_name, method_name)
-      @file_path          = file_path
+      @file_path               = file_path
       @file_name, @line_number = file_path.to_s.split(/:/)
-      @class_name         = class_name
-      @method_name        = method_name
-      @simple_method_name = @method_name.to_s.sub(@class_name.to_s,'')
-      @hash               = to_key.hash
+      @class_name              = class_name
+      @method_name             = method_name
+      @simple_method_name      = @method_name.to_s.sub(@class_name.to_s,'')
+      @hash_key                = to_key
+      @hash                    = @hash_key.hash
     end
 
-    # TODO - we need this method (and hash accessor above) as a temporary hack where we're using Location as a hash key
+    def to_hash
+      hash = {
+        "class_name"  => class_name,
+        "method_name" => method_name,
+        "file_path"   => file_path,
+        'file_name'   => file_name,
+        'line_number' => line_number,
+        'hash_key'    => hash_key,
+      }
+
+      if method_name.to_s.size > 0
+        hash = hash.merge("simple_method_name" => simple_method_name)
+      else
+        hash
+      end
+    end
+
+    # defining :eql? and :hash to use Location as a hash key
     def eql?(other)
-      # REMOVED per https://github.com/jscruggs/metric_fu/pull/67/files
-      # [self.file_path.to_s, self.class_name.to_s, self.method_name.to_s] == [other.file_path.to_s, other.class_name.to_s, other.method_name.to_s]
       @hash == other.hash
     end
-    # END we need these methods as a temporary hack where we're using Location as a hash key
+
+    def <=>(other)
+      self.hash <=> other.hash
+    end
+
+    # Generates the @hash key
+    def to_key
+      [@file_path, @class_name, @method_name].inspect
+    end
 
     def self.for(class_or_method_name)
       class_or_method_name = strip_modules(class_or_method_name)
@@ -59,14 +83,6 @@ module MetricFu
         method_name = nil
       end
       self.get(nil, class_name, method_name)
-    end
-
-    def <=>(other)
-      [self.file_path.to_s, self.class_name.to_s, self.method_name.to_s] <=> [other.file_path.to_s, other.class_name.to_s, other.method_name.to_s]
-    end
-
-    def to_key
-      [@file_path, @class_name, @method_name]
     end
 
     def finalize

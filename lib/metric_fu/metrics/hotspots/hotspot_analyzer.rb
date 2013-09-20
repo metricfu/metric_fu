@@ -1,5 +1,4 @@
 require File.expand_path('analysis_error', MetricFu.errors_dir)
-MetricFu.data_structures_require { 'location' }
 %w(table record grouping ranking problems).each do |path|
   MetricFu.metrics_require   { "hotspots/analysis/#{path}" }
 end
