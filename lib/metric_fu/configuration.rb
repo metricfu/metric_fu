@@ -80,7 +80,7 @@ module MetricFu
       # TODO: Remove calls to self and/or allow querying the
       #   template/filesystem/metric/graph/environment, etc settings
       #   from the configuration instance
-      MetricFu::Io::FileSystem.set_directories(self)
+      MetricFu::Io::FileSystem.set_directories
       MetricFu::Formatter::Templates.configure_template(self)
       @formatters = []
       @graph_engine_config = MetricFu::GraphEngine.new
@@ -107,6 +107,7 @@ module MetricFu
     end
 
     def configure_metrics
+      MetricFu::Io::FileSystem.set_directories
       MetricFu::Metric.metrics.each do |metric|
         if block_given?
           yield metric

@@ -27,52 +27,13 @@ describe MetricFu::Generator do
     @concrete_class = ConcreteClass.new
   end
 
-  describe "ConcreteClass#class_name" do
-    it "should be 'concreteclass'" do
-      ConcreteClass.class_name.should == 'concreteclass'
-    end
-  end
-
   describe "ConcreteClass#metric_directory" do
     it "should be 'tmp/metric_fu/scratch/concreteclass'" do
+      concrete_metric = double('concrete_metric')
+      MetricFu::Metric.should_receive(:get_metric).with(:concrete).and_return(concrete_metric)
+      concrete_metric.should_receive(:run_options).and_return({})
       compare_paths(ConcreteClass.metric_directory,
-                    "tmp/metric_fu/scratch/concreteclass")
-    end
-  end
-
-  describe "#create_metric_dir_if_missing " do
-    describe "when the metric_dir exists " do
-      it 'should not call mkdir_p on FileUtils' do
-        File.stub(:directory?).and_return(true)
-        FileUtils.should_not_receive(:mkdir_p)
-        @concrete_class.create_metric_dir_if_missing
-      end
-    end
-
-    describe "when the metric_dir does not exist " do
-      it 'should call mkdir_p on FileUtils' do
-        File.stub(:directory?).and_return(false)
-        FileUtils.should_receive(:mkdir_p)
-        @concrete_class.create_metric_dir_if_missing
-      end
-    end
-  end
-
-  describe "#create_output_dir_if_missing" do
-    describe "when the output_dir exists " do
-      it 'should not call mkdir_p on FileUtils' do
-        File.stub(:directory?).and_return(true)
-        FileUtils.should_not_receive(:mkdir_p)
-        @concrete_class.create_output_dir_if_missing
-      end
-    end
-
-    describe "when the output_dir does not exist " do
-      it 'should call mkdir_p on FileUtils' do
-        File.stub(:directory?).and_return(false)
-        FileUtils.should_receive(:mkdir_p)
-        @concrete_class.create_output_dir_if_missing
-      end
+                    "tmp/metric_fu/scratch/concrete")
     end
   end
 

@@ -24,20 +24,18 @@ module MetricFu
   #
   # Based on the class name of the concrete class implementing a
   # Generator, the Generator class will create a 'metric_directory'
-  # named after the class under the MetricFu.scratch_directory, where
+  # named after the metric under the scratch_directory, where
   # any output from the #emit method should go.
   #
-  # It will also create the MetricFu.output_directory if neccessary, and
+  # It will also create the output_directory if neccessary, and
   # in general setup the directory structure that the MetricFu system
   # expects.
   class Generator
+
     attr_reader :result, :template, :options
 
     def initialize(options={})
       @options = options
-      create_metric_dir_if_missing
-      create_output_dir_if_missing
-      create_data_dir_if_missing
     end
 
     @generators = []
@@ -54,46 +52,18 @@ module MetricFu
       @generators << subclass
     end
 
-    # Provides the unqualified class name of an implemented concrete
-    # class, as a string.  For example:
-    #
-    #   class Flay < Generator; end
-    #   klass = Flay.new
-    #   klass.class_name
-    #   > "flay"
-    #
-    # @return String
-    #   The unqualified class name of this concrete class, returned
-    #   as a string.
-    def self.class_name
-      self.to_s.split('::').last.downcase
-    end
-
     # Returns the directory where the Generator will write any output
     def self.metric_directory
-      File.join(MetricFu::Io::FileSystem.directory('scratch_directory'), class_name)
+      @metric_directory ||=
+        MetricFu::Metric.get_metric(metric).run_options[:output_directory] ||
+        begin
+          metric_directory = MetricFu::Io::FileSystem.scratch_directory(metric)
+          FileUtils.mkdir_p(metric_directory, :verbose => false)
+        end
     end
 
-    def create_metric_dir_if_missing #:nodoc:
-      unless File.directory?(metric_directory)
-        FileUtils.mkdir_p(metric_directory, :verbose => false)
-      end
-    end
-
-    def create_output_dir_if_missing #:nodoc:
-      unless File.directory?(MetricFu::Io::FileSystem.directory('output_directory'))
-        FileUtils.mkdir_p(MetricFu::Io::FileSystem.directory('output_directory'), :verbose => false)
-      end
-    end
-
-    def create_data_dir_if_missing #:nodoc:
-      unless File.directory?(MetricFu::Io::FileSystem.directory('data_directory'))
-        FileUtils.mkdir_p(MetricFu::Io::FileSystem.directory('data_directory'), :verbose => false)
-      end
-    end
-
-    # @return String
-    #   The path of the metric directory this class is using.
+    # @return [String]
+    # The path of the metric directory this class is using.
     def metric_directory
       self.class.metric_directory
     end
