@@ -9,6 +9,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
 * Features
 * Fixes
 * Misc
+  * Update to rails_best_practices that removes activesupport dependency (for inflecto). (Benjamin Fleischer, #134)
 
 ### MetricFu [4.4.3 / 2013-09-25](https://github.com/metricfu/metric_fu/compare/v4.4.2...v4.4.3)
 

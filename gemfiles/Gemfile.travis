@@ -3,7 +3,5 @@ source 'https://rubygems.org'
 #to use, from the app root run
 # export BUNDLE_GEMFILE=$PWD/gemfiles/Gemfile.travis
 # when done, unset BUNDLE_GEMFILE
-# for 1.9.2 support because of https://github.com/railsbp/rails_best_practices/blob/master/rails_best_practices.gemspec
-gem 'activesupport', '~> 3.2'
 
 eval_gemfile File.expand_path('../../Gemfile', __FILE__)
