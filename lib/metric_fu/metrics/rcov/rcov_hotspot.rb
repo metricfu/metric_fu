@@ -11,7 +11,7 @@ class MetricFu::RcovHotspot < MetricFu::Hotspot
   end
 
   def map(row)
-    :percentage_uncovered
+    row.public_send(:percentage_uncovered)
   end
 
   def reduce_strategy
