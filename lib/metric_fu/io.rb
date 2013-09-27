@@ -1,13 +1,21 @@
-require 'fileutils'
+MetricFu.lib_require { 'utility' }
 module MetricFu
   module Io
     # TODO: Move this module / functionality elsewhere and make less verbose
     module FileSystem
 
       # TODO: Use a better environmental variable name for the output / artiface dir.  Set to a different default in tests.
-      def self.artifact_dir
-        (ENV['CC_BUILD_ARTIFACTS'] || 'tmp/metric_fu')
+      @default_artifact_dir = 'tmp/metric_fu'
+      def self.default_artifact_dir
+        @default_artifact_dir
       end
+      def self.artifact_dir
+        (ENV['CC_BUILD_ARTIFACTS'] || @artifact_dir)
+      end
+      def self.artifact_dir=(artifact_dir)
+        @artifact_dir = artifact_dir
+      end
+      self.artifact_dir = default_artifact_dir
 
       module_function
 
@@ -46,7 +54,7 @@ module MetricFu
         # due to behavior differences between ruby 1.8.7 and 1.9.3
         # this is good enough for now
         Array(*dirs).each do |dir|
-          FileUtils.mkdir_p dir
+          MetricFu::Utility.mkdir_p dir
         end
       end
 
@@ -114,7 +122,7 @@ module MetricFu
     def dir_for(path)
       return nil if path.nil?
       pathname = path_relative_to_base(path)
-      FileUtils.mkdir_p(pathname) unless File.directory?(pathname)
+      MetricFu::Utility.mkdir_p(pathname) unless File.directory?(pathname)
       pathname
     end
 

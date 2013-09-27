@@ -15,6 +15,13 @@ module MetricFu
       end
     end
 
+    def rm_rf(*args)
+      FileUtils.rm_rf(*args)
+    end
+
+    def mkdir_p(*args)
+      FileUtils.mkdir_p(*args)
+    end
 
   end
 end

@@ -28,12 +28,11 @@ describe MetricFu::Generator do
   end
 
   describe "ConcreteClass#metric_directory" do
-    it "should be 'tmp/metric_fu/scratch/concreteclass'" do
+    it "should be '{artifact_dir}/scratch/concreteclass'" do
       concrete_metric = double('concrete_metric')
       MetricFu::Metric.should_receive(:get_metric).with(:concrete).and_return(concrete_metric)
       concrete_metric.should_receive(:run_options).and_return({})
-      compare_paths(ConcreteClass.metric_directory,
-                    "tmp/metric_fu/scratch/concrete")
+      compare_paths(ConcreteClass.metric_directory, scratch_directory('concrete'))
     end
   end
 

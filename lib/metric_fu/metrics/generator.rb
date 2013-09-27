@@ -1,4 +1,4 @@
-require 'fileutils'
+MetricFu.lib_require { 'utility' }
 module MetricFu
 
   # = Generator
@@ -58,7 +58,7 @@ module MetricFu
         MetricFu::Metric.get_metric(metric).run_options[:output_directory] ||
         begin
           metric_directory = MetricFu::Io::FileSystem.scratch_directory(metric)
-          FileUtils.mkdir_p(metric_directory, :verbose => false)
+          MetricFu::Utility.mkdir_p(metric_directory, :verbose => false)
         end
     end
 

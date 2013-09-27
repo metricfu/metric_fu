@@ -45,16 +45,51 @@ describe MetricFu::Configuration do
     load File.join(MetricFu.metrics_dir, metric, 'init.rb')
   end
 
+  describe '#is_cruise_control_rb? ' do
+
+    before(:each) { get_new_config }
+    describe "when the CC_BUILD_ARTIFACTS env var is not nil" do
+
+      before(:each) do
+        ENV['CC_BUILD_ARTIFACTS'] = 'is set'
+      end
+
+      it 'should return true'  do
+        @config.is_cruise_control_rb?.should be_true
+      end
+
+      after(:each)  do
+        ENV['CC_BUILD_ARTIFACTS'] = nil
+        FileUtils.rm_rf(File.join(MetricFu.root_dir, 'is set'))
+      end
+
+    end
+
+    describe "when the CC_BUILD_ARTIFACTS env var is nil" do
+      before(:each) { ENV['CC_BUILD_ARTIFACTS'] = nil }
+
+      it 'should return false' do
+        @config.is_cruise_control_rb?.should be_false
+      end
+    end
+  end
+
   describe "#reset" do
 
     describe 'when there is a CC_BUILD_ARTIFACTS environment variable' do
 
-      it 'should return the CC_BUILD_ARTIFACTS environment variable' do
+      before do
         ENV['CC_BUILD_ARTIFACTS'] = 'foo'
         @config = MetricFu.configuration
         @config.reset
         MetricFu.configure
+      end
+      it 'should return the CC_BUILD_ARTIFACTS environment variable' do
         compare_paths(base_directory, ENV['CC_BUILD_ARTIFACTS'])
+      end
+      after do
+        ENV['CC_BUILD_ARTIFACTS'] = nil
+        FileUtils.rm_rf(File.join(MetricFu.root_dir, 'foo'))
       end
     end
 
@@ -65,7 +100,7 @@ describe MetricFu::Configuration do
         get_new_config
       end
       it 'should return "tmp/metric_fu"' do
-        base_directory.should == "tmp/metric_fu"
+        base_directory.should == MetricFu.artifact_dir
       end
 
       it 'should set @metric_fu_root_directory to the base of the '+
@@ -253,28 +288,6 @@ describe MetricFu::Configuration do
     it 'should return the value of the PLATFORM constant' do
       this_platform = RUBY_PLATFORM
       @config.platform.should == this_platform
-    end
-  end
-
-  describe '#is_cruise_control_rb? ' do
-
-    before(:each) { get_new_config }
-    describe "when the CC_BUILD_ARTIFACTS env var is not nil" do
-
-      before(:each) { ENV['CC_BUILD_ARTIFACTS'] = 'is set' }
-
-      it 'should return true'  do
-        @config.is_cruise_control_rb?.should be_true
-      end
-
-    end
-
-    describe "when the CC_BUILD_ARTIFACTS env var is nil" do
-      before(:each) { ENV['CC_BUILD_ARTIFACTS'] = nil }
-
-      it 'should return false' do
-        @config.is_cruise_control_rb?.should be_false
-      end
     end
   end
 

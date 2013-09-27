@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'coderay'
 MetricFu.metrics_require { 'base_template' }
 MetricFu.lib_require { 'utility' }

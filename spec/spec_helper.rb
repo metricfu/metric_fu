@@ -22,13 +22,13 @@ Dir[MetricFu.root_dir + "/spec/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   # :suite after/before all specs
-  # :each ever describe block
-  # :all ever it block
+  # :each every describe block
+  # :all every it block
 
   config.order = 'random'
 
   config.after(:suite) do
-    cleanup_test_files
+    cleanup_fs
   end
 
   config.after(:each) do
