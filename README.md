@@ -118,6 +118,7 @@ in your .metrics file add the below to run pre-generated metrics
 
     MetricFu::Configuration.run do |config|
       config.configure_metric(:rcov) do |rcov|
+        rcov.activate
         rcov.enabled = true
         coverage_file = File.expand_path("coverage/rcov/rcov.txt", Dir.pwd)
         rcov.external = coverage_file
