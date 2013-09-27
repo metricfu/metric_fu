@@ -8,6 +8,8 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
 
 * Features
 * Fixes
+  * Update rcov config instructions in README to include call to activate (Carlos Fernandez, #145)
+  * rcov hotspot analyzer (MetricFu::RcovHotspot) now overrides map_strategy instead of map (Carlos Fernandez, #145)
 * Misc
   * Update to rails_best_practices that removes activesupport dependency (for inflecto). (Benjamin Fleischer, #134)
 

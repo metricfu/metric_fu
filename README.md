@@ -121,6 +121,7 @@ in your .metrics file add the below to run pre-generated metrics
         rcov.enabled = true
         coverage_file = File.expand_path("coverage/rcov/rcov.txt", Dir.pwd)
         rcov.external = coverage_file
+        rcov.activate
       end
     end
 

@@ -10,7 +10,7 @@ class MetricFu::RcovHotspot < MetricFu::Hotspot
     :rcov
   end
 
-  def map(row)
+  def map_strategy
     :percentage_uncovered
   end
 
