@@ -36,7 +36,7 @@ module MetricFu
 
         out[problem[:file]] ||= {}
 
-        lines = problem[:line].split(/\s*,\s*/)
+        lines = problem[:line].split(/\s*,\s*/) rescue []
         lines.each do |line|
           out[problem[:file]][line] ||= []
           out[problem[:file]][line] << {:type => :rails_best_practices, :description => problem[:problem]}
