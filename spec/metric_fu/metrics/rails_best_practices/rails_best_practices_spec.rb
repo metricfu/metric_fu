@@ -25,7 +25,7 @@ describe RailsBestPracticesGenerator do
   describe "to_h method" do
     it "should put things into a hash" do
       MetricFu::Configuration.run {}
-      practices = MetricFu::RailsBestPractices.new
+      practices = MetricFu::RailsBestPracticesGenerator.new
       practices.instance_variable_set(:@rails_best_practices_results, "the_practices")
       practices.to_h[:rails_best_practices].should == "the_practices"
     end
