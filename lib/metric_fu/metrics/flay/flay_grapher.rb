@@ -3,6 +3,10 @@ module MetricFu
   class FlayGrapher < Grapher
     attr_accessor :flay_score, :labels
 
+    def self.metric
+      :flay
+    end
+
     def initialize
       super
       @flay_score = []
@@ -15,5 +19,20 @@ module MetricFu
         @labels.update( { @labels.size => date })
       end
     end
+
+    def title
+      'Flay: duplication'
+    end
+
+    def data
+      [
+        ['flay', @flay_score.join(',')]
+      ]
+    end
+
+    def output_filename
+      'flay.js'
+    end
+
   end
 end

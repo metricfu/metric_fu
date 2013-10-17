@@ -57,11 +57,11 @@ module MetricFu
       def save_graphs
         mf_log "** GENERATING GRAPHS"
         mf_debug "** PREPARING TO GRAPH"
-        MetricFu.configuration.graphs.each {|graph|
-          mf_debug "** Graphing #{graph} with #{MetricFu.configuration.graph_engine}"
+        MetricFu.configuration.graphed_metrics.each {|graphed_metric|
+          mf_debug "** Graphing #{graphed_metric} with #{MetricFu.configuration.graph_engine}"
           # TODO: This should probably be defined on configuration
           #   rather than the module. See MetricFu::Graph
-          MetricFu.graph.add(graph, MetricFu.configuration.graph_engine, self.output_directory)
+          MetricFu.graph.add(graphed_metric, MetricFu.configuration.graph_engine, self.output_directory)
         }
         mf_debug "** GENERATING GRAPH"
         MetricFu.graph.generate

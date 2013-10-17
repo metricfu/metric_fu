@@ -4,10 +4,6 @@ require 'metric_fu/cli/client'
 describe MetricFu do
   let(:helper)  { MetricFu::Cli::Helper.new }
 
-  before(:all) do
-    MetricFu.configuration.configure_graph_engine(:bluff)
-  end
-
   before do
     setup_fs
   end

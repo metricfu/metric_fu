@@ -3,6 +3,10 @@ module MetricFu
   class RoodiGrapher < Grapher
     attr_accessor :roodi_count, :labels
 
+    def self.metric
+      :roodi
+    end
+
     def initialize
       super
       @roodi_count = []
@@ -15,5 +19,20 @@ module MetricFu
         @labels.update( { @labels.size => date })
       end
     end
+
+    def title
+      'Roodi: design problems'
+    end
+
+    def data
+      [
+        ['roodi', @roodi_count.join(',')]
+      ]
+    end
+
+    def output_filename
+      'roodi.js'
+    end
+
   end
 end

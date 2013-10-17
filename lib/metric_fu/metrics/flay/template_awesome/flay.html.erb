@@ -3,12 +3,8 @@
 <p><a href='http://ruby.sadi.st/Flay.html'>Flay</a> analyzes ruby code for structural similarities.</p>
 
 <% graph_name = 'flay' %>
-<% if MetricFu.configuration.graph_engine == :gchart %>
-<img src="<%= graph_name %>.png?<%= Time.now.to_i %>" />
-<% else %>
 <canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
-<% end %>
 
 <h4>Total Score (lower is better): <%= @flay[:total_score] %></h4>
 <h5>Scores less than <%= MetricFu::Metric.get_metric('flay').run_options[:minimum_score] %> are not shown or part of the total</h5>

@@ -3,6 +3,10 @@ module MetricFu
   class FlogGrapher < Grapher
     attr_accessor :flog_average, :labels, :top_five_percent_average
 
+    def self.metric
+      :flog
+    end
+
     def initialize
       super
       @flog_average = []
@@ -16,6 +20,21 @@ module MetricFu
         @flog_average.push(metrics[:flog][:average])
         @labels.update( { @labels.size => date })
       end
+    end
+
+    def title
+      'Flog: code complexity'
+    end
+
+    def data
+      [
+        ['average', @flog_average.join(',')],
+        ['top 5% average', @top_five_percent_average.join(',')]
+      ]
+    end
+
+    def output_filename
+      'flog.js'
     end
 
     private

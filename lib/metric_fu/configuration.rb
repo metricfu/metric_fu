@@ -52,12 +52,6 @@ module MetricFu
   #   config.configure_formatter(:yaml, "customreport.yml")
   #   config.configure_formatter(MyCustomFormatter)
   #
-  # == Graph Configuration
-  #
-  # Graphing engine can be configured by e.g.
-  #   config.configure_graph_engine(:bluff)
-  #
-  #
   class Configuration
     require_relative 'environment'
     require_relative 'io'
@@ -83,17 +77,16 @@ module MetricFu
       MetricFu::Io::FileSystem.set_directories
       MetricFu::Formatter::Templates.configure_template(self)
       @formatters = []
-      @graph_engine_config = MetricFu::GraphEngine.new
     end
 
     # This allows us to have a nice syntax like:
     #
     #   MetricFu.run do |config|
-    #     congif.configure_metric(:churn) do
+    #     config.configure_metric(:churn) do
     #       ...
     #     end
     #
-    #     config.configure_graph_engine(:bluff)
+    #     config.configure_formatter(MyCustomFormatter)
     #   end
     #
     # See the README for more information on configuration options.
@@ -133,33 +126,13 @@ module MetricFu
     end
 
     # @return [Array<Symbol>] names of enabled metrics with graphs
-    def graphs
+    def graphed_metrics
       # TODO: This is a common enough need to be pushed into MetricFu::Metric as :enabled_metrics_with_graphs
       MetricFu::Metric.enabled_metrics.select{|metric|metric.has_graph?}.map(&:name)
     end
 
-    # TODO: Consider if we need to delegate so much to graph_engine_config
-    #   if we should use forwardable or change the api
-
-    # @return [Array<Symbol>] names of available graph engines
-    # @example [:bluff, :gchart]
-    def graph_engines
-      @graph_engine_config.graph_engines
-    end
-
-    # @return [Symbol] the selected graph engine
     def graph_engine
-      @graph_engine_config.graph_engine
-    end
-
-    # @param graph_engine [Symbol] the name of an available graph engine
-    def add_graph_engine(graph_engine)
-      @graph_engine_config.add_graph_engine(graph_engine)
-    end
-
-    # @param graph_engine [Symbol] sets the selected graph engine to use
-    def configure_graph_engine(graph_engine)
-      @graph_engine_config.configure_graph_engine(graph_engine)
+      :bluff
     end
 
   end

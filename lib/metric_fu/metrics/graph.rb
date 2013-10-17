@@ -12,13 +12,13 @@ module MetricFu
       self.graphers = []
     end
 
-    def add(graph_type, graph_engine, output_directory = MetricFu::Io::FileSystem.directory('output_directory'))
-      grapher = grapher_from_type_and_engine(graph_type, graph_engine)
-      self.graphers.push grapher.new.tap{|g| g.output_directory = output_directory }
+    def add(metric_name, graph_engine, output_directory = MetricFu::Io::FileSystem.directory('output_directory'))
+      grapher = MetricFu::Grapher.get_grapher(metric_name).
+        new.tap{|g| g.output_directory = output_directory }
+      self.graphers.push grapher
     rescue NameError => e
       mf_log "#{e.message} called in MetricFu::Graph.add with #{graph_type}"
     end
-
 
     def generate
       return if self.graphers.empty?
@@ -31,10 +31,6 @@ module MetricFu
 
     private
 
-    def grapher_from_type_and_engine(graph_type, graph_engine)
-      grapher_name = graph_type.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } + graph_engine.to_s.capitalize + "Grapher"
-      MetricFu.const_get(grapher_name)
-    end
     def metric_files
       Dir[File.join(MetricFu::Io::FileSystem.directory('data_directory'), '*.yml')].sort
     end

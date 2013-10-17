@@ -97,6 +97,5 @@ module MetricFu
       @libraries << file.strip
     end
 
-
   end
 end

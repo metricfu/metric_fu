@@ -3,6 +3,10 @@ module MetricFu
   class RailsBestPracticesGrapher < Grapher
     attr_accessor :rails_best_practices_count, :labels
 
+    def self.metric
+      :rails_best_practices
+    end
+
     def initialize
       super
       @rails_best_practices_count = []
@@ -16,5 +20,20 @@ module MetricFu
         @labels.update( { @labels.size => date })
       end
     end
+
+    def title
+      'Rails Best Practices: design problems'
+    end
+
+    def data
+      [
+        ['rails_best_practices', @rails_best_practices_count.join(',')]
+      ]
+    end
+
+    def output_filename
+      'rails_best_practices.js'
+    end
+
   end
 end

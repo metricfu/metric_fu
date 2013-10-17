@@ -3,6 +3,10 @@ module MetricFu
   class ReekGrapher < Grapher
     attr_accessor :reek_count, :labels
 
+    def self.metric
+      :reek
+    end
+
     def initialize
       super
       @reek_count = {}
@@ -27,5 +31,20 @@ module MetricFu
         end
       end
     end
+
+    def title
+      'Reek: code smells'
+    end
+
+    def data
+      @reek_count.map do |name, count|
+        [name, count.join(',')]
+      end
+    end
+
+    def output_filename
+      'reek.js'
+    end
+
   end
 end

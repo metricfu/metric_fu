@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-# alternative graphing gem
-gem "googlecharts"
 group :development do
 
 end

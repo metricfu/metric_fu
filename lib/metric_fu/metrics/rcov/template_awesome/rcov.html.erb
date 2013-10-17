@@ -3,12 +3,8 @@
 <p>C0 code coverage information.</p>
 
 <% graph_name = 'rcov' %>
-<% if MetricFu.configuration.graph_engine == :gchart %>
-<img src="<%= graph_name %>.png?<%= Time.now.to_i %>" />
-<% else %>
 <canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
-<% end %>
 
 <p>Total Coverage: <%= @rcov.delete(:global_percent_run) %>% </p>
 <table>

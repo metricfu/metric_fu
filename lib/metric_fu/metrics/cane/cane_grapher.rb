@@ -3,6 +3,10 @@ module MetricFu
   class CaneGrapher < Grapher
     attr_accessor :cane_violations, :labels
 
+    def self.metric
+      :cane
+    end
+
     def initialize
       super
       @cane_violations = []
@@ -15,6 +19,21 @@ module MetricFu
         @labels.update( { @labels.size => date })
       end
     end
+
+    def title
+      'Cane: code quality threshold violations'
+    end
+
+    def data
+      [
+        ['cane', @cane_violations.join(',')]
+      ]
+    end
+
+    def output_filename
+      'cane.js'
+    end
+
   end
 end
 

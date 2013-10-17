@@ -13,12 +13,8 @@
   <p><a href='https://github.com/square/cane'>Cane</a> reports code quality threshold violations.</p>
 
   <% graph_name = 'cane' %>
-  <% if MetricFu.configuration.graph_engine == :gchart %>
-  <img src="<%= graph_name %>.png?<%= Time.now.to_i %>" />
-  <% else %>
   <canvas id="graph"></canvas>
   <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
-  <% end %>
 
   <% if @cane[:violations][:abc_complexity] && @cane[:violations][:abc_complexity].size > 0 %>
 	<h3>Methods exceeding allowed Abc complexity (<%= @cane[:violations][:abc_complexity].size %>)</h3>

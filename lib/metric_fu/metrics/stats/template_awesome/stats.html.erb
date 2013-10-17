@@ -1,12 +1,8 @@
 <h3>Lines of Code/Tests Metric Results</h3>
 
 <% graph_name = 'stats' %>
-<% if MetricFu.configuration.graph_engine == :gchart %>
-<img src="<%= graph_name %>.png?<%= Time.now.to_i %>" />
-<% else %>
 <canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
-<% end %>
 
 
 <p>Lines of Code/Tests Metrics Results</p>
