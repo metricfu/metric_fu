@@ -5,5 +5,10 @@
     <%= link %>
   </li>
 <% end %>
+  <% if simple_cov_link %>
+  <li class='even failure'>
+    <a href="coverage/index.html">SimpleCov</a> Code coverage 
+  </li>
+  <% end %>
 </ul>
 <p>Generated on <%= Time.now.localtime %></p>

@@ -8,6 +8,11 @@
 #
 #   To configure individual metrics...
 #
+#    config.configure_metric(:rubocop) do |rubocop|
+#      rubocop.dirs_to_rubocop = ['lib', 'app']
+#      rubocop.config = '.rubocop.yml'
+#    end
+#
 #   config.configure_metric(:rcov) do |rcov|
 #     rcov.enabled = true
 #     coverage_file = File.expand_path("coverage/rcov/rcov.txt", Dir.pwd)

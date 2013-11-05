@@ -1,0 +1,42 @@
+<h3>Rubocop Results</h3>
+
+<p>An experimental Ruby code analyzer, based on the community Ruby style guide.</p><a href="https://github.com/bbatsov/rubocop">Rubocop</a> 
+
+<table>
+  <tr>
+    <th>Offence count</th>
+    <th>Target file count</th>
+    <th>Inspected file count</th>
+  </tr>
+  <tr>
+    <td><%= @rubocop[:summary]['offence_count'] %></td>
+    <td><%= @rubocop[:summary]['target_file_count'] %></td>
+    <td><%= @rubocop[:summary]['inspected_file_count'] %></td>
+  </tr>
+</table>
+<% @rubocop[:problems].each do |problem| %>
+  <% unless problem[:offences].empty? %>
+    <h1><%= link_to_filename(problem[:file]) %></h1>
+    <table>
+      <tr>
+        <th>Severity</th>
+        <th>Cop name</th>
+        <th>Description</th>
+        <th>Location (line/column)</th>
+      </tr>
+      <% count = 0 %>
+      <% problem[:offences].each do |offence| %>
+        <tr class='<%= cycle("light", "dark", count) %>'>
+          <td><%= offence["severity"] %></td>
+          <td><%= offence["cop_name"] %></td>
+          <td><%= offence["message"] %></td>
+          <td><%= offence["location"].values.join('/') %></td>
+        <% end %>
+      <% count += 1 %>
+      </tr>
+    </table>
+  <% end %>
+<% end %>
+
+
+<p>Generated on <%= Time.now.localtime %></p>

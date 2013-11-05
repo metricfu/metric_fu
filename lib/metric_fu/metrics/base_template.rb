@@ -245,6 +245,11 @@ module MetricFu
       LINK
     end
 
+    def simple_cov_link
+      index = "tmp/metric_fu/output/coverage/index.html"
+      index if File.exists?(index)
+    end
+
     def snake_case_to_title_case(string)
       string.split('_').collect{|word| word[0] = word[0..0].upcase; word}.join(" ")
     end

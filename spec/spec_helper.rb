@@ -2,6 +2,7 @@ require 'rspec/autorun'
 
 if ENV['COVERAGE']
   require 'simplecov'
+  SimpleCov.coverage_dir("tmp/metric_fu/output/coverage")
   formatters = [SimpleCov::Formatter::HTMLFormatter]
   begin
     puts '[COVERAGE] Running with SimpleCov HTML Formatter'

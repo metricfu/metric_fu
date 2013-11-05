@@ -9,7 +9,7 @@ module MetricFu
       files_to_analyze = options[:dirs_to_roodi].map{|dir| Dir[File.join(dir, "**/*.rb")] }
       files = remove_excluded_files(files_to_analyze.flatten)
       config = options[:roodi_config] ? "-config=#{options[:roodi_config]}" : ""
-      command = %Q(mf-roodi #{config} #{files.join(" ")})
+      command = %Q(roodi #{config} #{files.join(" ")})
       mf_debug "** #{command}"
       @output = `#{command}`
     end

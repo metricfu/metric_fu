@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'metric_fu-Saikuro',     ['>= 1.1.1.0']
   s.add_runtime_dependency 'roodi',                 ['~> 3.1']
   s.add_runtime_dependency 'code_metrics',          ['~> 0.1']
+  s.add_runtime_dependency 'rubocop',               ['~> 0.14.1']
 
   # other dependencies
   # ruby version identification

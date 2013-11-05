@@ -19,3 +19,5 @@ test/version_tmp
 tmp
 *.swp
 tags
+.ruby-gemset
+.ruby-version

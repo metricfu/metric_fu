@@ -39,7 +39,7 @@ module MetricFu
     end
 
     def churn_code
-      command = "mf-churn #{build_churn_options}"
+      command = "churn #{build_churn_options}"
       mf_debug "** #{command}"
       `#{command}`
     end
