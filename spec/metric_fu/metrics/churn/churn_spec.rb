@@ -22,7 +22,7 @@ describe MetricFu::ChurnGenerator do
 
     it "initializes with given minimum_churn_count option" do
       churn = MetricFu::ChurnGenerator.new( { :minimum_churn_count => 5 })
-      churn.send(:build_churn_options).should == '--yaml --minimum_churn_count="5"'
+      churn.send(:build_churn_options).should == '--yaml --minimum_churn_count=5'
     end
 
     it "initializes with given ignore option" do

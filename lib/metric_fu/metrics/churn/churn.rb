@@ -47,7 +47,7 @@ module MetricFu
       opts = ["--yaml"]
       churn_options.each do |churn_option, command_flag|
         if has_option?(churn_option)
-          opts << %(#{command_flag}=#{options[churn_option]})
+          opts << "#{command_flag}=#{options[churn_option]}"
         end
       end
       opts.join(" ")
@@ -56,6 +56,7 @@ module MetricFu
     def has_option?(churn_option)
       options.include?(churn_option)
     end
+
     def churn_options
       {
         :minimum_churn_count => '--minimum_churn_count',
