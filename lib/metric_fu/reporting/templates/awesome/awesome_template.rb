@@ -68,7 +68,7 @@ class AwesomeTemplate < MetricFu::Template
 
     per_file_data.each_pair do |file, lines|
       next if file.to_s.empty?
-      next unless File.exists?(file)
+      next unless File.file?(file)
 
       data = File.readlines(file)
       fn = "#{file.gsub(%r{/}, '_')}.html"
