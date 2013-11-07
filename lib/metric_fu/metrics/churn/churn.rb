@@ -59,7 +59,8 @@ module MetricFu
     def churn_options
       {
         :minimum_churn_count => '--minimum_churn_count',
-        :start_date => '--start_date'
+        :start_date => '--start_date',
+        :ignore_files => '--ignore_files'
       }
     end
 
