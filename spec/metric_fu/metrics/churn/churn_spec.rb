@@ -26,7 +26,7 @@ describe MetricFu::ChurnGenerator do
     end
 
     it "initializes with given ignore option" do
-      churn = MetricFu::ChurnGenerator.new({:ignore_files => "Gemfile, Gemfile.lock" })
+      churn = MetricFu::ChurnGenerator.new({:ignore_files => %q("Gemfile, Gemfile.lock") })
       churn.send(:build_churn_options).should == '--yaml --ignore_files="Gemfile, Gemfile.lock"'
     end
   end
