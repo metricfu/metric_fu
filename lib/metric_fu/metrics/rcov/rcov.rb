@@ -131,7 +131,11 @@ module MetricFu
         lines = content[:lines]
         @global_total_lines_run += lines_run = lines.find_all {|line| line[:was_run] == true }.length
         @global_total_lines += total_lines = lines.length
-        percent_run = ((lines_run.to_f / total_lines.to_f) * 100).round
+        if total_lines.zero?
+          percent_run = 0
+        else
+          percent_run = (Float(lines_run) / Float(total_lines) * 100).round
+        end
         files[fname][:percent_run] = percent_run
       end
     end
