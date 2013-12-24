@@ -80,6 +80,8 @@ module MetricFu
       begin
         @git ||= Git.init
         @orig_branch ||= @git.current_branch
+
+        mf_log "CHECKING OUT '#{options[:githash]}'"
         @git.checkout(options[:githash])
       rescue Git::GitExecuteError => e
         mf_log "Unable to checkout githash: #{options[:githash]}"
@@ -91,6 +93,7 @@ module MetricFu
 
       begin
         @git ||= Git.init
+        mf_log "CHECKING OUT ORIGINAL BRANCH '#{@orig_branch}'"
         @git.checkout(@orig_branch)
       rescue Git::GitExecuteError => e
         mf_log "Unable to reset git status to branch '#{@orig_branch}'"
