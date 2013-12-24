@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.authors     = File.readlines(author_file, :encoding => Encoding::UTF_8).map(&:strip)
 
   # used with gem i metric_fu -P HighSecurity
-  s.cert_chain  = ['certs/bf4.pem']
-  s.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
+  #s.cert_chain  = ['certs/bf4.pem']
+  #s.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
 
   s.rubyforge_project           = 'metric_fu'
   s.license                     = 'MIT'
@@ -55,6 +55,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'coderay'
   # to_json support
   s.add_runtime_dependency 'multi_json'
+  # git support
+  s.add_runtime_dependency 'git'
 
   # temporary filesystem to act on
   s.add_development_dependency   'test-construct'

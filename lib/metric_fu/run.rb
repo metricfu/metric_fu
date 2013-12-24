@@ -1,3 +1,4 @@
+require 'git'
 MetricFu.configure
 module MetricFu
   class Run
@@ -7,6 +8,7 @@ module MetricFu
     def run(options={})
       configure_run(options)
       measure
+      reset_git(options) if git_configured? options
       display_results if options[:open]
     end
 
@@ -28,6 +30,7 @@ module MetricFu
     private
     def configure_run(options)
       disable_metrics(options)
+      configure_git(options)
       configure_formatters(options)
     end
     def disable_metrics(options)
@@ -55,19 +58,47 @@ module MetricFu
       end
     end
     def configure_formatters(options)
+      filename = options[:githash] # Set the filename for the output; nil is a valid value
+
       # Configure from command line if any.
       if options[:format]
         MetricFu.configuration.formatters.clear # Command-line format takes precedence.
         Array(options[:format]).each do |format, o|
-          MetricFu.configuration.configure_formatter(format, o)
+          MetricFu.configuration.configure_formatter(format, o, filename)
         end
       end
       # If no formatters specified, use defaults.
       if MetricFu.configuration.formatters.empty?
         Array(MetricFu::Formatter::DEFAULT).each do |format, o|
-          MetricFu.configuration.configure_formatter(format, o)
+          MetricFu.configuration.configure_formatter(format, o, filename)
         end
       end
+    end
+    def configure_git(options)
+      return unless git_configured? options
+
+      begin
+        @git ||= Git.init
+        @orig_branch ||= @git.current_branch
+        @git.checkout(options[:githash])
+      rescue Git::GitExecuteError => e
+        mf_log "Unable to checkout githash: #{options[:githash]}"
+        raise "Unable to checkout githash: #{options[:githash]}: #{e}"
+      end
+    end
+    def reset_git(options)
+      return unless git_configured? options
+
+      begin
+        @git ||= Git.init
+        @git.checkout(@orig_branch)
+      rescue Git::GitExecuteError => e
+        mf_log "Unable to reset git status to branch '#{@orig_branch}'"
+        raise "Unable to reset git status to branch '#{@orig_branch}'"
+      end
+    end
+    def git_configured?(options)
+      options.size > 0 && options.has_key?(:githash)
     end
     def reporter
       MetricFu::Reporter.new(MetricFu.configuration.formatters)

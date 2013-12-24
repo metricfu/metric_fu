@@ -167,6 +167,12 @@ describe MetricFu::Cli::Helper do
       end
     end
 
+    context 'given a single git hash/tag' do
+      it 'sets the git flag' do
+        helper.process_options(['--githash', 'testhash'])[:githash].should eq 'testhash'
+      end
+    end
+
   end
 
 end

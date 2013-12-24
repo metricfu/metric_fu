@@ -49,6 +49,13 @@ describe MetricFu::Formatter::HTML do
       }.to create_file("#{directory('data_directory')}/#{Time.now.strftime("%Y%m%d")}.yml")
     end
 
+    it 'creates a data yaml file based on specified filename' do
+      fn = 'testfilename'
+      expect {
+        MetricFu::Formatter::HTML.new(filename: fn).finish
+      }.to create_file("#{directory('data_directory')}/#{fn}.yml")
+    end
+
     it "creates a report index html file" do
       expect {
       MetricFu::Formatter::HTML.new.finish
