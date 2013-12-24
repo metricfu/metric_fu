@@ -48,7 +48,11 @@ module MetricFu
       date_parts = year_month_day_from_filename(metric_file)
       metrics = MetricFu::Utility.load_yaml(metric_file)
 
-      build_graph(metrics, "#{date_parts[:m]}/#{date_parts[:d]}")
+      # Determine the name of the graph files based on the original metric_file name
+      graph_filename = metric_file
+      graph_filename = "#{date_parts[:m]}/#{date_parts[:d]}" if date_parts
+
+      build_graph(metrics, graph_filename)
     rescue NameError => e
       mf_log "#{e.message} called in MetricFu::Graph.generate with #{metric_file}"
     end
@@ -66,7 +70,9 @@ module MetricFu
     end
 
     def year_month_day_from_filename(path_to_file_with_date)
-      date = path_to_file_with_date.match(/\/(\d+).yml$/)[1]
+      date = path_to_file_with_date.match(/\/(\d+).yml$/)
+      return nil unless date
+      date = date[1]
       {:y => date[0..3].to_i, :m => date[4..5].to_i, :d => date[6..7].to_i}
     end
   end
