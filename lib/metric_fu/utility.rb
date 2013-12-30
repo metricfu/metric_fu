@@ -1,6 +1,5 @@
 require 'yaml'
 require 'fileutils'
-require 'git'
 module MetricFu
   module Utility
     module_function

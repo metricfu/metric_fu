@@ -1,4 +1,3 @@
-require 'git'
 MetricFu.configure
 module MetricFu
   class Run
@@ -77,27 +76,40 @@ module MetricFu
     def configure_git(options)
       return unless git_configured? options
 
-      begin
-        @git ||= Git.init
-        @orig_branch ||= @git.current_branch
+      execute_with_git do
+        begin
+          @git ||= Git.init
+          @orig_branch ||= @git.current_branch
 
-        mf_log "CHECKING OUT '#{options[:githash]}'"
-        @git.checkout(options[:githash])
-      rescue Git::GitExecuteError => e
-        mf_log "Unable to checkout githash: #{options[:githash]}"
-        raise "Unable to checkout githash: #{options[:githash]}: #{e}"
+          mf_log "CHECKING OUT '#{options[:githash]}'"
+          @git.checkout(options[:githash])
+        rescue Git::GitExecuteError => e
+          mf_log "Unable to checkout githash: #{options[:githash]}"
+          raise "Unable to checkout githash: #{options[:githash]}: #{e}"
+        end
       end
     end
     def reset_git(options)
       return unless git_configured? options
 
+      execute_with_git do
+        begin
+          @git ||= Git.init
+          mf_log "CHECKING OUT ORIGINAL BRANCH '#{@orig_branch}'"
+          @git.checkout(@orig_branch)
+        rescue Git::GitExecuteError => e
+          mf_log "Unable to reset git status to branch '#{@orig_branch}'"
+          raise "Unable to reset git status to branch '#{@orig_branch}'"
+        end
+      end
+    end
+    def execute_with_git(&block)
       begin
-        @git ||= Git.init
-        mf_log "CHECKING OUT ORIGINAL BRANCH '#{@orig_branch}'"
-        @git.checkout(@orig_branch)
-      rescue Git::GitExecuteError => e
-        mf_log "Unable to reset git status to branch '#{@orig_branch}'"
-        raise "Unable to reset git status to branch '#{@orig_branch}'"
+        require 'git'
+        yield
+      rescue LoadError => e
+        mf_log 'Cannot select git hash; please install git gem'
+        raise 'Cannot select git hash; please install git gem'
       end
     end
     def git_configured?(options)

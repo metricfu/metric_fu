@@ -79,7 +79,7 @@ module MetricFu
 
         def add_git_option(p)
           p.on('--githash COMMIT_HASH',
-              'Specify the git hash run metric_fu against') do |o|
+              'Specify the git hash to run metric_fu against') do |o|
             @result[:githash] ||= ''
             @result[:githash] << o
           end

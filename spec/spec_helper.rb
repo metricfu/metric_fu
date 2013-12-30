@@ -19,6 +19,7 @@ require 'date'
 require 'construct'
 require 'json'
 require 'pry-nav'
+require 'git'
 
 # add lib to the load path just like rubygems does
 $:.unshift File.expand_path("../../lib", __FILE__)

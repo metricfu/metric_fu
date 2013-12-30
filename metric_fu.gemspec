@@ -55,8 +55,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'coderay'
   # to_json support
   s.add_runtime_dependency 'multi_json'
-  # git support
-  s.add_runtime_dependency 'git'
 
   # temporary filesystem to act on
   s.add_development_dependency   'test-construct'
