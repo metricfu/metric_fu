@@ -23,7 +23,7 @@ module MetricFu
     def analyze
       @matches = @output.chomp.split("\n\n").map{|m| m.split("\n") }
       @matches = @matches.map do |match|
-        file_path = match.shift.split('--').first
+        file_path = match.shift.split(' -- ').first
         file_path = file_path.gsub('"', ' ').strip
         code_smells = match.map do |smell|
           match_object = smell.match(REEK_REGEX)
