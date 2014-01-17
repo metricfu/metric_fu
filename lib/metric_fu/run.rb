@@ -1,4 +1,3 @@
-MetricFu.configure
 module MetricFu
   class Run
     def initialize
