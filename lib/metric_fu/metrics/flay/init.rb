@@ -11,7 +11,8 @@ module MetricFu
       # a long time. This is a really big number, considering
       # the default is 16. Setting it to nil to use the Flay default.
       :minimum_score => nil,
-      :filetypes => ['rb'] }
+      :filetypes => ['rb'],
+      :diff => nil }
     end
 
     def has_graph?
