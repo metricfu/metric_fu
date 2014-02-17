@@ -60,6 +60,31 @@ describe MetricFu do
       expect { metric_fu }.to create_file("#{output_directory}/index.html")
     end
 
+    context 'with a git-hash specified' do
+      let(:githash) { 'testhash' }
+
+      before do
+        @branch = 'original_branch'
+
+        # Stub out the git checkout method to not actually checkout a branch, but keep track of the state
+        Git::Base.any_instance.stub(:checkout) do |branch|
+          @branch = branch
+        end
+
+        Git::Base.any_instance.stub(:current_branch) { @branch }
+      end
+
+      it "creates a git-hash yaml file" do
+        expect { metric_fu "--githash #{githash} --no-open" }.to create_file("#{data_directory}/#{githash}.yml")
+      end
+
+      it 'resets context back to the original git state' do
+        metric_fu "--githash #{githash} --no-open"
+
+        expect(@branch).to eq 'original_branch'
+      end
+    end
+
     context "with configured formatter" do
       it "outputs using configured formatter" do
         expect {

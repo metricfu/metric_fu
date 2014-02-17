@@ -49,6 +49,7 @@ module MetricFu
 
           add_format_option(p)
           add_output_option(p)
+          add_git_option(p)
 
           p.banner = @banner unless @banner.nil?
           p.on_tail("-h", "--help", "Show this message") {puts p ; success!}
@@ -73,6 +74,14 @@ module MetricFu
             p.on("-" << short, "--[no-]" << o[0].to_s.gsub("_", "-"), o[1]) {|x| @result[o[0]] = x}
           else # argument with parameter
             p.on("-" << short, "--" << o[0].to_s.gsub("_", "-") << " " << o[2][:default].to_s, klass, o[1]) {|x| @result[o[0]] = x}
+          end
+        end
+
+        def add_git_option(p)
+          p.on('--githash COMMIT_HASH',
+              'Specify the git hash to run metric_fu against') do |o|
+            @result[:githash] ||= ''
+            @result[:githash] << o
           end
         end
 

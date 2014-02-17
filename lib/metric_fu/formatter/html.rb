@@ -17,7 +17,7 @@ module MetricFu
         mf_debug "** SAVING REPORT DATA OUTPUT TO #{MetricFu::Io::FileSystem.directory('data_directory')}"
         # TODO: Allow customizing output filenames
         MetricFu::Formatter::YAML.new(
-          output: MetricFu.run_path.join("#{MetricFu::Io::FileSystem.directory('data_directory')}/#{Time.now.strftime("%Y%m%d")}.yml")
+          output: output_yml
         ).finish
 
         mf_debug "** SAVING TEMPLATIZED REPORT"
@@ -40,6 +40,12 @@ module MetricFu
 
       def output_directory
         @output ||= dir_for(@options[:output]) || MetricFu.run_path.join(MetricFu::Io::FileSystem.directory('output_directory'))
+      end
+
+      def output_yml
+        filename_prefix = @options[:filename] || Time.now.strftime("%Y%m%d")
+
+        MetricFu.run_path.join("#{MetricFu::Io::FileSystem.directory('data_directory')}/#{filename_prefix}.yml")
       end
 
       # Instantiates a new template class based on the configuration set

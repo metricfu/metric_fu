@@ -118,8 +118,8 @@ module MetricFu
     end
 
     # TODO: Reconsider method name/behavior, as it really adds a formatter
-    def configure_formatter(format, output = nil)
-      @formatters << MetricFu::Formatter.class_for(format).new(output: output)
+    def configure_formatter(format, output = nil, filename = nil)
+      @formatters << MetricFu::Formatter.class_for(format).new(output: output, filename: filename)
     end
 
     # @return [Array<Symbol>] names of enabled metrics with graphs

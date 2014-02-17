@@ -6,6 +6,8 @@ group :test, :local_development  do
   gem 'pry-nav'
   # https://github.com/kina/simplecov-rcov-text
   gem 'simplecov-rcov-text', group: :metrics
+  # Some tests require git gem to test the Git integration
+  gem 'git'
 end
 
 gemspec :path => File.expand_path('..', __FILE__)
