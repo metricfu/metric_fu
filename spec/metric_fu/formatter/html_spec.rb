@@ -67,7 +67,7 @@ describe MetricFu::Formatter::HTML do
     it "copies common javascripts to the output directory" do
       expect {
       MetricFu::Formatter::HTML.new.finish
-      }.to create_file("#{directory('output_directory')}/bluff*.js")
+      }.to create_file("#{directory('output_directory')}/highcharts*.js")
     end
 
     it "creates graphs for appropriate metrics" do
@@ -118,7 +118,7 @@ describe MetricFu::Formatter::HTML do
     it "copies common javascripts to the custom output directory" do
       expect {
       MetricFu::Formatter::HTML.new(output: @output).finish
-      }.to create_file("#{directory('base_directory')}/#{@output}/bluff*.js")
+      }.to create_file("#{directory('base_directory')}/#{@output}/highcharts*.js")
     end
 
     it "creates graphs for appropriate metrics in the custom output directory " do

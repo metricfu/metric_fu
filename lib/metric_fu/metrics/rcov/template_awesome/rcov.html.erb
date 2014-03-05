@@ -2,8 +2,9 @@
 
 <p>C0 code coverage information.</p>
 
+<div id="graph_container"></div>
+
 <% graph_name = 'rcov' %>
-<canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
 
 <p>Total Coverage: <%= @rcov.delete(:global_percent_run) %>% </p>

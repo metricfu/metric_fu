@@ -7,7 +7,7 @@ class AwesomeTemplate < MetricFu::Template
   def write
     @name = MetricFu.report_name
 
-    # Copy Bluff javascripts to output directory
+    # Copy javascripts to output directory
     Dir[File.join(template_directory, '..', 'javascripts', '*')].each do |f|
       FileUtils.cp(f, File.join(self.output_directory, File.basename(f)))
     end

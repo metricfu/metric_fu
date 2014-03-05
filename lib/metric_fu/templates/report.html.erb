@@ -2,7 +2,6 @@
   <head>
     <style>
     <%=  inline_css('css/syntax.css') %>
-    <%=  inline_css('css/bluff.css') if MetricFu.configuration.graph_engine == :bluff %>
     <%=  inline_css('css/rcov.css') if @metrics.has_key?(:rcov) %>
     </style>
   </head>

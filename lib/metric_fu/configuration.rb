@@ -78,6 +78,7 @@ module MetricFu
       @templates_configuration = MetricFu::Templates::Configuration.new
       MetricFu::Formatter::Templates.templates_configuration = @templates_configuration
       @formatters = []
+      @graph_engine = :bluff
     end
 
     # This allows us to have a nice syntax like:
@@ -128,8 +129,12 @@ module MetricFu
       MetricFu::Metric.enabled_metrics.select{|metric|metric.has_graph?}.map(&:name)
     end
 
+    def configure_graph_engine(graph_engine)
+      @graph_engine = graph_engine
+    end
+
     def graph_engine
-      :bluff
+      @graph_engine
     end
 
     # This allows us to configure the templates with:

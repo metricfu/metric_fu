@@ -2,8 +2,9 @@
 
 <p><a href='https://github.com/square/cane'>Cane</a> reports code quality threshold violations.</p>
 
+<div id="graph_container"></div>
+
 <% graph_name = 'cane' %>
-<canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
 
 <% if @cane[:violations][:abc_complexity] && @cane[:violations][:abc_complexity].size > 0 %>
