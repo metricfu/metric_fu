@@ -2,8 +2,9 @@
 
 <p><a href='http://ruby.sadi.st/Flay.html'>Flay</a> analyzes ruby code for structural similarities.</p>
 
+<div id="graph_container"></div>
+
 <% graph_name = 'flay' %>
-<canvas id="graph"></canvas>
 <script language="javascript" src="<%= graph_name %>.js?<%= Time.now.to_i %>" type="text/javascript"></script>
 
 <h4>Total Score (lower is better): <%= @flay[:total_score] %></h4>

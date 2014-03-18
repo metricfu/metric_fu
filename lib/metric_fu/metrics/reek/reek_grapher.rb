@@ -38,12 +38,18 @@ module MetricFu
 
     def data
       @reek_count.map do |name, count|
-        [name, count.join(',')]
+        [name, nil_counts_to_zero(count).join(',')]
       end
     end
 
     def output_filename
       'reek.js'
+    end
+
+    private
+
+    def nil_counts_to_zero(counts)
+      counts.map { |count| count || 0 }
     end
 
   end

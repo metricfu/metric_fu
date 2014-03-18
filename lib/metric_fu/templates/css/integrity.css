@@ -312,6 +312,9 @@ a {
     display: block;
     margin-top: 1em;
     margin-left: 2em; }
+  #content div#graph {
+    width: 100%;
+    height: 600px; }
 
 a.success {
   color: #bbf8aa; }
