@@ -2,10 +2,7 @@
 
 <p><a href='http://ruby.sadi.st/Flay.html'>Flay</a> analyzes ruby code for structural similarities.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'flay' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'flay'} %>
 
 <h4>Total Score (lower is better): <%= @flay[:total_score] %></h4>
 <h5>Scores less than <%= MetricFu::Metric.get_metric('flay').run_options[:minimum_score] %> are not shown or part of the total</h5>
@@ -28,4 +25,5 @@
     <% count += 1 %>
   <% end %>
 </table>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

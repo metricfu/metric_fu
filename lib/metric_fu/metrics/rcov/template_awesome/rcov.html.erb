@@ -5,10 +5,7 @@
 
 <p>C0 code coverage information.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'rcov' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'rcov'} %>
 
 <p>Total Coverage: <%= @rcov.delete(:global_percent_run) %>% </p>
 <table>
@@ -39,4 +36,5 @@
     </table>
   </div>
 <% end %>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

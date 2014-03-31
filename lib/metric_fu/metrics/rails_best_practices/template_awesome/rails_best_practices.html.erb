@@ -2,10 +2,7 @@
 
 <p><a href="http://github.com/railsbp/rails_best_practices">rails_best_practices</a> is a code metric tool for rails projects.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'rails_best_practices' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'rails_best_practices'} %>
 
 <table>
   <tr>
@@ -21,4 +18,5 @@
     <% count += 1 %>
   <% end %>
 </table>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

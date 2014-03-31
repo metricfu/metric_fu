@@ -2,10 +2,7 @@
 
 <p><a href="http://roodi.rubyforge.org/">Roodi</a> parses your Ruby code and warns you about design issues you have based on the checks that is has configured.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'roodi' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'roodi'} %>
 
 <table>
   <tr>
@@ -21,4 +18,5 @@
     <% count += 1 %>
   <% end %>
 </table>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

@@ -1,9 +1,6 @@
 <h3>Lines of Code/Tests Metric Results</h3>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'stats' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'stats'} %>
 
 <p>Lines of Code/Tests Metrics Results</p>
 <table>
@@ -44,4 +41,4 @@
   <% end %>
 </table>
 
-<p>Generated on <%= MetricFu.current_time %></p>
+<%= render_partial 'report_footer' %>

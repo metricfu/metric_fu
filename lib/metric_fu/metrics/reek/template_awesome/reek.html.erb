@@ -2,10 +2,7 @@
 
 <p><a href="http://github.com/troessner/reek">Reek</a> detects common code smells in ruby code.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'reek' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'reek'} %>
 
 <table>
   <tr>
@@ -34,4 +31,5 @@
   <% end %>
 
 </table>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

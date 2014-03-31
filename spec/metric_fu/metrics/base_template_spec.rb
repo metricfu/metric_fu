@@ -195,4 +195,25 @@ describe MetricFu::Template do
     end
   end
 
+  describe "#render_partial" do
+    it 'should erbify a partial with the name prefixed with an underscore' do
+      expect(@template).to receive(:erbify).with('_some_partial')
+      @template.send(:render_partial, 'some_partial')
+    end
+
+    it 'should set the given instance variables' do
+      variables = {:answer => 42}
+      allow(@template).to receive(:erbify)
+      expect(@template).to receive(:create_instance_vars).with(variables)
+      @template.send(:render_partial, 'some_partial', variables)
+    end
+  end
+
+  describe "#create_instance_vars" do
+    it "should set the given instance variables" do
+      @template.send(:create_instance_vars, {:answer => 42})
+      expect(@template.instance_variable_get(:@answer)).to eq(42)
+    end
+  end
+
 end

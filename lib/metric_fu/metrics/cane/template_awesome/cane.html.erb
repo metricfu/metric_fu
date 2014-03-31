@@ -2,10 +2,7 @@
 
 <p><a href='https://github.com/square/cane'>Cane</a> reports code quality threshold violations.</p>
 
-<div id="graph_container"></div>
-
-<% graph_name = 'cane' %>
-<script language="javascript" src="<%= graph_name %>.js?<%= MetricFu.report_fingerprint %>" type="text/javascript"></script>
+<%= render_partial 'graph', {:graph_name => 'cane'} %>
 
 <% if @cane[:violations][:abc_complexity] && @cane[:violations][:abc_complexity].size > 0 %>
 <h3>Methods exceeding allowed Abc complexity (<%= @cane[:violations][:abc_complexity].size %>)</h3>
@@ -86,4 +83,5 @@
   <% end %>
 </table>
 <% end %>
-<p>Generated on <%= MetricFu.current_time %></p>
+
+<%= render_partial 'report_footer' %>

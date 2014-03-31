@@ -8,6 +8,7 @@ As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.
 
 * Breaking Changes
 * Features
+  * Implement partials for cleaning up double template code (Martin Gotink, #211)
 * Fixes
 * Misc
 

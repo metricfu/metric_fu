@@ -43,6 +43,12 @@ module MetricFu
       erb
     end
 
+    # Renders a partial and add optional instance variables to the template
+    def render_partial(name, instance_variables = {})
+      create_instance_vars(instance_variables)
+      erbify("_#{name}")
+    end
+
     # Copies an instance variable mimicing the name of the section
     # we are trying to render, with a value equal to the passed in
     # constant.  Allows the concrete template classes to refer to
@@ -56,6 +62,10 @@ module MetricFu
     #   variable
     def create_instance_var(section, contents)
       instance_variable_set("@#{section}", contents)
+    end
+
+    def create_instance_vars(variables)
+      variables.each { |variable| create_instance_var(*variable) }
     end
 
     # Generates the filename of the template file to load and
