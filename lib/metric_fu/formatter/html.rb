@@ -89,7 +89,7 @@ module MetricFu
       #   The directory path where the 'index.html' we want to open is
       #   stored
       def show_in_browser(dir)
-        system("open #{dir}/index.html") if open_in_browser?
+        system("open \"#{dir}/index.html\"") if open_in_browser?
       end
     end
   end
