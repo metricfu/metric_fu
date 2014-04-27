@@ -21,6 +21,8 @@ The MediumSecurity trust profile will verify signed gems, but allow the installa
 
 This is necessary because not all of MetricFu’s dependencies are signed, so we cannot use HighSecurity.
 
+If you're installing MetricFu on MacOS make sure you have `LANG` and `LC_ALL` set to some value (ex. `en_US.UTF-8`)
+
 ## Usage
 
 From your application root. Running via Rake is still supported.
