@@ -1,3 +1,4 @@
+require 'launchy'
 MetricFu.formatter_require { 'yaml' }
 MetricFu.metrics_require { 'graph' }
 module MetricFu
@@ -71,25 +72,24 @@ module MetricFu
 
       # Checks to discover whether we should try and open the results
       # of the report in the browser on this system.  We only try and open
-      # in the browser if we're on OS X and we're not running in a
-      # CruiseControl.rb environment.  See MetricFu.configuration for more
-      # details about how we make those guesses.
+      # in the browser if we're not running in a CruiseControl.rb environment.
+      # See MetricFu.configuration for more details about how we make those guesses.
       #
       # @return Boolean
       #   Should we open in the browser or not?
       def open_in_browser?
-        MetricFu.configuration.osx? &&
-          ! MetricFu.configuration.is_cruise_control_rb?
+        ! MetricFu.configuration.is_cruise_control_rb?
       end
 
       # Shows 'index.html' from the passed directory in the browser
       # if we're able to open the browser on this platform.
       #
-      # @param dir String
+      # @param dir Pathname
       #   The directory path where the 'index.html' we want to open is
       #   stored
       def show_in_browser(dir)
-        system("open \"#{dir}/index.html\"") if open_in_browser?
+        uri = URI.join(URI.escape("file://#{dir}/"), 'index.html')
+        Launchy.open(uri) if open_in_browser?
       end
     end
   end

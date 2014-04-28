@@ -59,6 +59,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'coderay'
   # to_json support
   s.add_runtime_dependency 'multi_json'
+  # open browser support
+  s.add_runtime_dependency 'launchy', '~> 2.0'
 
   # temporary filesystem to act on
   s.add_development_dependency   'test_construct'
