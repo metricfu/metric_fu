@@ -7,8 +7,7 @@ module MetricFu
     end
 
     def emit
-      args =  "#{minimum_duplication_mass} #{dirs_to_flay}"
-      @output = run!(args)
+      @output = run(options)
     end
 
     def analyze
@@ -37,18 +36,28 @@ module MetricFu
       }
     end
 
+    def run(options)
+      flay_options = Flay.default_options.merge(minimum_duplication_mass)
+      flay = Flay.new flay_options
+      files = Flay.expand_dirs_to_files(dirs_to_flay)
+      flay.process(*files)
+      MetricFu::Utility.capture_output do
+         flay.report
+      end
+    end
+
     private
 
     def minimum_duplication_mass
       flay_mass = options[:minimum_score]
-      return "" unless flay_mass
+      return {} unless flay_mass
 
 
-      "--mass #{flay_mass} "
+      {:mass => flay_mass}
     end
 
     def dirs_to_flay
-      options[:dirs_to_flay].join(" ")
+      options[:dirs_to_flay]
     end
 
   end

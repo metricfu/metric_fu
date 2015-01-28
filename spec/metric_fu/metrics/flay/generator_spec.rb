@@ -8,7 +8,10 @@ describe MetricFu::FlayGenerator do
       allow(File).to receive(:directory?).and_return(true)
       @flay = MetricFu::FlayGenerator.new(options)
 
-      expect(@flay).to receive(:run!).with(" app lib")
+      expected_options = Flay.default_options
+      expect(Flay).to receive(:expand_dirs_to_files).with(options[:dirs_to_flay])
+      flay = double('flay', :process => nil)
+      allow(Flay).to receive(:new).and_return(flay)
       output = @flay.emit
     end
 
@@ -17,7 +20,9 @@ describe MetricFu::FlayGenerator do
       allow(File).to receive(:directory?).and_return(true)
       @flay = MetricFu::FlayGenerator.new(options)
 
-      expect(@flay).to receive(:run!).with("--mass 99  ")
+      expected_options = Flay.default_options.merge(:mass => 99)
+      flay = double('flay', :process => nil)
+      expect(Flay).to receive(:new).with(expected_options).and_return(flay)
       output = @flay.emit
     end
   end

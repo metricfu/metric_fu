@@ -44,10 +44,11 @@ module MetricFu
       run_options.map { |k, v| "--#{k} #{v}" }.join(' ')
     end
 
-    def run
+    def run(options = run_options)
       not_implemented
     end
 
+    # TODO: move into generator
     def run_external(args = default_run_args)
       runner = GemRun.new({
         gem_name: gem_name.to_s,
