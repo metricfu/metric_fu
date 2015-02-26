@@ -69,9 +69,8 @@ module MetricFu
 
     # Transforms the data param, if non-nil, into a hash with keys:
     #   'metric',  etc.
-    #   and appends the hash to the table param
-    #   Has no return value
-    def generate_records(data, table)
+    # @return [Array<Hash>]
+    def generate_records(data)
       not_implemented
     end
 

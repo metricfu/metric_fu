@@ -22,10 +22,10 @@ class MetricFu::RoodiHotspot < MetricFu::Hotspot
     :percentile
   end
 
-  def generate_records(data, table)
-    return if data==nil
-    Array(data[:problems]).each do |problem|
-      table << {
+  def generate_records(data)
+    return [] if data==nil
+    Array(data[:problems]).map do |problem|
+      {
         "metric" => name,
         "problems" => problem[:problem],
         "file_path" => problem[:file]

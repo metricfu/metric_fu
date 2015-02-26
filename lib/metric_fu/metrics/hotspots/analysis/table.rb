@@ -25,6 +25,13 @@ module MetricFu
       updated_key_index(record) if @make_index
     end
 
+    def concat(records)
+      records.each do |record|
+        self << record
+      end
+      self
+    end
+
     def each
       @rows.each do |row|
         yield row

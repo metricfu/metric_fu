@@ -26,15 +26,15 @@ class MetricFu::ReekHotspot < MetricFu::Hotspot
     :percentile
   end
 
-  def generate_records(data, table)
-    return if data==nil
-    data[:matches].each do |match|
+  def generate_records(data)
+    return [] if data==nil
+    data[:matches].flat_map do |match|
       file_path = match[:file_path]
-      match[:code_smells].each do |smell|
+      match[:code_smells].map do |smell|
         location = MetricFu::Location.for(smell[:method])
         smell_type = smell[:type]
         message = smell[:message]
-        table << {
+        {
           "metric" => name, # important
           "file_path" => file_path, # important
           # NOTE: ReekHotspot is currently different than other hotspots with regard

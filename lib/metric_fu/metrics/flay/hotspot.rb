@@ -22,9 +22,9 @@ class MetricFu::FlayHotspot < MetricFu::Hotspot
     :percentile
   end
 
-  def generate_records(data, table)
-    return if data==nil
-    Array(data[:matches]).each do |match|
+  def generate_records(data)
+    return [] if data==nil
+    Array(data[:matches]).flat_map do |match|
       problems  = match[:reason]
       matching_reason = problems.gsub(/^[0-9]+\) /,'').gsub(/\:[0-9]+/,'')
       files     = []
@@ -35,8 +35,8 @@ class MetricFu::FlayHotspot < MetricFu::Hotspot
         files     << file_path
       end
       files = files.uniq
-      files.each do |file|
-        table << {
+      files.map do |file|
+        {
           "metric" => self.name,
           "file_path" => file,
           "flay_reason" => problems+" files: #{locations.join(', ')}",

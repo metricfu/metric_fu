@@ -27,10 +27,11 @@ class MetricFu::ChurnHotspot < MetricFu::Hotspot
     metric_ranking.scored?(item) ? flat_churn_score : 0
   end
 
-  def generate_records(data, table)
-   return if data==nil
-    Array(data[:changes]).each do |change|
-      table << {
+  # @return [Array<Hash>]
+  def generate_records(data)
+   return [] if data==nil
+    Array(data[:changes]).map do |change|
+      {
         "metric" => :churn,
         "times_changed" => change[:times_changed],
         "file_path" => change[:file_path]

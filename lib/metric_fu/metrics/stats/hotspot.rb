@@ -22,16 +22,16 @@ class MetricFu::StatsHotspot < MetricFu::Hotspot
     :absent
   end
 
-  def generate_records(data, table)
-    return if data == nil
-    data.each do |key, value|
+  def generate_records(data)
+    return [] if data == nil
+    data.map do |key, value|
       next if value.kind_of?(Array)
-      table << {
+      {
         "metric" => name,
         "stat_name" => key,
         "stat_value" => value
       }
-    end
+    end.compact
   end
 
 end

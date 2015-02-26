@@ -17,8 +17,8 @@ describe MetricFu::HotspotRankings do
       analyzer_columns = common_columns + granularities + tool_analyzers.map{|analyzer| analyzer.columns}.flatten
 
       analyzer_tables = MetricFu::AnalyzerTables.new(analyzer_columns)
-      tool_analyzers.each do |analyzer|
-        analyzer.generate_records(result_hash[analyzer.name], analyzer_tables.table)
+      tool_analyzers.each do |hotspot|
+        analyzer_tables.update hotspot.generate_records(result_hash[hotspot.name])
       end
       analyzer_tables.generate_records
       rankings = MetricFu::HotspotRankings.new(analyzer_tables.tool_tables)

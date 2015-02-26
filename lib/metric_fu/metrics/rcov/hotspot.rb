@@ -22,13 +22,13 @@ class MetricFu::RcovHotspot < MetricFu::Hotspot
     :identity
   end
 
-  def generate_records(data, table)
-    return if data==nil
-    data.each do |file_name, info|
+  def generate_records(data)
+    return [] if data==nil
+    data.flat_map do |file_name, info|
       next if (file_name == :global_percent_run) || (info[:methods].nil?)
-      info[:methods].each do |method_name, percentage_uncovered|
+      info[:methods].map do |method_name, percentage_uncovered|
         location = MetricFu::Location.for(method_name)
-        table << {
+        {
           "metric" => :rcov,
           'file_path' => file_name,
           'class_name' => location.class_name,
@@ -36,7 +36,7 @@ class MetricFu::RcovHotspot < MetricFu::Hotspot
           "percentage_uncovered" => percentage_uncovered
          }
       end
-    end
+    end.compact
   end
 
   def present_group(group)

@@ -22,13 +22,13 @@ class MetricFu::FlogHotspot < MetricFu::Hotspot
     :identity
   end
 
-  def generate_records(data, table)
-    return if data==nil
-    Array(data[:method_containers]).each do |method_container|
-      Array(method_container[:methods]).each do |entry|
+  def generate_records(data)
+    return [] if data==nil
+    Array(data[:method_containers]).flat_map do |method_container|
+      Array(method_container[:methods]).map do |entry|
         file_path = entry[1][:path].sub(%r{^/},'') if entry[1][:path]
         location = MetricFu::Location.for(entry.first)
-        table << {
+        {
           "metric" => name,
           "score" => entry[1][:score],
           "file_path" => file_path,

@@ -22,16 +22,16 @@ class MetricFu::SaikuroHotspot < MetricFu::Hotspot
     :identity
   end
 
-  def generate_records(data, table)
-    return if data == nil
-    data[:files].each do |file|
+  def generate_records(data)
+    return [] if data == nil
+    data[:files].flat_map do |file|
       file_name = file[:filename]
-      file[:classes].each do |klass|
+      file[:classes].flat_map do |klass|
         location = MetricFu::Location.for(klass[:class_name])
         offending_class = location.class_name
-        klass[:methods].each do |match|
+        klass[:methods].map do |match|
           offending_method = MetricFu::Location.for(match[:name]).method_name
-          table << {
+          {
             "metric" => name,
             "lines" => match[:lines],
             "complexity" => match[:complexity],

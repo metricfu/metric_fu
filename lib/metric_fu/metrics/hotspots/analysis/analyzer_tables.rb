@@ -13,6 +13,10 @@ module MetricFu
       process_rows!
     end
 
+    def update(generated_records)
+      table.concat generated_records
+    end
+
     def tool_tables
       @tool_tables ||= make_table_hash(@columns)
     end

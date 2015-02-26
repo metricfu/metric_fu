@@ -50,7 +50,7 @@ module MetricFu
       # to ultimately generate the hotspots
       @analyzer_tables = MetricFu::AnalyzerTables.new(analyzer_columns)
       tool_analyzers.each do |analyzer|
-        analyzer.generate_records(result_hash[analyzer.name], @analyzer_tables.table)
+        @analyzer_tables.update analyzer.generate_records(result_hash[analyzer.name])
       end
       @analyzer_tables.generate_records
       @rankings = MetricFu::HotspotRankings.new(@analyzer_tables.tool_tables)
