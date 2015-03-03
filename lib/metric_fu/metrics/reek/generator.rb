@@ -1,6 +1,6 @@
 module MetricFu
   class ReekGenerator < Generator
-    REEK_REGEX = /^(\S+) (.*) \((.*)\)$/
+    REEK_REGEX = /^\[([^:]+)\]:(\S+) (.*) \((.*)\)$/
 
     def self.metric
       :reek
@@ -35,9 +35,10 @@ module MetricFu
         code_smells = match.map do |smell|
           match_object = smell.match(REEK_REGEX)
           next unless match_object
-          { method: match_object[1].strip,
-            message: match_object[2].strip,
-            type: match_object[3].strip }
+          {:lines => match_object[1].strip.split(', '),
+           :method => match_object[2].strip,
+           :message => match_object[3].strip,
+           :type => match_object[4].strip}
         end.compact
         { file_path: file_path, code_smells: code_smells }
       end
@@ -102,7 +103,6 @@ module MetricFu
 
     def cli_options(files)
       [
-        disable_line_number_option,
         turn_off_color,
         *config_option,
         *files
@@ -133,10 +133,6 @@ module MetricFu
       # use the above, as the below may activate a version not available in
       # a Bundler context
       # MetricFu::GemVersion.activated_version('reek').to_s
-    end
-
-    def disable_line_number_option
-      "--no-line-numbers"
     end
 
     def zero_warnings?(match)
