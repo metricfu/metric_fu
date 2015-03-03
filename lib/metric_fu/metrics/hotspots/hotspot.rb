@@ -1,10 +1,10 @@
-MetricFu.lib_require { 'errors/analysis_error' }
-MetricFu.metrics_require { 'hotspots/analysis/scoring_strategies' }
+MetricFu.lib_require { "errors/analysis_error" }
+MetricFu.metrics_require { "hotspots/analysis/scoring_strategies" }
 
 module MetricFu
   class Hotspot
     def self.metric
-      self.name.split('::')[-1].split('Hotspot')[0].downcase.to_sym
+      name.split("::")[-1].split("Hotspot")[0].downcase.to_sym
     end
     @analyzers = {}
     def self.analyzers
@@ -31,8 +31,8 @@ module MetricFu
 
     def mapping_strategies
       {
-        :present => 1,
-        :absent  => 0,
+        present: 1,
+        absent: 0,
       }
     end
 
@@ -42,9 +42,9 @@ module MetricFu
 
     def reduce(scores)
       {
-        :average => MetricFu::HotspotScoringStrategies.average(scores),
-        :sum     => MetricFu::HotspotScoringStrategies.sum(scores),
-        :absent  => 0,
+        average: MetricFu::HotspotScoringStrategies.average(scores),
+        sum: MetricFu::HotspotScoringStrategies.sum(scores),
+        absent: 0,
       }.fetch(reduce_strategy) do
         fail "#{reduce_strategy} not a known reduce strategy"
       end
@@ -57,9 +57,9 @@ module MetricFu
     # @return [Integer]
     def score(metric_ranking, item)
       {
-        :identity   => MetricFu::HotspotScoringStrategies.identity(metric_ranking, item),
-        :percentile => MetricFu::HotspotScoringStrategies.percentile(metric_ranking, item),
-        :absent     => 0,
+        identity: MetricFu::HotspotScoringStrategies.identity(metric_ranking, item),
+        percentile: MetricFu::HotspotScoringStrategies.percentile(metric_ranking, item),
+        absent: 0,
       }.fetch(score_strategy) { method(score_strategy).call(metric_ranking, item) }
     end
 
@@ -71,12 +71,12 @@ module MetricFu
     #   'metric',  etc.
     #   and appends the hash to the table param
     #   Has no return value
-    def generate_records(data, table)
+    def generate_records(_data, _table)
       not_implemented
     end
 
     # @return [String] description result
-    def present_group(group)
+    def present_group(_group)
       not_implemented
     end
 

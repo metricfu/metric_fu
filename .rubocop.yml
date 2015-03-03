@@ -1,0 +1,15 @@
+inherit_from:
+  - config/rubocop.yml
+  - .rubocop_todo.yml
+
+# Files you want to exclude
+AllCops:
+  Exclude:
+    - bin/*
+    - gem_tasks/*
+    - lib/tasks/*
+    - Gemfile
+    - Rakefile
+    - bundle/**/*
+    - vendor/bundle/**/*
+    - spec/fixtures/line_numbers/*

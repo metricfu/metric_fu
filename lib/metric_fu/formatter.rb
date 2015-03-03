@@ -1,9 +1,9 @@
-require 'metric_fu/constantize'
+require "metric_fu/constantize"
 module MetricFu
   module Formatter
     BUILTIN_FORMATS = {
-      'html' => ['MetricFu::Formatter::HTML', 'Generates a templated HTML report using the configured template class and graph engine.'],
-      'yaml' => ['MetricFu::Formatter::YAML', 'Generates the raw output as yaml']
+      "html" => ["MetricFu::Formatter::HTML", "Generates a templated HTML report using the configured template class and graph engine."],
+      "yaml" => ["MetricFu::Formatter::YAML", "Generates the raw output as yaml"]
     }
     DEFAULT = [[:html]]
 
@@ -17,11 +17,10 @@ module MetricFu
           constantize(format.to_s)
         end
       end
-
     end
 
     module Templates
-      MetricFu.reporting_require { 'templates/awesome/awesome_template' }
+      MetricFu.lib_require { "templates/metrics_template" }
 
       module_function
 
@@ -36,7 +35,6 @@ module MetricFu
       def templates_configuration
         @templates_configuration ||= MetricFu::Templates::Configuration.new
       end
-
     end
   end
 end

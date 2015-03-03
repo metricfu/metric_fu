@@ -1,0 +1,10 @@
+<h3><%= MetricFu.metric_name %> Results</h3>
+<ul id='projects'>
+<% metric_links.each do |link| %>
+  <li class='even failure'>
+    <%= link %>
+  </li>
+<% end %>
+</ul>
+
+<%= render_partial 'report_footer' %>

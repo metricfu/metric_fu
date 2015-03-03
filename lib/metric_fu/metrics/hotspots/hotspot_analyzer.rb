@@ -1,16 +1,15 @@
-require 'yaml'
+require "yaml"
 MetricFu.metrics_require do
   [
-    'hotspots/hotspot',
-    'hotspots/analysis/analyzer_tables',
-    'hotspots/analysis/analyzed_problems',
-    'hotspots/analysis/rankings'
+    "hotspots/hotspot",
+    "hotspots/analysis/analyzer_tables",
+    "hotspots/analysis/analyzed_problems",
+    "hotspots/analysis/rankings"
   ]
 end
 
 module MetricFu
   class HotspotAnalyzer
-
     COMMON_COLUMNS = %w{metric}
     GRANULARITIES =  %w{file_path class_name method_name}
 
@@ -58,7 +57,5 @@ module MetricFu
       # TODO does it not need to return something here?
       analyzed_problems
     end
-
-
   end
 end

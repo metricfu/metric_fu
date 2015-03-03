@@ -1,4 +1,4 @@
-require 'forwardable'
+require "forwardable"
 module MetricFu
   class Ranking
     extend Forwardable
@@ -13,8 +13,8 @@ module MetricFu
 
     def percentile(item)
       index = sorted_items.index(item)
-      worse_item_count = (length - (index+1))
-      worse_item_count.to_f/length
+      worse_item_count = (length - (index + 1))
+      worse_item_count.to_f / length
     end
 
     def_delegator :@items_to_score, :has_key?, :scored?
@@ -23,8 +23,7 @@ module MetricFu
     private
 
     def sorted_items
-      @sorted_items ||= @items_to_score.sort_by {|item, score| -score}.map {|item, score| item}
+      @sorted_items ||= @items_to_score.sort_by { |_item, score| -score }.map { |item, _score| item }
     end
-
   end
 end

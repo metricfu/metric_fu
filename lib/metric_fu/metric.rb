@@ -1,10 +1,9 @@
-require 'set'
-MetricFu.lib_require { 'gem_run' }
-MetricFu.metrics_require { 'generator' }
+require "set"
+MetricFu.lib_require { "gem_run" }
+MetricFu.lib_require { "generator" }
 # Encapsulates the configuration options for each metric
 module MetricFu
   class Metric
-
     attr_accessor :enabled, :activated
 
     def initialize
@@ -20,7 +19,7 @@ module MetricFu
     # TODO: Confirm this catches load errors from requires in subclasses, such as for flog
     def activate
       MetricFu.metrics_require { default_metric_library_paths }
-      @libraries.each {|library| require(library) }
+      @libraries.each { |library| require(library) }
       self.activated = true
     rescue LoadError => e
       mf_log "#{name} metric not activated, #{e.message}"
@@ -41,7 +40,7 @@ module MetricFu
     end
 
     def default_run_args
-      run_options.map { |k, v| "--#{k} #{v}" }.join(' ')
+      run_options.map { |k, v| "--#{k} #{v}" }.join(" ")
     end
 
     def run
@@ -49,25 +48,35 @@ module MetricFu
     end
 
     def run_external(args = default_run_args)
-      runner = GemRun.new({
+      runner = GemRun.new(
         gem_name: gem_name.to_s,
         metric_name: name.to_s,
         # version: ,
         args: args,
-      })
-      runner.run
+      )
+      stdout, stderr, status = runner.run
+      # TODO: do something with the stderr
+      # for now, just acknowledge we got it
+      unless stderr.empty?
+        STDERR.puts "STDERR from #{gem_name}:\n#{stderr}"
+      end
+      # TODO: status.success? is not reliable for distinguishing
+      # between a successful run of the metric and problems
+      # found by the metric. Talk to other metrics about this.
+      MetricFu.logger.debug "#{gem_name} ran with #{status.success? ? 'success' : 'failure'} code #{status.exitstatus}"
+      stdout
     end
 
     def configured_run_options
       @configured_run_options
     end
 
-    # @return default metric run options [Hash]
+    # @return [Hash] default metric run options
     def default_run_options
       not_implemented
     end
 
-    # @return metric_options [Hash]
+    # @return [Hash] metric_options
     def has_graph?
       not_implemented
     end
@@ -80,11 +89,11 @@ module MetricFu
     end
 
     def self.enabled_metrics
-      metrics.select{|metric| metric.enabled && metric.activated}.sort_by {|metric| metric.name  == :hotspots ? 1 : 0 }
+      metrics.select { |metric| metric.enabled && metric.activated }.sort_by { |metric| metric.name  == :hotspots ? 1 : 0 }
     end
 
     def self.get_metric(name)
-      metrics.find{|metric|metric.name.to_s == name.to_s}
+      metrics.find { |metric|metric.name.to_s == name.to_s }
     end
 
     def self.inherited(subclass)
@@ -109,7 +118,7 @@ module MetricFu
 
     # Used above to identify the stem of a setter method
     def method_to_attr(method)
-      method.to_s.sub(/=$/, '').to_sym
+      method.to_s.sub(/=$/, "").to_sym
     end
 
     private
@@ -124,9 +133,9 @@ module MetricFu
 
     def default_metric_library_paths
       paths = []
-      paths << generator_path = "#{name}/#{name}"
+      paths << generator_path = "#{name}/generator"
       if has_graph?
-          paths << grapher_path   = "#{name}/#{name}_grapher"
+        paths << grapher_path   = "#{name}/grapher"
       end
       paths
     end

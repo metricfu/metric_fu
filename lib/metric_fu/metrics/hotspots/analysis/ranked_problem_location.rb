@@ -1,8 +1,8 @@
-MetricFu.lib_require { 'errors/analysis_error' }
-MetricFu.metrics_require { 'hotspots/analysis/problems' }
+MetricFu.lib_require { "errors/analysis_error" }
+MetricFu.metrics_require { "hotspots/analysis/problems" }
 module MetricFu
   class HotspotRankedProblemLocation
-    MetricFu.data_structures_require { 'location' }
+    MetricFu.data_structures_require { "location" }
     attr_reader :sub_table, :granularity
     def initialize(sub_table, granularity)
       @sub_table = sub_table
@@ -11,8 +11,8 @@ module MetricFu
 
     def to_hash
       {
-        'location' => location.to_hash,
-        'details' =>  stringify_keys(problems),
+        "location" => location.to_hash,
+        "details" =>  stringify_keys(problems),
       }
     end
 
@@ -23,7 +23,6 @@ module MetricFu
       end
       result
     end
-
 
     # @todo redo as item,value, options = {}
     # Note that the other option for 'details' is :detailed (this isn't
@@ -44,30 +43,36 @@ module MetricFu
     def file_path
       first_row.file_path
     end
+
     def class_name
       first_row.class_name
     end
+
     def method_name
       first_row.method_name
     end
+
     def file_location
       MetricFu::Location.get(file_path, nil, nil)
     end
+
     def method_location
       MetricFu::Location.get(file_path, class_name, method_name)
     end
+
     def class_location
       MetricFu::Location.get(file_path, class_name, nil)
     end
+
     def first_row
       assert_sub_table_has_data
       @first_row ||= sub_table[0]
     end
+
     def assert_sub_table_has_data
-      if (sub_table.length==0)
-        raise MetricFu::AnalysisError, "The #{item.to_s} '#{value.to_s}' does not have any rows in the analysis table"
+      if (sub_table.length == 0)
+        raise MetricFu::AnalysisError, "The #{item} '#{value}' does not have any rows in the analysis table"
       end
     end
-
   end
 end

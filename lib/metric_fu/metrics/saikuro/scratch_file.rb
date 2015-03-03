@@ -1,7 +1,6 @@
-MetricFu.metrics_require   { 'saikuro/parsing_element' }
+MetricFu.metrics_require   { "saikuro/parsing_element" }
 module MetricFu
   class SaikuroScratchFile
-
     def self.assemble_files(glob)
       files = []
       glob.each do |path|
@@ -20,13 +19,13 @@ module MetricFu
     def initialize(path)
       @path = path
       @elements = []
-      File.open(@path, "r") do |file|
+      File.open(@path, "rb") do |file|
         get_elements(file)
       end
     end
 
     def self.is_valid_text_file?(path)
-      File.open(path, "r") do |file|
+      File.open(path, "rb") do |file|
         if file.eof? || !file.readline.match(/--/)
           return false
         else
@@ -36,7 +35,7 @@ module MetricFu
     end
 
     def filename
-      File.basename(@path, '_cyclo.html')
+      File.basename(@path, "_cyclo.html")
     end
 
     def filepath
@@ -45,38 +44,35 @@ module MetricFu
 
     def to_h
       merge_classes
-      {:classes => @elements}
+      { classes: @elements }
     end
 
     def get_elements(io)
-      begin
-        while (line = io.readline) do
-          return [] if line.nil? || line !~ /\S/
-          element ||= nil
-          if line.match(/START/)
-            unless element.nil?
-              @elements << element
-              element = nil
-            end
-            line = io.readline
-            element = MetricFu::SaikuroParsingElement.new(line)
-          elsif line.match(/END/)
-            @elements << element if element
+      while (line = io.readline)
+        return [] if line.nil? || line !~ /\S/
+        element ||= nil
+        if line.match(/START/)
+          unless element.nil?
+            @elements << element
             element = nil
-          else
-            element << line if element
           end
+          line = io.readline
+          element = MetricFu::SaikuroParsingElement.new(line)
+        elsif line.match(/END/)
+          @elements << element if element
+          element = nil
+        else
+          element << line if element
         end
-      rescue EOFError
-        nil
       end
+    rescue EOFError
+      nil
     end
-
 
     def merge_classes
       new_elements = []
       get_class_names.each do |target_class|
-        elements = @elements.find_all {|el| el.name == target_class }
+        elements = @elements.find_all { |el| el.name == target_class }
         complexity = 0
         lines = 0
         defns = []
@@ -86,12 +82,12 @@ module MetricFu
           defns << el.defs
         end
 
-        new_element = {:class_name => target_class,
-                       :complexity => complexity,
-                       :lines => lines,
-                       :methods => defns.flatten.map {|d| d.to_h}}
+        new_element = { class_name: target_class,
+                        complexity: complexity,
+                        lines: lines,
+                        methods: defns.flatten.map(&:to_h) }
         new_element[:methods] = new_element[:methods].
-                                sort_by {|x| x[:complexity] }.
+                                sort_by { |x| x[:complexity] }.
                                 reverse
 
         new_elements << new_element
@@ -108,6 +104,5 @@ module MetricFu
       end
       class_names
     end
-
   end
 end

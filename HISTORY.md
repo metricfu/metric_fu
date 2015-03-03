@@ -1,16 +1,136 @@
-Changes are below categorized as `Features, Fixes, or Misc`.
+Changes are below categorized as `Breaking changes, Features, Fixes, or Misc`.
 
 Each change should fall into categories that would affect whether the release is major (breaking changes), minor (new behavior), or patch (bug fix). See [semver](http://semver.org/) and [pessimistic versioning](http://docs.rubygems.org/read/chapter/16#page74)
 
-As such, a _Feature_ would map to either major or minor. A _bug fix_ to a patch.  And _misc_ is either minor or patch, the difference being kind of fuzzy for the purposes of history.  Adding tests would be patch level.
+As such, a _Feature_ would map to either major (breaking change) or minor. A _bug fix_ to a patch.  And _misc_ is either minor or patch, the difference being kind of fuzzy for the purposes of history.  Adding tests would be patch level.
 
-### Master [changes](https://github.com/metricfu/metric_fu/compare/v4.6.0...master)
+### Master [changes](https://github.com/metricfu/metric_fu/compare/v4.11.4...master)
+
+* Breaking Changes
+* Features
+* Fixes
+* Misc
+
+### [4.11.4](https://github.com/metricfu/metric_fu/compare/v4.11.3...v4.11.4)
+
+* Fixes
+  * Hash hotspots output filenames. (Martin Gotink, #247, fixes #246)
+  * Fix invalid file links for rails best practices (Martin Gotink, #248)
+  * Add file links to cane and saikuro reports (Martin Gotink, #248)
+  * Fix incorrectly displaying not covered lines. (Martin Gotink, #249)
+  * Fix simplecov missing logger dependency. (Martin Gotink, #250, fixes #235)
+
+### [4.11.3](https://github.com/metricfu/metric_fu/compare/v4.11.2...v4.11.3)
+
+* Fixes
+  * Fix incorrectly passing --config option to reek. (Martin Gotink, #243, fixes #242)
+
+### [4.11.2](https://github.com/metricfu/metric_fu/compare/v4.11.1...v4.11.2)
+
+* Fixes
+  * Use reek as library, otherwise reek >= 1.6.2 hangs while reading input from stdin. (Martin Gotink, #240, fixes #239)
+* Misc
+  * Refactor MetricFu::Templates::MetricsTemplate#write into a composed method. (#237)
+
+### [4.11.1](https://github.com/metricfu/metric_fu/compare/v4.11.0...v4.11.1)
+
+* Fixes
+  * Captured shell-output now only includes STDOUT.  Appending STDERR was breaking expectations. (Benjamin Fleischer, #230, fixes #229)
+
+### [4.11.0](https://github.com/metricfu/metric_fu/compare/v4.10.0...v4.11.0)
+
+* Features
+  * There is now a `MetricFu.logger` with standard available configurations.
+    The old `mf_debug` and `mf_log` main mixin is presevered.  Needs documentation. See #113. (Benjamin Fleischer, a49bfdd182)
+  * Use *launchy* (new dependency) when opening output files. (Nick Veys, #224)
+  * Coverage formatter now behaves like SimpleCov; it ignores certain lines in
+    calculating the precent run. Fixes #153, #222 (Benjamin Fleischer, #226).
+    - Thanks to @crv for the test in #153
+    - Note: JRuby will usually report different Coverage from MRI. This is a known issue.
+    - Note: This technically is a *breaking change* from how RCov works. But wwe don't run RCov anymore. (65bf21723291f)
+* Fixes
+  * Ensure paths with spaces don't cause the open command to fail (Nick Veys, #220)
+  * Read in source files for annotation in BINARY mode to avoid encoding errors. (Benjamin Fleischer, #216)
+  * Start SimpleCov before any MetricFu code is loaded. Coverage isn't tracked on already-loaded code. (Benjamin Fleischer, cca659f7d48d3f6799)
+  * Remove unused/invalid Flay param 'filetypes'. Closes #151. (Benjamin Fleischer, 5973595f51c)
+* Misc
+  * Document ENV variables the may fix encoding exceptions. (Mike Szyndel, #217)
+  * Begin adding shared tests for metrics and configuration.  Test fenced-codeblock matching. (Benjamin Fleischer, #221)
+  * Reorganize the application file layout. Still more to be done. (Benjamin Fleischer, #223)
+  * Rename AwesomeTemplate to MetricFu::Templates::MetricsTemplate.  (Benjamin Fleischer, 55c52afd95d78)
+  * Rename ReekHotspot to MetricFu::ReekHotspot.  Was missing namespace. (Benjamin Fleischer, a3aa70c1a9)
+  * Allow failures for Ruby 2.1, in addition to rbx per issues with rvm.  (Benjamin Fleischer, 3018b22)
+  * `spec/quality_spec.rb` checks for whitespace, tabs, quotes, etc. `rake spec` also checks for warnings. (Benjamin Fleischer, b0c51bb9b17)
+  * When run with COVERAGE=true, will ouptut a file to `coverage/coverage_percent.txt` that can be checked via `rake check_code_coverage`. Borrowed from VCR. (Benjamin Fleischer, 32df3a34c6)
+
+### [4.10.0 / 2014-04-01](https://github.com/metricfu/metric_fu/compare/v4.9.0...v4.10.0)
+
+* Features
+  * Implement partials for cleaning up double template code (Martin Gotink, #211)
+* Fixes
+  * Ensure reek output does not include ANSI color escape codes (Ben Turner #213)
+* Misc
+  * Remove duplicate methods from generator. (Alessandro Dias Batista, #210)
+  * Encapsulate methods on MetricFu: report_time, report_id, :report_fingerprint, :current_time. (Benjamin Fleischer, #209)
+
+### [4.9.0 / 2014-03-23](https://github.com/metricfu/metric_fu/compare/v4.8.0...v4.9.0)
+
+* Features
+  * Add SimpleCov::Formatter::MetricFu, compatible with legacy RCov format (Benjamin Fleischer with h/t Michael @kina, #201)
+  * Add Highcharts JS as available graphing engine (Martin Gotink, #205)
+
+### [4.8.0 / 2014-02-24](https://github.com/metricfu/metric_fu/compare/v4.7.4...v4.8.0)
+
+* Features
+  * Add configurable `MetricFu.report_name`. (Paul Swagerty, #203)
+
+### [4.7.4 / 2014-02-16](https://github.com/metricfu/metric_fu/compare/v4.7.3...v4.7.4)
+
+* Fixes
+  * Reek no longer crashes when reporting no warnings (Michael Stark, #199)
+  * Prevent Roodi non-metric output from ending up in the results (Martin Gotink #202)
+  * Coverage file is only read in when the specified external file exists. (Benjamin Fleischer, #156)
+  * Metrics are configured to default values before the user config is loaded (Benjamin Fleischer, #156, #78)
+
+### [4.7.3 / 2014-02-09](https://github.com/metricfu/metric_fu/compare/v4.7.2...v4.7.3)
+
+* Fixes
+  * Add `strip_escape_codes`; remove from Roodi output. (Przemysław Dąbek, #197)
+* Misc
+  * Fix markdown in README. (Guilherme Simões, #198)
+  * Add Ruby 2.1 to Travis CI build. (Michael Stark , #200)
+
+
+### [4.7.2 / 2014-01-21](https://github.com/metricfu/metric_fu/compare/v4.7.1...v4.7.2)
+
+* Fixes
+  * Open Saikuro scratch files in BINARY; fixes #190. (Benjamin Fleischer, #195)
+  * Update to churn 0.0.35 for API compatibility. (Przemysław Dąbek, #193)
+  * Only specify reek config when set; disable line numbers. (Benjamin Fleischer, #196)
+
+### [4.7.1 / 2014-01-01](https://github.com/metricfu/metric_fu/compare/v4.7.0...v4.7.1)
+
+* Fixes
+  * Check for activated gems now works on earlier versions of RubyGems. (Benjamin Fleischer)
+
+### [4.7.0 / 2013-12-31](https://github.com/metricfu/metric_fu/compare/v4.6.0...v4.7.0)
 
 * Features
   * Move to using churn library and allowing all churn options to be passed through to churn library. (Dan Mayer, #182)
+  * Create template for syntax highlighting in report.  (Benjamin Fleischer, #179)
+  * Gem deps now derirved from gemspec via regex (from Gemnasium). Related to #184.
+    `--debug-info` will now show the version of the activated gem, if available.  (Benjamin Fleischer, #189)
 * Fixes
-  * Force gemspec to use utf-8 encoding when importing the AUTHORS file (Paul Swagerty, #183)
+  * Force gemspec to use utf-8 encoding when importing the AUTHORS file. (Paul Swagerty, #183)
+  * Ensure gemspec doesn't crash when reading in AUTHORS file. (saltracer, #184)
+  * Fix bad parsing of reek output. (Greg Allen, #185)
 * Misc
+  * Spelling correction. (mdb, #177)
+  * Clean up README indentation. (simi, #187)
+  * Tests run faster. (Benjamin Fleischer, #181)
+  * Simplify load paths. (Benjamin Fleicher, #139)
+  * Update to RSpec 3.0.0.beta1. (Benjamin Fleischer)
+  * Update to new release of TestConstruct. (Benjamin Fleischer)
 
 ### MetricFu [4.6.0 / 2013-11-20](https://github.com/metricfu/metric_fu/compare/v4.5.2...v4.6.0)
 
@@ -123,6 +243,8 @@ add all contriubtors
 
 ### MetricFu 4.4.0 / 2013-08-15
 
+* Breaking Changes
+  * Removed configuration methods / MetricFu module methods: add_graph, add_metric, configure_graph, configure_metric, configure_graph_engine, graph_engine, metrics, formatters, graphs, graph_engines, rails?, code_dirs, base_directory, scratch_directory, output_directory, data_directory, file_globs_to_ignore, metric_fu_root_directory, template_directory, template_class, link_prefix, darwin_txmt_protocol_no_thanks, syntax_highlighting
 * Features
   * Metrics now configure themselves in a subclass of MetricFu::Metric ( Benjamin Fleischer / Robin Curry #91, #111)
   * Metrics can be configured individually via Metric.configuration.configure_metric(:some_metric) or Metric.configuration.configure_metrics {|metric| }.  See .metrics file for examples ( Benjamin Fleischer / Robin Curry #91, #111)
@@ -143,7 +265,6 @@ add all contriubtors
   * Exposed RubyParser patch ( Benjamin Fleischer / Robin Curry #91, #111)
   * Separated out io / filesystem /templating concerns into their own classes or modules. Thus, we removed all the metaprogrammatically defined methods and instance variables.( Benjamin Fleischer / Robin Curry #91, #111, #112, #115)
   * Generator subclasses can now be found by metric name. MetricFu::Generator.get_generator(:flog) (Benjamin Fleischer, #126)
-  * Breaking change related to the above: removed configuration methods / MetricFu module methods: add_graph, add_metric, configure_graph, configure_metric, configure_graph_engine, graph_engine, metrics, formatters, graphs, graph_engines, rails?, code_dirs, base_directory, scratch_directory, output_directory, data_directory, file_globs_to_ignore, metric_fu_root_directory, template_directory, template_class, link_prefix, darwin_txmt_protocol_no_thanks, syntax_highlighting
 
 ### MetricFu 4.3.1 / 2013-08-02
 

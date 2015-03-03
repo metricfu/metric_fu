@@ -1,16 +1,15 @@
-MetricFu.lib_require { 'utility' }
+MetricFu.lib_require { "utility" }
 module MetricFu
   module Io
     # TODO: Move this module / functionality elsewhere and make less verbose
     module FileSystem
-
       # TODO: Use a better environmental variable name for the output / artiface dir.  Set to a different default in tests.
-      @default_artifact_dir = 'tmp/metric_fu'
+      @default_artifact_dir = "tmp/metric_fu"
       def self.default_artifact_dir
         @default_artifact_dir
       end
       def self.artifact_dir
-        (ENV['CC_BUILD_ARTIFACTS'] || @artifact_dir)
+        (ENV["CC_BUILD_ARTIFACTS"] || @artifact_dir)
       end
       def self.artifact_dir=(artifact_dir)
         @artifact_dir = artifact_dir
@@ -28,7 +27,7 @@ module MetricFu
       end
 
       def scratch_directory(name)
-        File.join(directory('scratch_directory'), name.to_s)
+        File.join(directory("scratch_directory"), name.to_s)
       end
 
       def file_globs_to_ignore
@@ -37,15 +36,15 @@ module MetricFu
 
       def set_directories
         @directories = {}
-        @directories['base_directory']    = MetricFu.artifact_dir
-        @directories['scratch_directory'] = MetricFu.scratch_dir
-        @directories['output_directory']  = MetricFu.output_dir
-        @directories['data_directory']    = MetricFu.data_dir
+        @directories["base_directory"]    = MetricFu.artifact_dir
+        @directories["scratch_directory"] = MetricFu.scratch_dir
+        @directories["output_directory"]  = MetricFu.output_dir
+        @directories["data_directory"]    = MetricFu.data_dir
         create_directories @directories.values
 
-        @directories['root_directory']    = MetricFu.root_dir
+        @directories["root_directory"]    = MetricFu.root_dir
         # TODO Though this is true of the general AwesomeTemplate, it is not necessarily true of templates within each Metric.  Each metric should probably know how to use AwesomeTemplate (or whatever)
-        @directories['template_directory'] = File.join(@directories.fetch('root_directory'), 'lib', 'templates')
+        @directories["template_directory"] = File.join(@directories.fetch("root_directory"), "lib", "templates")
         @file_globs_to_ignore = []
         set_code_dirs
       end
@@ -60,9 +59,8 @@ module MetricFu
 
       # Add the 'app' directory if we're running within rails.
       def set_code_dirs
-        @directories['code_dirs'] = %w(app lib).select{|dir| Dir.exists?(dir) }
+        @directories["code_dirs"] = %w(app lib).select { |dir| Dir.exists?(dir) }
       end
-
     end
 
     # Writes the output to a file or io stream.
@@ -114,7 +112,7 @@ module MetricFu
     end
 
     def file_for(path, &block)
-      File.open(path_relative_to_base(path), 'w') do |file|
+      File.open(path_relative_to_base(path), "w") do |file|
         block.call(file)
       end
     end
@@ -127,7 +125,7 @@ module MetricFu
     end
 
     def path_relative_to_base(path)
-      pathname = MetricFu.run_path.join(MetricFu::Io::FileSystem.directory('base_directory')) # make full path relative to base directory
+      pathname = MetricFu.run_path.join(MetricFu::Io::FileSystem.directory("base_directory")) # make full path relative to base directory
       pathname.join(path)
     end
   end

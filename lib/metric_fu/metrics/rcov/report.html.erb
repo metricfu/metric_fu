@@ -1,0 +1,40 @@
+<style data-file="rcov">
+<%=  inline_css("css/rcov.css") %>
+</style>
+<h3>Rcov Code Coverage Results</h3>
+
+<p>C0 code coverage information.</p>
+
+<%= render_partial 'graph', {:graph_name => 'rcov'} %>
+
+<p>Total Coverage: <%= @rcov.delete(:global_percent_run) %>% </p>
+<table>
+  <tr>
+    <th>File Path</th>
+    <th>Percent run</th>
+  </tr>
+  <% count = 0 %>
+  <% @rcov.sort_by{ |k,v| v[:percent_run] }.each do |fname, file| %>
+    <tr>
+      <td><a href="#<%= fname.gsub(/[^a-z]+/, '_') %>"><%= fname %></a></td>
+      <td><%= file[:percent_run] %></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+
+<% @rcov.sort_by{ |k,v| v[:percent_run] }.each do |fname, file| %>
+  <h2 id="<%= fname.gsub(/[^a-z]+/, '_') %>"> <%= fname %></h2>
+  <div class="rcov_overflow">
+    <table class="rcov_code">
+    <% file[:lines].each_with_index do |line, index| %>
+      <tr>
+        <% rcov_line = RCovLine.new(line[:content], line[:was_run]) %>
+        <td class="<%= rcov_line.css_class %>"><%= link_to_filename(fname, index + 1, "<pre>#{line[:content]}</pre>") %></td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+<% end %>
+
+<%= render_partial 'report_footer' %>

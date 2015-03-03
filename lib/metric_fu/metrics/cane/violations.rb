@@ -4,7 +4,7 @@ module MetricFu
       def self.parse(violation_list)
         violation_list.split(/\n/).map do |violation|
           file, method, complexity = violation.split
-          {:file => file, :method => method, :complexity => complexity}
+          { file: file, method: method, complexity: complexity }
         end
       end
     end
@@ -12,8 +12,8 @@ module MetricFu
     class LineStyle
       def self.parse(violation_list)
         violation_list.split(/\n/).map do |violation|
-          line, description = violation.split(/\s{2,}/).reject{|x|x.strip==''}
-          {:line => line, :description => description}
+          line, description = violation.split(/\s{2,}/).reject { |x|x.strip == "" }
+          { line: line, description: description }
         end
       end
     end
@@ -22,7 +22,7 @@ module MetricFu
       def self.parse(violation_list)
         violation_list.split(/\n/).map do |violation|
           line, class_name = violation.split
-          {:line => line, :class_name => class_name}
+          { line: line, class_name: class_name }
         end
       end
     end
@@ -30,7 +30,7 @@ module MetricFu
     class Documentation
       def self.parse(violation_list)
         violation_list.split(/\n/).map do |violation|
-          {:description => violation.strip}
+          { description: violation.strip }
         end
       end
     end
@@ -38,7 +38,7 @@ module MetricFu
     class Others
       def self.parse(violation_list)
         violation_list.split(/\n/).map do |violation|
-          {:description => violation.strip}
+          { description: violation.strip }
         end
       end
     end

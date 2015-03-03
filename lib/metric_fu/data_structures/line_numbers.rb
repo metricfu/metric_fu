@@ -1,4 +1,4 @@
-MetricFu.data_structures_require { 'sexp_node' }
+MetricFu.data_structures_require { "sexp_node" }
 module MetricFu
   class LineNumbers
     attr_reader :file_path
@@ -7,7 +7,7 @@ module MetricFu
     # Used by metrics that don't provide line numbers for class, module, or methods problems
     # @param contents [String] a string of ruby code
     # @param file_path [String] the file path for the contents, defaults to empty string
-    def initialize(contents,file_path='')
+    def initialize(contents, file_path = "")
       @file_path = file_path
       @locations = {}
       if contents.to_s.size.zero?
@@ -30,14 +30,14 @@ module MetricFu
     #   If a location is found, return the method name (first element)
     #   Else return :no_method_at_line
     def method_at_line(line_number)
-      default_proc = ->{ [:no_method_at_line] }
-      @locations.detect(default_proc) do |method_name, line_number_range|
+      default_proc = -> { [:no_method_at_line] }
+      @locations.detect(default_proc) do |_method_name, line_number_range|
         line_number_range.include?(line_number)
       end.first
     end
 
     # @param method [String] the method name being queried
-    # @erturn [Integer, nil] the line number at which the given method is defined
+    # @return [Integer, nil] the line number at which the given method is defined
     def start_line_for_method(method)
       return nil unless @locations.has_key?(method)
       @locations[method].first
@@ -49,7 +49,7 @@ module MetricFu
       file_sexp = MetricFu::SexpNode.parse(contents)
       file_sexp && process_ast(file_sexp)
     rescue => e
-      #catch errors for files ruby_parser fails on
+      # catch errors for files ruby_parser fails on
       mf_log "RUBY PARSE FAILURE: #{e.class}\t#{e.message}\tFILE:#{file_path}\tSEXP:#{file_sexp.inspect}\n\tCONTENT:#{contents.inspect}\n\t#{e.backtrace}"
     end
 
@@ -65,8 +65,8 @@ module MetricFu
       else
         mf_debug "SEXP: Parsing line numbers for classes in sexp type #{node.node_type.inspect}"
         mf_debug "      in #{file_path}"
-        node.each_module {|child_node| process_class(child_node) }
-        node.each_class  {|child_node| process_class(child_node) }
+        node.each_module { |child_node| process_class(child_node) }
+        node.each_class  { |child_node| process_class(child_node) }
       end
     end
 
@@ -79,11 +79,11 @@ module MetricFu
       process_class(module_node)
     end
 
-    def process_class(class_node, module_name=nil)
+    def process_class(class_node, module_name = nil)
       class_name = class_node.name
       process_singleton_methods(class_node, class_name)
-      process_instance_methods( class_node, class_name, module_name)
-      process_class_methods(    class_node, class_name, module_name)
+      process_instance_methods(class_node, class_name, module_name)
+      process_class_methods(class_node, class_name, module_name)
     end
 
     def process_singleton_methods(class_node, class_name)
@@ -108,6 +108,5 @@ module MetricFu
         @locations[class_method_name] = class_method_node.line_range
       end
     end
-
   end
 end

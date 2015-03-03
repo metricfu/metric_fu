@@ -5,7 +5,7 @@ module MetricFu
 
       DEFAULT_PATH = "report.yml"
 
-      def initialize(opts={})
+      def initialize(opts = {})
         @options = opts
         @path_or_io = @options[:output] || DEFAULT_PATH
       end

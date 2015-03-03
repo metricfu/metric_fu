@@ -10,7 +10,7 @@ module MetricFu
       @rows = []
       @columns = opts.fetch(:column_names)
 
-      @make_index = opts.fetch(:make_index) {true}
+      @make_index = opts.fetch(:make_index) { true }
       @metric_index = {}
     end
 
@@ -58,11 +58,10 @@ module MetricFu
     private
 
     def updated_key_index(record)
-      if record.has_key?('metric')
-        @metric_index[record.metric] ||= MetricFu::Table.new(:column_names => @columns, :make_index => false)
+      if record.has_key?("metric")
+        @metric_index[record.metric] ||= MetricFu::Table.new(column_names: @columns, make_index: false)
         @metric_index[record.metric] << record
       end
     end
-
   end
 end

@@ -4,7 +4,7 @@ module MetricFu
     # https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L220
     def constantize(camel_cased_word)
       tries ||= 2
-      names = camel_cased_word.split('::')
+      names = camel_cased_word.split("::")
       names.shift if names.empty? || names.first.empty?
 
       names.inject(Object) do |constant, name|
@@ -46,9 +46,9 @@ module MetricFu
     # https://github.com/rails/rails/blob/51cd6bb829c418c5fbf75de1dfbb177233b1b154/activesupport/lib/active_support/inflector/methods.rb#L88
     def underscore(camel_cased_word)
       word = camel_cased_word.to_s.dup
-      word.gsub!(/::/, '/')
-      word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-      word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+      word.gsub!(/::/, "/")
+      word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+      word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
       word.tr!("-", "_")
       word.downcase!
       word

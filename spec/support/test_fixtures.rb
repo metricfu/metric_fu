@@ -1,22 +1,21 @@
-require 'pathname'
+require "pathname"
 class TestFixtures
-
   attr_reader :fixtures_path
 
   def initialize
     @loaded_data = {}
-    @fixtures_path = Pathname(MetricFu.root_dir).join('spec','fixtures')
+    @fixtures_path = Pathname(MetricFu.root_dir).join("spec", "fixtures")
   end
 
   def load_metric(path)
     retrieve_data(path) do |path|
-       YAML.load_file( fixture_path(path) )
+      YAML.load_file(fixture_path(path))
     end
   end
 
   def load_file(path)
     retrieve_data(path) do |path|
-      File.read( fixture_path(path) )
+      File.read(fixture_path(path))
     end
   end
 
@@ -31,9 +30,8 @@ class TestFixtures
       @loaded_data[path] = yield(path)
     end
   end
-
 end
 FIXTURE = TestFixtures.new
 HOTSPOT_DATA = ->(paths) {
-  FIXTURE.load_metric( ['hotspots'].concat(Array(paths)) )
+  FIXTURE.load_metric(["hotspots"].concat(Array(paths)))
 }

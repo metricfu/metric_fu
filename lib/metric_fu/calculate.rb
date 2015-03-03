@@ -6,6 +6,5 @@ module MetricFu
       return 0 if total.zero?
       (Float(num) / Float(total) * 100).round
     end
-
   end
 end

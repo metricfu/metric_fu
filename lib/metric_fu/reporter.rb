@@ -1,6 +1,6 @@
 module MetricFu
   class Reporter
-    def initialize(formatters=nil)
+    def initialize(formatters = nil)
       @formatters = Array(formatters)
     end
 

@@ -30,6 +30,5 @@ module MetricFu
       tables = @analyzer_tables.tables_for(granularity)
       tables[ranked_item_name]
     end
-
   end
 end

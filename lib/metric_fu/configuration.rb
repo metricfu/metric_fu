@@ -1,6 +1,5 @@
-MetricFu.logging_require { 'mf_debugger' }
+MetricFu.lib_require { "logger" }
 module MetricFu
-
   # Even though the below class methods are defined on the MetricFu module
   # They are included here as they deal with configuration
 
@@ -12,9 +11,7 @@ module MetricFu
   end
 
   def self.configure
-    configuration.tap do |config|
-      config.configure_metrics
-    end
+    configuration.tap(&:configure_metrics)
   end
 
   # = Configuration
@@ -51,20 +48,16 @@ module MetricFu
   #   config.configure_formatter(MyCustomFormatter)
   #
   class Configuration
-    require_relative 'environment'
-    require_relative 'io'
-    require_relative 'formatter'
-    require_relative 'templates/configuration'
+    require_relative "environment"
+    require_relative "io"
+    require_relative "formatter"
+    require_relative "templates/configuration"
 
     # TODO: Remove need to include the module
     include MetricFu::Environment
 
     def initialize #:nodoc:#
       reset
-    end
-
-    def mf_debug(msg)
-      MfDebugger.mf_debug msg
     end
 
     # TODO review if these code is functionally duplicated in the
@@ -78,6 +71,7 @@ module MetricFu
       @templates_configuration = MetricFu::Templates::Configuration.new
       MetricFu::Formatter::Templates.templates_configuration = @templates_configuration
       @formatters = []
+      @graph_engine = :bluff
     end
 
     # This allows us to have a nice syntax like:
@@ -96,8 +90,12 @@ module MetricFu
       yield MetricFu.configuration
     end
 
-    def configure_metric(name)
+    def self.configure_metric(name)
       yield MetricFu::Metric.get_metric(name)
+    end
+
+    def configure_metric(name, &block)
+      self.class.configure_metric(name, &block)
     end
 
     def configure_metrics
@@ -105,20 +103,12 @@ module MetricFu
       MetricFu::Metric.metrics.each do |metric|
         if block_given?
           yield metric
-        elsif !metric_manually_configured?(metric)
+        else
           metric.enabled = false
           metric.enable
         end
         metric.activate if metric.enabled unless metric.activated
       end
-    end
-
-    # TODO: Remove this method.  If we run configure_metrics
-    #   and it disabled rcov, we shouldn't have to worry here
-    #   that rcov is a special case that can only be enabled
-    #   manually
-    def metric_manually_configured?(metric)
-      [:rcov].include?(metric.name)
     end
 
     # TODO: Reconsider method name/behavior, as it really adds a formatter
@@ -129,11 +119,15 @@ module MetricFu
     # @return [Array<Symbol>] names of enabled metrics with graphs
     def graphed_metrics
       # TODO: This is a common enough need to be pushed into MetricFu::Metric as :enabled_metrics_with_graphs
-      MetricFu::Metric.enabled_metrics.select{|metric|metric.has_graph?}.map(&:name)
+      MetricFu::Metric.enabled_metrics.select(&:has_graph?).map(&:name)
+    end
+
+    def configure_graph_engine(graph_engine)
+      @graph_engine = graph_engine
     end
 
     def graph_engine
-      :bluff
+      @graph_engine
     end
 
     # This allows us to configure the templates with:
@@ -152,6 +146,5 @@ module MetricFu
     def templates_option(option)
       @templates_configuration.option(option)
     end
-
   end
 end

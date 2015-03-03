@@ -1,7 +1,6 @@
-MetricFu.metrics_require { 'hotspots/analysis/grouping' }
+MetricFu.metrics_require { "hotspots/analysis/grouping" }
 module MetricFu
   class HotspotGroupings
-
     def initialize(table, opts)
       @table, @opts = table, opts
     end
@@ -9,6 +8,5 @@ module MetricFu
     def get_grouping
       MetricFu::Grouping.new(@table, @opts)
     end
-
   end
 end

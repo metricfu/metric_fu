@@ -1,14 +1,14 @@
-require 'fileutils'
+require "fileutils"
 def directory(name)
   MetricFu::Io::FileSystem.directory(name)
 end
 
 def scratch_directory(name)
-  File.join(MetricFu::Io::FileSystem.artifact_dir, 'scratch', name)
+  File.join(MetricFu::Io::FileSystem.artifact_dir, "scratch", name)
 end
 
 def artifact_test_dir
-  @artficat_test_dir ||= File.join(MetricFu::APP_ROOT, 'tmp','metric_fu','test')
+  File.join(MetricFu::APP_ROOT, "tmp", "metric_fu", "test")
 end
 
 # Let's shift the output directories so that we don't interfere with

@@ -1,5 +1,5 @@
-require 'spec_helper'
-MetricFu.lib_require { 'calculate' }
+require "spec_helper"
+MetricFu.lib_require { "calculate" }
 
 describe MetricFu::Calculate do
   describe "returns a percent rounded to the nearest integer" do
@@ -15,7 +15,7 @@ describe MetricFu::Calculate do
       }.to raise_error(ArgumentError)
     end
     it "returns 0 when the denominator is 0" do
-      expect(MetricFu::Calculate.integer_percent(3,0)).to eq(0)
+      expect(MetricFu::Calculate.integer_percent(3, 0)).to eq(0)
     end
   end
 end

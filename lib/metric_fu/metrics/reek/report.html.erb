@@ -1,0 +1,35 @@
+<h3>Reek Results</h3>
+
+<p><a href="http://github.com/troessner/reek">Reek</a> detects common code smells in ruby code.</p>
+
+<%= render_partial 'graph', {:graph_name => 'reek'} %>
+
+<table>
+  <tr>
+    <th>File Path</th>
+    <th>Method</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <% count = 0 %>
+  <% @reek[:matches].each do |match| %>
+    <% match[:code_smells].each do |smell| %>
+      <tr class='<%= cycle("light", "dark", count) %>'>
+        <td><%= link_to_filename(match[:file_path]) %></td>
+        <td>
+          <%= smell[:method] %>
+        </td>
+        <td>
+          <%= smell[:message] %>
+        </td>
+        <td>
+          <%= smell[:type] %>
+        </td>
+      </tr>
+      <% count += 1 %>
+    <% end %>
+  <% end %>
+
+</table>
+
+<%= render_partial 'report_footer' %>

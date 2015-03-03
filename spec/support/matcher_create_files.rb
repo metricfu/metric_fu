@@ -1,5 +1,4 @@
 RSpec::Matchers.define :create_files do |expected|
-
   match do |block|
     @before = false
     @after = true
@@ -13,16 +12,20 @@ RSpec::Matchers.define :create_files do |expected|
     !@before && @after
   end
 
-  failure_message_for_should do |block|
+  failure_message do |_block|
     existed_before_message expected do
       "One or more files in [#{expected.inspect}] was not created."
     end
   end
 
-  failure_message_for_should_not do |block|
+  failure_message_when_negated do |_block|
     existed_before_message expected do
       "The files in [#{expected.inspect}] were created."
     end
+  end
+
+  def supports_block_expectations?
+    true
   end
 
   def exists?(expected)
@@ -37,5 +40,4 @@ RSpec::Matchers.define :create_files do |expected|
       yield
     end
   end
-
 end

@@ -1,0 +1,29 @@
+<h3>Flay Results</h3>
+
+<p><a href='http://ruby.sadi.st/Flay.html'>Flay</a> analyzes ruby code for structural similarities.</p>
+
+<%= render_partial 'graph', {:graph_name => 'flay'} %>
+
+<h4>Total Score (lower is better): <%= @flay[:total_score] %></h4>
+<h5>Scores less than <%= MetricFu::Metric.get_metric('flay').run_options[:minimum_score] %> are not shown or part of the total</h5>
+
+<table>
+  <tr>
+    <th>Files</th>
+    <th>Matches</th>
+  </tr>
+  <% count = 0 %>
+  <% @flay[:matches].each do |match| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td>
+        <% match[:matches].each do |file| %>
+          <%= link_to_filename(file[:name], file[:line]) %><br/>
+        <% end %>
+      </td>
+      <td><%= match[:reason] %></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+
+<%= render_partial 'report_footer' %>

@@ -1,0 +1,135 @@
+Profiling enabled.
+.............................................................................................................................................................................................
+
+
+Top 10 slowest examples:
+0.2707830 MetricFu::RoodiGrapher responding to #get_metrics should push 13 to roodi_count
+0.1994550 MetricFu::RcovGrapher responding to #get_metrics should update labels with the date
+0.1985800 MetricFu::ReekGrapher responding to #get_metrics should set a hash of code smells to reek_count
+0.1919860 MetricFu::ReekGrapher responding to #get_metrics should update labels with the date
+0.1907400 MetricFu::RoodiGrapher responding to #get_metrics should update labels with the date
+0.1883000 MetricFu::FlogGrapher responding to #get_metrics should update labels with the date
+0.1882650 MetricFu::FlayGrapher responding to #get_metrics should push 476 to flay_score
+0.1868780 MetricFu::FlogGrapher responding to #get_metrics should push to top_five_percent_average
+0.1847730 MetricFu::FlogGrapher responding to #get_metrics should push 9.9 to flog_average
+0.1844090 MetricFu::FlayGrapher responding to #get_metrics should update labels with the date
+
+Finished in 2.517686 seconds
+
+189 examples, 0 failures
+================================================================================
+ ./lib/metric_fu/metrics/hotspots/analysis/record.rb
+================================================================================
+   module MetricFu
+     class Record
+--
+       attr_reader :data
+--
+       def initialize(data, columns)
+         @data = data
+--     end
+--
+       def method_missing(name, *args, &block)
+         key = name.to_s
+         if key == 'fetch'
+           @data.send(name, *args, &block)
+         elsif @data.has_key?(key)
+           @data[key]
+--       else
+!!         super(name, *args, &block)
+--       end
+--     end
+--
+       def []=(key, value)
+          @data[key]=value
+--     end
+--
+       def [](key)
+         @data[key]
+--     end
+--
+       def has_key?(key)
+         @data.has_key?(key)
+--     end
+--
+--   end
+-- end
+
+================================================================================
+ ./lib/metric_fu/metrics/hotspots/analysis/table.rb
+================================================================================
+   %w(record).each do |path|
+     MetricFu.metrics_require   { "hotspots/analysis/#{path}" }
+-- end
+--
+   module MetricFu
+     class Table
+       include Enumerable
+--
+       def initialize(opts = {})
+         @rows = []
+         @columns = opts.fetch(:column_names)
+--
+         @make_index = opts.fetch(:make_index) {true}
+         @metric_index = {}
+--     end
+--
+       def <<(row)
+         record = nil
+         if row.is_a?(MetricFu::Record)
+           record = row
+--       else
+           record = MetricFu::Record.new(row, @columns)
+--       end
+         @rows << record
+         updated_key_index(record) if @make_index
+--     end
+--
+       def concat(records)
+!!       records.each do |record|
+!!         self << record
+--       end
+!!       self
+--     end
+--
+       def each
+         @rows.each do |row|
+           yield row
+--       end
+--     end
+--
+       def size
+         length
+--     end
+--
+       def length
+         @rows.length
+--     end
+--
+       def [](index)
+         @rows[index]
+--     end
+--
+       def column(column_name)
+         arr = []
+         @rows.each do |row|
+           arr << row[column_name]
+--       end
+         arr
+--     end
+--
+       def group_by_metric
+         @metric_index.to_a
+--     end
+--
+       private
+--
+       def updated_key_index(record)
+         if record.has_key?('metric')
+           @metric_index[record.metric] ||= MetricFu::Table.new(:column_names => @columns, :make_index => false)
+           @metric_index[record.metric] << record
+--       end
+--     end
+--
+--   end
+-- end

@@ -1,5 +1,5 @@
-require 'coderay'
-MetricFu.lib_require { 'utility' }
+require "coderay"
+MetricFu.lib_require { "utility" }
 # CodeRay options
 # used to analyze source code, because object Tokens is a list of tokens with specified types.
 # :tab_width – tabulation width in spaces. Default: 8
@@ -15,10 +15,9 @@ MetricFu.lib_require { 'utility' }
 module MetricFu
   module Formatter
     class Syntax
-
       def initialize
-        @options = { :css => :class, :style => :alpha }
-        @line_number_options = {:line_numbers => :inline, :line_number_start => 0 }
+        @options = { css: :class, style: :alpha }
+        @line_number_options = { line_numbers: :inline, line_number_start: 0 }
       end
 
       def highlight(ruby_text, line_number)
@@ -29,7 +28,7 @@ module MetricFu
       def highlight_options(line_number)
         line_number = line_number.to_i
         if line_number > 0
-          @options.merge(@line_number_options.merge(:line_number_start => line_number))
+          @options.merge(@line_number_options.merge(line_number_start: line_number))
         else
           @options
         end
@@ -41,7 +40,6 @@ module MetricFu
         ascii_text = MetricFu::Utility.clean_ascii_text(ruby_text)
         tokens = CodeRay.scan(ascii_text, :ruby)
       end
-
     end
   end
 end

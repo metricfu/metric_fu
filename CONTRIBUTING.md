@@ -8,7 +8,7 @@ How to contribute:
 
 ## Code
 
-1. Fork and clone the repo: `git clone git://github.com/yourghname/metric_fu.git && cd metric_fu` 
+1. Fork and clone the repo: `git clone git://github.com/yourghname/metric_fu.git && cd metric_fu`
 2. Install the gem dependencies: `bundle install`
 3. Make the changes you want and back them up with tests.
   * Run the tests (`bundle exec rspec`)

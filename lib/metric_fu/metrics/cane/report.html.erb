@@ -1,0 +1,87 @@
+<h3>Cane Results</h3>
+
+<p><a href='https://github.com/square/cane'>Cane</a> reports code quality threshold violations.</p>
+
+<%= render_partial 'graph', {:graph_name => 'cane'} %>
+
+<% if @cane[:violations][:abc_complexity] && @cane[:violations][:abc_complexity].size > 0 %>
+<h3>Methods exceeding allowed Abc complexity (<%= @cane[:violations][:abc_complexity].size %>)</h3>
+<table>
+  <tr>
+    <th>File</th>
+    <th>Method</th>
+    <th>Complexity</th>
+  </tr>
+  <% count = 0 %>
+  <% @cane[:violations][:abc_complexity].each do |violation| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td><%=link_to_filename(violation[:file])%></td>
+      <td><%=violation[:method]%></td>
+      <td><%=violation[:complexity]%></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+<% end %>
+<% if @cane[:violations][:line_style] && @cane[:violations][:line_style].size > 0 %>
+<h3>Lines violating style requirements (<%= @cane[:violations][:line_style].size %>)</h3>
+<table>
+  <tr>
+    <th>File</th>
+    <th>Description</th>
+  </tr>
+  <% count = 0 %>
+  <% @cane[:violations][:line_style].each do |violation| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td><%=link_to_filename(*violation[:line].split(':'))%></td>
+      <td><%=violation[:description]%></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+<% end %>
+<% if @cane[:violations][:documentation] && @cane[:violations][:documentation].size > 0 %>
+<h3>Missing documentation (<%= @cane[:violations][:documentation].size %>)</h3>
+<table>
+  <tr>
+    <th>Description</th>
+  </tr>
+  <% @cane[:violations][:documentation].each do |violation| %>
+    <tr>
+      <td><%=violation[:description]%></td>
+    </tr>
+  <% end %>
+</table>
+<% end %>
+<% if @cane[:violations][:comment] && @cane[:violations][:comment].size > 0 %>
+<h3>Class definitions requiring comments (<%= @cane[:violations][:comment].size %>)</h3>
+<table>
+  <tr>
+    <th>File</th>
+    <th>Class</th>
+  </tr>
+  <% count = 0 %>
+  <% @cane[:violations][:comment].each do |violation| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td><%=link_to_filename(*violation[:line].split(':'))%></td>
+      <td><%=violation[:class_name]%></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+<% end %>
+<% if @cane[:violations][:others] && @cane[:violations][:others].size > 0 %>
+<h3>Others (<%= @cane[:violations][:others].size %>)</h3>
+<table>
+  <tr>
+    <th>Description</th>
+  </tr>
+  <% @cane[:violations][:others].each do |violation| %>
+    <tr>
+      <td><%=violation[:description]%></td>
+    </tr>
+  <% end %>
+</table>
+<% end %>
+
+<%= render_partial 'report_footer' %>

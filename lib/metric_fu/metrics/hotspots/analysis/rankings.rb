@@ -1,11 +1,10 @@
 MetricFu.metrics_require do
   [
-    'hotspots/analysis/ranking'
+    "hotspots/analysis/ranking"
   ]
 end
 module MetricFu
   class HotspotRankings
-
     def initialize(tool_tables)
       @tool_tables = tool_tables
       @file_ranking = MetricFu::Ranking.new
@@ -88,6 +87,5 @@ module MetricFu
         master_ranking[item] += analyzer.score(metric_ranking, item) # scaling? Do we just add in the raw score?
       end
     end
-
   end
 end

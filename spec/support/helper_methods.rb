@@ -2,7 +2,7 @@ def enable_hotspots
   MetricFu.configure
   hotspot_metrics = MetricFu::Metric.metrics.map(&:name)
   hotspot_metrics.each do |metric_name|
-    path = "#{metric_name}/#{metric_name}_hotspot"
+    path = "#{metric_name}/hotspot"
     begin
       MetricFu.metrics_require { path }
     rescue LoadError
@@ -13,7 +13,8 @@ end
 
 def metric_not_activated?(metric_name)
   MetricFu.configuration.configure_metrics
-  if MetricFu::Metric.get_metric(metric_name.intern).activate
+  metric = MetricFu::Metric.get_metric(metric_name.intern)
+  if (metric.activate rescue false) # may fail if ripper not supported
     false
   else
     p "Skipping #{metric_name} tests, not activated"
@@ -27,5 +28,5 @@ def breaks_when?(bool)
 end
 
 def compare_paths(path1, path2)
-  File.join(MetricFu.root_dir, path1).should == File.join(MetricFu.root_dir, path2)
+  expect(File.join(MetricFu.root_dir, path1)).to eq(File.join(MetricFu.root_dir, path2))
 end

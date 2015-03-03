@@ -1,8 +1,7 @@
 require "spec_helper"
-MetricFu.formatter_require { 'html' }
+MetricFu.formatter_require { "html" }
 
 describe MetricFu::Formatter::HTML do
-
   before do
     setup_fs
 
@@ -12,14 +11,14 @@ describe MetricFu::Formatter::HTML do
     # for some platforms.
     config = MetricFu.configuration
     if config.mri?
-       @metric_with_graph = :cane
+      @metric_with_graph = :cane
     else
-       @metric_with_graph = :stats
-       config.templates_configuration do |c|
-         c.syntax_highlighting = false
-       end
+      @metric_with_graph = :stats
+      config.templates_configuration do |c|
+        c.syntax_highlighting = false
+      end
     end
-    MetricFu::Metric.get_metric(@metric_with_graph).stub(:run_external).and_return('')
+    allow(MetricFu::Metric.get_metric(@metric_with_graph)).to receive(:run_external).and_return("")
     @metric_without_graph = :hotspots
     config.configure_metrics.each do |metric|
       metric.enabled = true if [@metric_with_graph, @metric_without_graph].include?(metric.name)
@@ -34,30 +33,29 @@ describe MetricFu::Formatter::HTML do
   end
 
   context "In general" do
-
     it "creates a report yaml file" do
       # For backward compatibility.
       expect {
-      MetricFu::Formatter::HTML.new.finish
+        MetricFu::Formatter::HTML.new.finish
       }.to create_file("#{directory('base_directory')}/report.yml")
     end
 
     it "creates a data yaml file" do
       # For use with graphs.
       expect {
-      MetricFu::Formatter::HTML.new.finish
-      }.to create_file("#{directory('data_directory')}/#{Time.now.strftime("%Y%m%d")}.yml")
+        MetricFu::Formatter::HTML.new.finish
+      }.to create_file("#{directory('data_directory')}/#{MetricFu.report_id}.yml")
     end
 
     it "creates a report index html file" do
       expect {
-      MetricFu::Formatter::HTML.new.finish
+        MetricFu::Formatter::HTML.new.finish
       }.to create_file("#{directory('output_directory')}/index.html")
     end
 
     it "creates templatized html files for each metric" do
       expect {
-      MetricFu::Formatter::HTML.new.finish
+        MetricFu::Formatter::HTML.new.finish
       }.to create_files([
         "#{directory('output_directory')}/#{@metric_with_graph}.html",
         "#{directory('output_directory')}/#{@metric_without_graph}.html"
@@ -66,49 +64,43 @@ describe MetricFu::Formatter::HTML do
 
     it "copies common javascripts to the output directory" do
       expect {
-      MetricFu::Formatter::HTML.new.finish
-      }.to create_file("#{directory('output_directory')}/bluff*.js")
+        MetricFu::Formatter::HTML.new.finish
+      }.to create_file("#{directory('output_directory')}/highcharts*.js")
     end
 
     it "creates graphs for appropriate metrics" do
       expect {
-      MetricFu::Formatter::HTML.new.finish
+        MetricFu::Formatter::HTML.new.finish
       }.to create_files([
         "#{directory('output_directory')}/#{@metric_with_graph}.js",
       ])
     end
 
-    context 'when on OS X' do
-      before do
-        MetricFu.configuration.stub(:osx?).and_return(true)
-        MetricFu.configuration.stub(:is_cruise_control_rb?).and_return(false)
-      end
-
-      it "can open the results in the browser" do
-        formatter = MetricFu::Formatter::HTML.new
-        formatter.should_receive(:system).with("open #{MetricFu.run_path.join(directory('output_directory')).join('index.html')}")
-        formatter.finish
-        formatter.display_results
-      end
+    it "can open the results in the browser" do
+      allow(MetricFu.configuration).to receive(:is_cruise_control_rb?).and_return(false)
+      formatter = MetricFu::Formatter::HTML.new
+      path = MetricFu.run_path.join(directory("output_directory"))
+      uri = URI.join(URI.escape("file://#{path}/"), "index.html")
+      expect(Launchy).to receive(:open).with(uri)
+      formatter.finish
+      formatter.display_results
     end
-
   end
 
   context "given a custom output directory" do
-
     before do
-      @output = 'customdir'
+      @output = "customdir"
     end
 
     it "creates the report index html file in the custom output directory" do
       expect {
-      MetricFu::Formatter::HTML.new(output: @output).finish
+        MetricFu::Formatter::HTML.new(output: @output).finish
       }.to create_file("#{directory('base_directory')}/#{@output}/index.html")
     end
 
     it "creates templatized html files for each metric in the custom output directory" do
       expect {
-      MetricFu::Formatter::HTML.new(output: @output).finish
+        MetricFu::Formatter::HTML.new(output: @output).finish
       }.to create_files([
         "#{directory('base_directory')}/#{@output}/#{@metric_with_graph}.html",
         "#{directory('base_directory')}/#{@output}/#{@metric_without_graph}.html"
@@ -117,37 +109,30 @@ describe MetricFu::Formatter::HTML do
 
     it "copies common javascripts to the custom output directory" do
       expect {
-      MetricFu::Formatter::HTML.new(output: @output).finish
-      }.to create_file("#{directory('base_directory')}/#{@output}/bluff*.js")
+        MetricFu::Formatter::HTML.new(output: @output).finish
+      }.to create_file("#{directory('base_directory')}/#{@output}/highcharts*.js")
     end
 
     it "creates graphs for appropriate metrics in the custom output directory " do
       expect {
-      MetricFu::Formatter::HTML.new(output: @output).finish
+        MetricFu::Formatter::HTML.new(output: @output).finish
       }.to create_file(
         "#{directory('base_directory')}/#{@output}/#{@metric_with_graph}.js",
       )
     end
 
-    context 'when on OS X' do
-      before do
-        MetricFu.configuration.stub(:osx?).and_return(true)
-        MetricFu.configuration.stub(:is_cruise_control_rb?).and_return(false)
-      end
-
-      it "can open the results in the browser from the custom output directory" do
-        formatter = MetricFu::Formatter::HTML.new(output: @output)
-        path = MetricFu.run_path.join("#{directory('base_directory')}/#{@output}/index.html")
-        formatter.should_receive(:system).with("open #{path}")
-        formatter.finish
-        formatter.display_results
-      end
+    it "can open the results in the browser from the custom output directory" do
+      allow(MetricFu.configuration).to receive(:is_cruise_control_rb?).and_return(false)
+      formatter = MetricFu::Formatter::HTML.new(output: @output)
+      path = MetricFu.run_path.join("#{directory('base_directory')}/#{@output}")
+      uri = URI.join(URI.escape("file://#{path}/"), "index.html")
+      expect(Launchy).to receive(:open).with(uri)
+      formatter.finish
+      formatter.display_results
     end
-
   end
 
   after do
     cleanup_fs
   end
-
 end

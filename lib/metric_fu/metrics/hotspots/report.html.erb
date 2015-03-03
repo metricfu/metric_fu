@@ -1,0 +1,60 @@
+<h3>Hotspot Results</h3>
+<p>Meta analysis of your metrics to find hotspots in your code.</p>
+<br/>
+
+<% if @hotspots.nil? || @hotspots.size.zero? %>
+  No Hotspots were found.
+<% else %>
+
+  <% granularities = %w[files classes methods] %>
+  <table>
+    <tr valign="top">
+    <% granularities.each do |granularity| %>
+       <th width='33%'>
+    <%= granularity.to_s.capitalize %></th>
+    <% end %>
+    </tr>
+
+    <% hotspots = [] %>
+    <% granularities.each_index do |index| %>
+      <% granularity = granularities[index] %>
+      <% hotspots << @hotspots[granularity] %>
+    <% end %>
+
+    <% hotspots_length = 0 %>
+    <% columns = [0, 1, 2] %>
+    <% while (hotspots_length < hotspots[0].length || hotspots_length < hotspots[1].length || hotspots_length < hotspots[2].length) do %>
+      <tr  valign="top">
+        <% columns.each do |column| %>
+          <% item = hotspots[column].length >= hotspots_length ? hotspots[column][hotspots_length] : nil %>
+          <% if item %>
+            <% location = item.fetch('location') %>
+            <% file, line =  location.fetch('file_name'), location.fetch('line_number') %>
+            <td>
+            <b>
+              <%= display_location(location) %>
+            </b>
+            <% unless per_file_data[file].empty? %>
+              <small>&laquo;
+                <b><a href="<%= html_filename(file) %><%= (line.nil? ? '' : "#line#{line}") %>">annotate</a></b>
+               &raquo;</small>
+            <% end %>
+            <br/><br/>
+            <!-- TODO HOTSPOTS for metric fu nice metric_link method -->
+            <% item.fetch('details').each do |metric, info| %>
+              <%#= metric_link(@stat, metric, h(metric.to_s.capitalize)) + ": " + h(info)%><br/>
+              <%= "#{metric.to_s.capitalize}: #{info}" %><br/>
+            <% end %>
+            </td>
+          <% else %>
+          <td> &nbsp; </td>
+          <% end %>
+        <% end %>
+        <% hotspots_length += 1 %>
+      </tr>
+    <% end %>
+
+  </table>
+<% end %>
+
+<%= render_partial 'report_footer' %>

@@ -1,10 +1,9 @@
 module MetricFu
   class SaikuroParsingElement
-
-    TYPE_REGEX=/Type:(.*) Name/
-    NAME_REGEX=/Name:(.*) Complexity/
-    COMPLEXITY_REGEX=/Complexity:(.*) Lines/
-    LINES_REGEX=/Lines:(.*)/
+    TYPE_REGEX = /Type:(.*) Name/
+    NAME_REGEX = /Name:(.*) Complexity/
+    COMPLEXITY_REGEX = /Complexity:(.*) Lines/
+    LINES_REGEX = /Lines:(.*)/
 
     attr_reader :complexity, :lines, :defs, :element_type
     attr_accessor :name
@@ -23,7 +22,7 @@ module MetricFu
     end
 
     def to_h
-      base = {:name => @name, :complexity => @complexity.to_i, :lines => @lines.to_i}
+      base = { name: @name, complexity: @complexity.to_i, lines: @lines.to_i }
       unless @defs.empty?
         defs = @defs.map do |my_def|
           my_def = my_def.to_h
@@ -32,8 +31,7 @@ module MetricFu
         end
         base[:defs] = defs
       end
-      return base
+      base
     end
-
   end
 end

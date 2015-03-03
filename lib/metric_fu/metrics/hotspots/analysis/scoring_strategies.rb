@@ -1,6 +1,5 @@
 module MetricFu
   module HotspotScoringStrategies
-
     module_function
 
     # per project score percentile
@@ -21,6 +20,5 @@ module MetricFu
     def average(scores)
       sum(scores).to_f / scores.size.to_f
     end
-
   end
 end

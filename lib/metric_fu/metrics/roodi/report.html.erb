@@ -1,0 +1,22 @@
+<h3>Roodi Results</h3>
+
+<p><a href="http://roodi.rubyforge.org/">Roodi</a> parses your Ruby code and warns you about design issues you have based on the checks that is has configured.</p>
+
+<%= render_partial 'graph', {:graph_name => 'roodi'} %>
+
+<table>
+  <tr>
+    <th>File Path</th>
+    <th>Warning</th>
+  </tr>
+  <% count = 0 %>
+  <% @roodi[:problems].each do |problem| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td><%= link_to_filename(problem[:file], problem[:line]) %></td>
+      <td><%= problem[:problem] %></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+
+<%= render_partial 'report_footer' %>

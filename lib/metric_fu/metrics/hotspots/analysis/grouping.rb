@@ -3,7 +3,6 @@
 end
 module MetricFu
   class Grouping
-
     def initialize(table, opts)
       column_name = opts.fetch(:by)
       hash = {}
@@ -20,6 +19,5 @@ module MetricFu
         yield value, rows
       end
     end
-
   end
 end

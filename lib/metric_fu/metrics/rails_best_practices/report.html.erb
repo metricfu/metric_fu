@@ -1,0 +1,22 @@
+<h3>Rails Best Practices Results</h3>
+
+<p><a href="http://github.com/railsbp/rails_best_practices">rails_best_practices</a> is a code metric tool for rails projects.</p>
+
+<%= render_partial 'graph', {:graph_name => 'rails_best_practices'} %>
+
+<table>
+  <tr>
+    <th>File Path</th>
+    <th>Warning</th>
+  </tr>
+  <% count = 0 %>
+  <% @rails_best_practices[:problems].each do |problem| %>
+    <tr class='<%= cycle("light", "dark", count) %>'>
+      <td><%= link_to_filename(problem[:file], problem[:line]) %></td>
+      <td><a href =<%= problem[:url] %>><%= problem[:problem] %></a></td>
+    </tr>
+    <% count += 1 %>
+  <% end %>
+</table>
+
+<%= render_partial 'report_footer' %>

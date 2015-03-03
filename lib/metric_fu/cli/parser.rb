@@ -1,4 +1,4 @@
-require 'optparse'
+require "optparse"
 module MetricFu
   module Cli
     # see https://github.com/florianpilz/CLI-Option-Parser-Examples
@@ -21,7 +21,6 @@ module MetricFu
         def option(name, desc, settings = {})
           @options << [name, desc, settings]
         end
-
 
         private
 
@@ -51,9 +50,9 @@ module MetricFu
           add_output_option(p)
 
           p.banner = @banner unless @banner.nil?
-          p.on_tail("-h", "--help", "Show this message") {puts p ; success!}
+          p.on_tail("-h", "--help", "Show this message") { puts p; success! }
           short = @used_short.include?("v") ? "-V" : "-v"
-          p.on_tail(short, "--version", "Print version") {puts @version ; success!} unless @version.nil?
+          p.on_tail(short, "--version", "Print version") { puts @version; success! } unless @version.nil?
           p.on_tail("--debug-info", "Print debug info") { debug_info; success! }
           @default_values = @result.clone # save default values to reset @result in subsequent calls
         end
@@ -70,21 +69,21 @@ module MetricFu
           klass = o[2][:default].class == Fixnum ? Integer : o[2][:default].class
 
           if [TrueClass, FalseClass, NilClass].include?(klass) # boolean switch
-            p.on("-" << short, "--[no-]" << o[0].to_s.gsub("_", "-"), o[1]) {|x| @result[o[0]] = x}
+            p.on("-" << short, "--[no-]" << o[0].to_s.gsub("_", "-"), o[1]) { |x| @result[o[0]] = x }
           else # argument with parameter
-            p.on("-" << short, "--" << o[0].to_s.gsub("_", "-") << " " << o[2][:default].to_s, klass, o[1]) {|x| @result[o[0]] = x}
+            p.on("-" << short, "--" << o[0].to_s.gsub("_", "-") << " " << o[2][:default].to_s, klass, o[1]) { |x| @result[o[0]] = x }
           end
         end
 
         def add_output_option(p)
           p.on("--out FILE|DIR",
-              "Specify the file or directory to use for output",
-              "This option applies to the previously",
-              "specified --format, or the default format",
-              "if no format is specified. Paths are relative to",
-              "#{MetricFu.run_path.join(MetricFu::Io::FileSystem.directory('base_directory'))}",
-              "Check the specific formatter\'s docs to see",
-              "whether to pass a file or a dir.") do |o|
+               "Specify the file or directory to use for output",
+               "This option applies to the previously",
+               "specified --format, or the default format",
+               "if no format is specified. Paths are relative to",
+               "#{MetricFu.run_path.join(MetricFu::Io::FileSystem.directory('base_directory'))}",
+               "Check the specific formatter\'s docs to see",
+               "whether to pass a file or a dir.") do |o|
             @result[:format] ||= MetricFu::Formatter::DEFAULT
             @result[:format].last << o
           end
@@ -111,7 +110,7 @@ module MetricFu
 
         def debug_info
           extend(MetricFu::Environment)
-          require 'pp'
+          require "pp"
           pp debug_info
         end
 
@@ -124,7 +123,7 @@ module MetricFu
         #    "   <key>  : <description>."
         def format_descriptions
           formats = MetricFu::Formatter::BUILTIN_FORMATS
-          max = formats.keys.map{|s| s.length}.max
+          max = formats.keys.map(&:length).max
           formats.keys.sort.map do |key|
             "  #{key}#{' ' * (max - key.length)} : #{formats[key][1]}"
           end
@@ -133,10 +132,7 @@ module MetricFu
         def success!
           MetricFu::Cli.complete!
         end
-
-
       end
     end
-
   end
 end

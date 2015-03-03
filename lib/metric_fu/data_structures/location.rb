@@ -20,7 +20,7 @@ module MetricFu
       @file_name, @line_number = file_path.to_s.split(/:/)
       @class_name              = class_name
       @method_name             = method_name
-      @simple_method_name      = @method_name.to_s.sub(@class_name.to_s,'')
+      @simple_method_name      = @method_name.to_s.sub(@class_name.to_s, "")
       @hash_key                = to_key
       @hash                    = @hash_key.hash
     end
@@ -30,9 +30,9 @@ module MetricFu
         "class_name"  => class_name,
         "method_name" => method_name,
         "file_path"   => file_path,
-        'file_name'   => file_name,
-        'line_number' => line_number,
-        'hash_key'    => hash_key,
+        "file_name"   => file_name,
+        "line_number" => line_number,
+        "hash_key"    => hash_key,
       }
 
       if method_name.to_s.size > 0
@@ -48,7 +48,7 @@ module MetricFu
     end
 
     def <=>(other)
-      self.hash <=> other.hash
+      hash <=> other.hash
     end
 
     # Generates the @hash key
@@ -58,12 +58,12 @@ module MetricFu
 
     def self.for(class_or_method_name)
       class_or_method_name = strip_modules(class_or_method_name)
-      if(class_or_method_name)
+      if class_or_method_name
         begin
           match = class_or_method_name.match(/(.*)((\.|\#|\:\:[a-z])(.+))/)
         rescue => error
-          #new error during port to metric_fu occasionally a unintialized
-          #MatchData object shows up here. Not expected.
+          # new error during port to metric_fu occasionally a unintialized
+          # MatchData object shows up here. Not expected.
           mf_debug "ERROR on getting location for #{class_or_method_name} #{error.inspect}"
           match = nil
         end
@@ -71,9 +71,9 @@ module MetricFu
         # reek reports the method with :: not # on modules like
         # module ApplicationHelper \n def signed_in?, convert it so it records correctly
         # but classes have to start with a capital letter... HACK for REEK bug, reported underlying issue to REEK
-        if(match)
+        if match
           class_name = strip_modules(match[1])
-          method_name = class_or_method_name.gsub(/\:\:/,"#")
+          method_name = class_or_method_name.gsub(/\:\:/, "#")
         else
           class_name = strip_modules(class_or_method_name)
           method_name = nil
@@ -82,7 +82,7 @@ module MetricFu
         class_name = nil
         method_name = nil
       end
-      self.get(nil, class_name, method_name)
+      get(nil, class_name, method_name)
     end
 
     def finalize
@@ -100,13 +100,11 @@ module MetricFu
       # reek reports the method with :: not # on modules like
       # module ApplicationHelper \n def signed_in?, convert it so it records correctly
       # but classes have to start with a capital letter... HACK for REEK bug, reported underlying issue to REEK
-      if(class_or_method_name=~/\:\:[A-Z]/)
+      if class_or_method_name =~ /\:\:[A-Z]/
         class_or_method_name.split("::").last
       else
         class_or_method_name
       end
-
     end
-
   end
 end
