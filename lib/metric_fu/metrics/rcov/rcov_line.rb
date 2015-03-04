@@ -40,9 +40,9 @@ module MetricFu
     end
 
     def css_class
-      return "" if ignored?
+      return "rcov_not_run" if missed?
 
-      missed? ? "rcov_not_run" : "rcov_run"
+      "rcov_run"
     end
   end
 end

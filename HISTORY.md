@@ -9,6 +9,7 @@ As such, a _Feature_ would map to either major (breaking change) or minor. A _bu
 * Breaking Changes
 * Features
 * Fixes
+  * Use same styling for covered as ignored lines. (Martin Gotink, #254)
 * Misc
 
 ### [4.11.4](https://github.com/metricfu/metric_fu/compare/v4.11.3...v4.11.4)

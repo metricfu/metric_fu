@@ -71,9 +71,9 @@ describe MetricFu::RCovLine do
   end
 
   describe "#css_class" do
-    it "returns '' for an ignored line" do
+    it "returns 'rcov_run' for an ignored line" do
       rcov_line = RCovLine.new("", nil)
-      expect(rcov_line.css_class).to eq("")
+      expect(rcov_line.css_class).to eq("rcov_run")
     end
 
     it "returns 'rcov_not_run' for a missed line" do
