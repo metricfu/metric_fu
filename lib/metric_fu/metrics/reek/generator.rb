@@ -1,6 +1,6 @@
 module MetricFu
   class ReekGenerator < Generator
-    REEK_REGEX = /^\[([^:]+)\]:(\S+) (.*) \((.*)\)$/
+    REEK_REGEX = /^\s*\[([^:]+)\]:(\S+)\s+(.*)\s+\((.*)\)$/
 
     def self.metric
       :reek
@@ -27,7 +27,7 @@ module MetricFu
     end
 
     def analyze
-      @matches = @output.chomp.split("\n\n").map { |m| m.split("\n") }
+      @matches = @output.chomp.split("\n\n").map { |m| m.gsub(/\n\s+\[/, "SPLIT_ME_HERE_PLEASE[").split("SPLIT_ME_HERE_PLEASE") }
       @matches = @matches.map do |match|
         break {} if zero_warnings?(match)
         file_path = match.shift.split(" -- ").first
@@ -136,7 +136,7 @@ module MetricFu
     end
 
     def zero_warnings?(match)
-      match.last == "0 total warnings"
+      match.last == "\n0 total warnings"
     end
   end
 end
