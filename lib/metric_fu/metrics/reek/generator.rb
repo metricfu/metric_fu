@@ -1,6 +1,21 @@
 module MetricFu
   class ReekGenerator < Generator
-    REEK_REGEX = /^(\S+) (.*) \((.*)\)$/
+    REEK_REGEX = /
+      ^            # start of line
+        \s*        # 0 or more space characters
+        \[         # left bracket
+          ([^:]+)  # 1 or more characters, not a colon (match group - line numbers)
+        \]         # right bracket
+        :          # colon
+        (\S+)      # 1 or more non-space characters (match group - method name)
+        \s+        # 1 or more space characters
+        (.*)       # 0 or more characters (match group - smell message)
+        \s+        # 1 or more space characters
+        \(         # left paren
+          (.*)     # 0 or more characters (match group - smell type)
+        \)         # right paren
+      $            # end of line
+    /x
 
     def self.metric
       :reek
@@ -27,7 +42,7 @@ module MetricFu
     end
 
     def analyze
-      @matches = @output.chomp.split("\n\n").map { |m| m.split("\n") }
+      @matches = @output.chomp.split("\n\n").map { |m| m.gsub(/\n\s+\[/, "SPLIT_ME_HERE_PLEASE[").split("SPLIT_ME_HERE_PLEASE") }
       @matches = @matches.map do |match|
         break {} if zero_warnings?(match)
         file_path = match.shift.split(" -- ").first
@@ -35,9 +50,10 @@ module MetricFu
         code_smells = match.map do |smell|
           match_object = smell.match(REEK_REGEX)
           next unless match_object
-          { method: match_object[1].strip,
-            message: match_object[2].strip,
-            type: match_object[3].strip }
+          {:lines => match_object[1].strip.split(', '),
+           :method => match_object[2].strip,
+           :message => match_object[3].strip,
+           :type => match_object[4].strip}
         end.compact
         { file_path: file_path, code_smells: code_smells }
       end
@@ -102,7 +118,6 @@ module MetricFu
 
     def cli_options(files)
       [
-        disable_line_number_option,
         turn_off_color,
         *config_option,
         *files
@@ -135,12 +150,8 @@ module MetricFu
       # MetricFu::GemVersion.activated_version('reek').to_s
     end
 
-    def disable_line_number_option
-      "--no-line-numbers"
-    end
-
     def zero_warnings?(match)
-      match.last == "0 total warnings"
+      match.last == "\n0 total warnings"
     end
   end
 end
