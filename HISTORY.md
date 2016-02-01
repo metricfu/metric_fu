@@ -10,6 +10,7 @@ As such, a _Feature_ would map to either major (breaking change) or minor. A _bu
 * Features
 * Fixes
 * Misc
+  * Fix deprecation warnings for Dir.exists? (Jared Szechy, #269)
 
 ### [4.12.0](https://github.com/metricfu/metric_fu/compare/v4.11.4...v4.12.0)
 

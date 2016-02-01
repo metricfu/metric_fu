@@ -59,7 +59,7 @@ module MetricFu
 
       # Add the 'app' directory if we're running within rails.
       def set_code_dirs
-        @directories["code_dirs"] = %w(app lib).select { |dir| Dir.exists?(dir) }
+        @directories["code_dirs"] = %w(app lib).select { |dir| Dir.exist?(dir) }
       end
     end
 
