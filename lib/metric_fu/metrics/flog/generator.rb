@@ -1,5 +1,6 @@
 require "pathname"
 require "optparse"
+require "path_expander"
 
 module MetricFu
   class FlogGenerator < Generator
@@ -12,8 +13,10 @@ module MetricFu
         "--all",
         options[:continue] ? "--continue" : nil,
       ].compact
+      expander = PathExpander.new(options[:dirs_to_flog], "**/*.{rb,rake}")
+      files = expander.process
       @flogger = FlogCLI.new parse_options
-      @flogger.flog *options[:dirs_to_flog]
+      @flogger.flog *files
     end
 
     def analyze

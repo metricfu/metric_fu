@@ -9,6 +9,7 @@ As such, a _Feature_ would map to either major (breaking change) or minor. A _bu
 * Breaking Changes
 * Features
 * Fixes
+  * Making it works with flog 4.4.0. (Américo Duarte, #274, fixes #273)
 * Misc
   * Fix deprecation warnings for Dir.exists? (Jared Szechy, #269)
 

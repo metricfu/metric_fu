@@ -14,7 +14,10 @@ describe MetricFu::FlogGenerator do
     it "should look for files and flog them" do
       expect(FlogCLI).to receive(:parse_options).with(["--all", "--continue"]).and_return("options")
       expect(FlogCLI).to receive(:new).with("options").and_return(flogger = double("flogger"))
-      expect(flogger).to receive(:flog).with("lib")
+
+      files = PathExpander.new(["lib"], "**/*.{rb,rake}").process
+      expect(flogger).to receive(:flog).with(*files)
+
       @flog.emit
     end
   end
