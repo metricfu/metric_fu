@@ -53,6 +53,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "code_metrics",          ["~> 0.1"]
 
   # other dependencies
+  # path expansion used to passing dirs to flog
+  s.add_runtime_dependency "path_expander", "~> 1.0"
   # ruby version identification
   s.add_runtime_dependency "redcard"
   # syntax highlighting

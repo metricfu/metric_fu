@@ -44,17 +44,17 @@ describe MetricFu::Generator do
   describe "#generate_result" do
     it "should  raise an error when calling #emit" do
       @abstract_class = MetricFu::Generator.new
-      expect { @abstract_class.generate_result }.to raise_error
+      expect { @abstract_class.generate_result }.to raise_error(RuntimeError, /must be implemented/)
     end
 
     it "should call #analyze" do
       @abstract_class = MetricFu::Generator.new
-      expect { @abstract_class.generate_result }.to raise_error
+      expect { @abstract_class.generate_result }.to raise_error(RuntimeError, /must be implemented/)
     end
 
     it "should call #to_h" do
       @abstract_class = MetricFu::Generator.new
-      expect { @abstract_class.generate_result }.to raise_error
+      expect { @abstract_class.generate_result }.to raise_error(RuntimeError, /must be implemented/)
     end
   end
 
