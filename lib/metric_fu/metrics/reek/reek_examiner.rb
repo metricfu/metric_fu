@@ -1,7 +1,7 @@
+require "reek"
 module MetricFu
   module ReekExaminer
     def self.get
-      require "reek"
       # To load any changing dependencies such as "reek/configuration/app_configuration"
       #   Added in 1.6.0 https://github.com/troessner/reek/commit/7f4ed2be442ca926e08ccc41945e909e8f710947
       #   But not always loaded
@@ -9,7 +9,7 @@ module MetricFu
 
       klass = Reek.const_defined?(:Examiner) ? Reek.const_get(:Examiner) : Reek.const_get(:Core).const_get(:Examiner)
 
-      case Gem::Version.new(Reek::Version::STRING).segments.first
+      case Gem::Version.new(reek_version).segments.first
         when 1, 2
           ReekExaminerV1.new(klass)
         when 3
@@ -17,6 +17,10 @@ module MetricFu
         else
           ReekExaminerV4.new(klass)
       end
+    end
+
+    def self.reek_version
+      Reek.const_defined?(:VERSION) ? Reek::VERSION : Reek::Version::STRING
     end
 
     class ReekExaminerV1
