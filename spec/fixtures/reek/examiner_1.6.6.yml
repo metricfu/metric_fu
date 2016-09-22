@@ -1,0 +1,39 @@
+--- !ruby/object:Reek::Examiner
+description: dir
+collector: !ruby/object:Reek::Core::WarningCollector
+  warnings: !ruby/object:Set
+    hash:
+      ? smell_category: NestedIterators
+        smell_type: NestedIterators
+        source: lib/metric_fu.rb
+        context: MetricFu#run_only
+        lines:
+        - 129
+        message: contains iterators nested 2 deep
+        count: 2
+      : true
+      ? smell_category: LongMethod
+        smell_type: TooManyStatements
+        source: lib/metric_fu.rb
+        context: MetricFu#run_only
+        lines:
+        - 126
+        message: has approx 9 statements
+        count: 9
+      : true
+      ? smell_category: LowCohesion
+        smell_type: UtilityFunction
+        source: lib/metric_fu.rb
+        context: MetricFu#current_time
+        lines:
+        - 67
+        message: doesn't depend on instance state
+      : true
+      ? smell_category: LowCohesion
+        smell_type: UtilityFunction
+        source: lib/metric_fu.rb
+        context: MetricFu#run
+        lines:
+        - 122
+        message: doesn't depend on instance state
+      : true

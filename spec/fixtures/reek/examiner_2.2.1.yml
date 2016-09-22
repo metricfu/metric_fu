@@ -1,0 +1,4767 @@
+--- !ruby/object:Reek::Core::Examiner
+sources: !ruby/object:Reek::Source::SourceRepository
+  description: dir
+  sources:
+  - !ruby/object:Reek::Source::SourceCode
+    source: |
+      # coding: utf-8
+      require "metric_fu/version"
+      require "forwardable"
+      require "pathname"
+      module MetricFu
+        APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+        LIB_ROOT = File.join(APP_ROOT, "lib/metric_fu")
+
+        module_function
+
+        def root
+          @app_root ||= Pathname(APP_ROOT)
+        end
+
+        def metric_url
+          "https://github.com/metricfu/metric_fu"
+        end
+
+        def metric_name
+          "MetricFu"
+        end
+
+        def run_dir
+          @run_dir ||= Dir.pwd
+        end
+
+        def run_path
+          Pathname(run_dir)
+        end
+
+        def run_dir=(run_dir)
+          @run_dir = run_dir
+        end
+
+        def report_name
+          @report_name || self.report_name = run_path.basename.to_s
+        end
+
+        def report_name=(report_name)
+          @report_name = report_name
+        end
+
+        # The time at analyzed code state
+        def report_time
+          Time.now
+        end
+
+        def report_date_string
+          report_time.strftime("%Y%m%d")
+        end
+
+        # @return [String]
+        # @example '20140323'
+        # Used to uniquely identify reports
+        # as a sortable reference to when the report
+        # was generated
+        def report_id
+          report_date_string
+        end
+
+        # Non-date-specific; Used to uniquely identify a report run
+        def report_fingerprint
+          report_time.to_i.to_s
+        end
+
+        # The time the metrics are generated
+        def current_time
+          Time.now.localtime
+        end
+
+        def root_dir
+          APP_ROOT
+        end
+
+        def lib_dir
+          LIB_ROOT
+        end
+
+        require "metric_fu/loader"
+        LOADER = MetricFu::Loader.new(LIB_ROOT)
+        def loader
+          LOADER
+        end
+        extend SingleForwardable
+
+        def_delegators :loader, :lib_require, :load_tasks
+
+        def library_dirs
+          %w(metrics formatter reporting logging errors data_structures tasks)
+        end
+
+        loader.create_dirs(self) do
+          library_dirs
+        end
+
+        # @note artifact_dir is relative to where the task is being run,
+        #   not to the metric_fu library
+        require "metric_fu/io"
+        def artifact_dir
+          MetricFu::Io::FileSystem.artifact_dir
+        end
+
+        def artifact_subdirs
+          %w(scratch output _data)
+        end
+
+        loader.create_artifact_subdirs(self) do
+          artifact_subdirs
+        end
+
+        loader.setup
+
+        def reset
+          # TODO Don't like how this method needs to know
+          # all of these class variables that are defined
+          # in separate classes.
+          @configuration = nil
+          @graph = nil
+          @result = nil
+        end
+
+        def run(options)
+          MetricFu::Run.new.run(options)
+        end
+
+        def run_only(metrics_to_run_names, options)
+          metrics_to_run_names = Array(metrics_to_run_names).map(&:to_s)
+          MetricFu::Configuration.run do |config|
+            config.configure_metrics.each do |metric|
+              metric_name = metric.name.to_s
+              if metrics_to_run_names.include?(metric_name)
+                p "Enabling #{metric_name}"
+                metric.enabled = true
+              else
+                p "Disabling #{metric_name}"
+                metric.enabled = false
+              end
+            end
+          end
+          run(options)
+        end
+      end
+    description: lib/metric_fu.rb
+    parser: !ruby/class 'Parser::Ruby21'
+    syntax_tree: &288 !ruby/object
+      comments: []
+      children:
+      - &3 !ruby/object
+        comments: []
+        children:
+        - 
+        - :require
+        - &2 !ruby/object
+          comments: []
+          children:
+          - metric_fu/version
+          type: :str
+          location: !ruby/object:Parser::Source::Map::Collection
+            end: !ruby/object:Parser::Source::Range
+              source_buffer: &1 !ruby/object:Parser::Source::Buffer
+                name: lib/metric_fu.rb
+                source: |
+                  # coding: utf-8
+                  require "metric_fu/version"
+                  require "forwardable"
+                  require "pathname"
+                  module MetricFu
+                    APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+                    LIB_ROOT = File.join(APP_ROOT, "lib/metric_fu")
+
+                    module_function
+
+                    def root
+                      @app_root ||= Pathname(APP_ROOT)
+                    end
+
+                    def metric_url
+                      "https://github.com/metricfu/metric_fu"
+                    end
+
+                    def metric_name
+                      "MetricFu"
+                    end
+
+                    def run_dir
+                      @run_dir ||= Dir.pwd
+                    end
+
+                    def run_path
+                      Pathname(run_dir)
+                    end
+
+                    def run_dir=(run_dir)
+                      @run_dir = run_dir
+                    end
+
+                    def report_name
+                      @report_name || self.report_name = run_path.basename.to_s
+                    end
+
+                    def report_name=(report_name)
+                      @report_name = report_name
+                    end
+
+                    # The time at analyzed code state
+                    def report_time
+                      Time.now
+                    end
+
+                    def report_date_string
+                      report_time.strftime("%Y%m%d")
+                    end
+
+                    # @return [String]
+                    # @example '20140323'
+                    # Used to uniquely identify reports
+                    # as a sortable reference to when the report
+                    # was generated
+                    def report_id
+                      report_date_string
+                    end
+
+                    # Non-date-specific; Used to uniquely identify a report run
+                    def report_fingerprint
+                      report_time.to_i.to_s
+                    end
+
+                    # The time the metrics are generated
+                    def current_time
+                      Time.now.localtime
+                    end
+
+                    def root_dir
+                      APP_ROOT
+                    end
+
+                    def lib_dir
+                      LIB_ROOT
+                    end
+
+                    require "metric_fu/loader"
+                    LOADER = MetricFu::Loader.new(LIB_ROOT)
+                    def loader
+                      LOADER
+                    end
+                    extend SingleForwardable
+
+                    def_delegators :loader, :lib_require, :load_tasks
+
+                    def library_dirs
+                      %w(metrics formatter reporting logging errors data_structures tasks)
+                    end
+
+                    loader.create_dirs(self) do
+                      library_dirs
+                    end
+
+                    # @note artifact_dir is relative to where the task is being run,
+                    #   not to the metric_fu library
+                    require "metric_fu/io"
+                    def artifact_dir
+                      MetricFu::Io::FileSystem.artifact_dir
+                    end
+
+                    def artifact_subdirs
+                      %w(scratch output _data)
+                    end
+
+                    loader.create_artifact_subdirs(self) do
+                      artifact_subdirs
+                    end
+
+                    loader.setup
+
+                    def reset
+                      # TODO Don't like how this method needs to know
+                      # all of these class variables that are defined
+                      # in separate classes.
+                      @configuration = nil
+                      @graph = nil
+                      @result = nil
+                    end
+
+                    def run(options)
+                      MetricFu::Run.new.run(options)
+                    end
+
+                    def run_only(metrics_to_run_names, options)
+                      metrics_to_run_names = Array(metrics_to_run_names).map(&:to_s)
+                      MetricFu::Configuration.run do |config|
+                        config.configure_metrics.each do |metric|
+                          metric_name = metric.name.to_s
+                          if metrics_to_run_names.include?(metric_name)
+                            p "Enabling #{metric_name}"
+                            metric.enabled = true
+                          else
+                            p "Disabling #{metric_name}"
+                            metric.enabled = false
+                          end
+                        end
+                      end
+                      run(options)
+                    end
+                  end
+                first_line: 1
+                lines: 
+                line_begins:
+                - - 142
+                  - 2774
+                - - 141
+                  - 2770
+                - - 140
+                  - 2764
+                - - 139
+                  - 2747
+                - - 138
+                  - 2739
+                - - 137
+                  - 2729
+                - - 136
+                  - 2717
+                - - 135
+                  - 2684
+                - - 134
+                  - 2645
+                - - 133
+                  - 2632
+                - - 132
+                  - 2600
+                - - 131
+                  - 2562
+                - - 130
+                  - 2508
+                - - 129
+                  - 2469
+                - - 128
+                  - 2421
+                - - 127
+                  - 2377
+                - - 126
+                  - 2310
+                - - 125
+                  - 2264
+                - - 124
+                  - 2263
+                - - 123
+                  - 2257
+                - - 122
+                  - 2222
+                - - 121
+                  - 2203
+                - - 120
+                  - 2202
+                - - 119
+                  - 2196
+                - - 118
+                  - 2178
+                - - 117
+                  - 2161
+                - - 116
+                  - 2136
+                - - 115
+                  - 2109
+                - - 114
+                  - 2057
+                - - 113
+                  - 2005
+                - - 112
+                  - 1993
+                - - 111
+                  - 1992
+                - - 110
+                  - 1977
+                - - 109
+                  - 1976
+                - - 108
+                  - 1970
+                - - 107
+                  - 1949
+                - - 106
+                  - 1907
+                - - 105
+                  - 1906
+                - - 104
+                  - 1900
+                - - 103
+                  - 1871
+                - - 102
+                  - 1848
+                - - 101
+                  - 1847
+                - - 100
+                  - 1841
+                - - 99
+                  - 1799
+                - - 98
+                  - 1780
+                - - 97
+                  - 1755
+                - - 96
+                  - 1720
+                - - 95
+                  - 1653
+                - - 94
+                  - 1652
+                - - 93
+                  - 1646
+                - - 92
+                  - 1629
+                - - 91
+                  - 1599
+                - - 90
+                  - 1598
+                - - 89
+                  - 1592
+                - - 88
+                  - 1519
+                - - 87
+                  - 1500
+                - - 86
+                  - 1499
+                - - 85
+                  - 1447
+                - - 84
+                  - 1446
+                - - 83
+                  - 1419
+                - - 82
+                  - 1413
+                - - 81
+                  - 1402
+                - - 80
+                  - 1389
+                - - 79
+                  - 1347
+                - - 78
+                  - 1318
+                - - 77
+                  - 1317
+                - - 76
+                  - 1311
+                - - 75
+                  - 1298
+                - - 74
+                  - 1284
+                - - 73
+                  - 1283
+                - - 72
+                  - 1277
+                - - 71
+                  - 1264
+                - - 70
+                  - 1249
+                - - 69
+                  - 1248
+                - - 68
+                  - 1242
+                - - 67
+                  - 1219
+                - - 66
+                  - 1200
+                - - 65
+                  - 1161
+                - - 64
+                  - 1160
+                - - 63
+                  - 1154
+                - - 62
+                  - 1128
+                - - 61
+                  - 1103
+                - - 60
+                  - 1041
+                - - 59
+                  - 1040
+                - - 58
+                  - 1034
+                - - 57
+                  - 1011
+                - - 56
+                  - 995
+                - - 55
+                  - 977
+                - - 54
+                  - 930
+                - - 53
+                  - 892
+                - - 52
+                  - 868
+                - - 51
+                  - 847
+                - - 50
+                  - 846
+                - - 49
+                  - 840
+                - - 48
+                  - 805
+                - - 47
+                  - 780
+                - - 46
+                  - 779
+                - - 45
+                  - 773
+                - - 44
+                  - 760
+                - - 43
+                  - 742
+                - - 42
+                  - 706
+                - - 41
+                  - 705
+                - - 40
+                  - 699
+                - - 39
+                  - 668
+                - - 38
+                  - 636
+                - - 37
+                  - 635
+                - - 36
+                  - 629
+                - - 35
+                  - 567
+                - - 34
+                  - 549
+                - - 33
+                  - 548
+                - - 32
+                  - 542
+                - - 31
+                  - 519
+                - - 30
+                  - 495
+                - - 29
+                  - 494
+                - - 28
+                  - 488
+                - - 27
+                  - 466
+                - - 26
+                  - 451
+                - - 25
+                  - 450
+                - - 24
+                  - 444
+                - - 23
+                  - 419
+                - - 22
+                  - 405
+                - - 21
+                  - 404
+                - - 20
+                  - 398
+                - - 19
+                  - 383
+                - - 18
+                  - 365
+                - - 17
+                  - 364
+                - - 16
+                  - 358
+                - - 15
+                  - 314
+                - - 14
+                  - 297
+                - - 13
+                  - 296
+                - - 12
+                  - 290
+                - - 11
+                  - 253
+                - - 10
+                  - 242
+                - - 9
+                  - 241
+                - - 8
+                  - 223
+                - - 7
+                  - 222
+                - - 6
+                  - 172
+                - - 5
+                  - 101
+                - - 4
+                  - 85
+                - - 3
+                  - 66
+                - - 2
+                  - 44
+                - - 1
+                  - 16
+                - - 0
+                  - 0
+                slice_source: 
+                line_for_position:
+                  708: 43
+                  2773: 142
+                  43: 2
+                  65: 3
+                  84: 4
+                  100: 5
+                  2769: 141
+                  171: 6
+                  221: 7
+                  240: 9
+                  295: 13
+                  363: 17
+                  403: 21
+                  449: 25
+                  493: 29
+                  547: 33
+                  634: 37
+                  704: 41
+                  849: 52
+                  778: 46
+                  845: 50
+                  1043: 61
+                  1039: 59
+                  1163: 66
+                  1159: 64
+                  1655: 96
+                  1247: 69
+                  1282: 73
+                  1316: 77
+                  1346: 79
+                  1388: 80
+                  1418: 83
+                  1445: 84
+                  1498: 86
+                  1597: 90
+                  1651: 94
+                  2009: 114
+                  1779: 98
+                  1846: 101
+                  1905: 105
+                  1975: 109
+                  1991: 111
+                  2201: 120
+                  2195: 119
+                  289: 12
+                  443: 24
+                  487: 28
+                  623: 36
+                  628: 36
+                  772: 45
+                  744: 44
+                  839: 49
+                  1148: 63
+                  1153: 63
+                  1231: 68
+                  1241: 68
+                  1202: 67
+                  1840: 100
+                  1782: 99
+                  2256: 123
+                  2205: 122
+                  2364: 127
+                  2376: 127
+                  2408: 128
+                  2451: 129
+                  2456: 129
+                  2502: 130
+                  2507: 130
+                  2561: 131
+                  2599: 132
+                  2631: 133
+                  2683: 135
+                  2716: 136
+                  2763: 140
+                  2468: 129
+                  2728: 137
+                  2738: 138
+                  2420: 128
+                  2746: 139
+                  2427: 129
+                  2266: 126
+                  2314: 127
+                  2477: 130
+                  2412: 128
+                  2460: 129
+                  257: 12
+                  423: 24
+                  523: 32
+                  672: 40
+                  2140: 117
+                  2165: 118
+                  2182: 119
+                column_for_position: {}
+              end_pos: 43
+              begin_pos: 42
+            begin: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 25
+              begin_pos: 24
+            expression: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 43
+              begin_pos: 24
+            node: *2
+          hash: 2138138518579796441
+        type: :send
+        location: !ruby/object:Parser::Source::Map::Send
+          dot: 
+          selector: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 23
+            begin_pos: 16
+          end: 
+          begin: 
+          expression: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 43
+            begin_pos: 16
+          node: *3
+        hash: -1088901382585829497
+      - &5 !ruby/object
+        comments: []
+        children:
+        - 
+        - :require
+        - &4 !ruby/object
+          comments: []
+          children:
+          - forwardable
+          type: :str
+          location: !ruby/object:Parser::Source::Map::Collection
+            end: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 65
+              begin_pos: 64
+            begin: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 53
+              begin_pos: 52
+            expression: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 65
+              begin_pos: 52
+            node: *4
+          hash: -791250929639084237
+        type: :send
+        location: !ruby/object:Parser::Source::Map::Send
+          dot: 
+          selector: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 51
+            begin_pos: 44
+          end: 
+          begin: 
+          expression: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 65
+            begin_pos: 44
+          node: *5
+        hash: 1532327059234673806
+      - &7 !ruby/object
+        comments: []
+        children:
+        - 
+        - :require
+        - &6 !ruby/object
+          comments: []
+          children:
+          - pathname
+          type: :str
+          location: !ruby/object:Parser::Source::Map::Collection
+            end: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 84
+              begin_pos: 83
+            begin: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 75
+              begin_pos: 74
+            expression: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 84
+              begin_pos: 74
+            node: *6
+          hash: -2744272894574155336
+        type: :send
+        location: !ruby/object:Parser::Source::Map::Send
+          dot: 
+          selector: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 73
+            begin_pos: 66
+          end: 
+          begin: 
+          expression: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 84
+            begin_pos: 66
+          node: *7
+        hash: -601914319314070607
+      - &287 !ruby/object
+        comments: []
+        children:
+        - &9 !ruby/object
+          comments: &126 []
+          children:
+          - 
+          - :MetricFu
+          type: :const
+          location: !ruby/object:Parser::Source::Map::Constant
+            name: &8 !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 100
+              begin_pos: 92
+            double_colon: 
+            expression: *8
+            node: *9
+          hash: 3031831017619076967
+        - &286 !ruby/object
+          comments: []
+          children:
+          - &22 !ruby/object
+            comments: []
+            children:
+            - 
+            - :APP_ROOT
+            - &21 !ruby/object
+              comments: []
+              children:
+              - &11 !ruby/object
+                comments: &12 []
+                children:
+                - 
+                - :File
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: &10 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 118
+                    begin_pos: 114
+                  double_colon: 
+                  expression: *10
+                  node: *11
+                hash: 2387407036266410492
+              - :expand_path
+              - &20 !ruby/object
+                comments: []
+                children:
+                - &14 !ruby/object
+                  comments: *12
+                  children:
+                  - 
+                  - :File
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: &13 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 135
+                      begin_pos: 131
+                    double_colon: 
+                    expression: *13
+                    node: *14
+                  hash: 2387407036266410492
+                - :join
+                - &18 !ruby/object
+                  comments: []
+                  children:
+                  - &16 !ruby/object
+                    comments: *12
+                    children:
+                    - 
+                    - :File
+                    type: :const
+                    location: !ruby/object:Parser::Source::Map::Constant
+                      name: &15 !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 145
+                        begin_pos: 141
+                      double_colon: 
+                      expression: *15
+                      node: *16
+                    hash: 2387407036266410492
+                  - :dirname
+                  - &17 !ruby/object
+                    comments: []
+                    children:
+                    - lib/metric_fu.rb
+                    type: :str
+                    location: !ruby/object:Parser::Source::Map
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 162
+                        begin_pos: 154
+                      node: *17
+                    hash: -1099606437989745245
+                  type: :send
+                  location: !ruby/object:Parser::Source::Map::Send
+                    dot: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 146
+                      begin_pos: 145
+                    selector: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 153
+                      begin_pos: 146
+                    end: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 163
+                      begin_pos: 162
+                    begin: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 154
+                      begin_pos: 153
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 163
+                      begin_pos: 141
+                    node: *18
+                  hash: 1089074878345507279
+                - &19 !ruby/object
+                  comments: []
+                  children:
+                  - ".."
+                  type: :str
+                  location: !ruby/object:Parser::Source::Map::Collection
+                    end: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 169
+                      begin_pos: 168
+                    begin: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 166
+                      begin_pos: 165
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 169
+                      begin_pos: 165
+                    node: *19
+                  hash: 778216279011325315
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 136
+                    begin_pos: 135
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 140
+                    begin_pos: 136
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 170
+                    begin_pos: 169
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 141
+                    begin_pos: 140
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 170
+                    begin_pos: 131
+                  node: *20
+                hash: -4161678566725966372
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 119
+                  begin_pos: 118
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 130
+                  begin_pos: 119
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 171
+                  begin_pos: 170
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 131
+                  begin_pos: 130
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 171
+                  begin_pos: 114
+                node: *21
+              hash: 3013543464915981222
+            type: :casgn
+            location: !ruby/object:Parser::Source::Map::Constant
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 111
+                begin_pos: 103
+              double_colon: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 171
+                begin_pos: 103
+              node: *22
+              operator: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 113
+                begin_pos: 112
+            hash: 1034609126453631065
+          - &29 !ruby/object
+            comments: []
+            children:
+            - 
+            - :LIB_ROOT
+            - &28 !ruby/object
+              comments: []
+              children:
+              - &24 !ruby/object
+                comments: *12
+                children:
+                - 
+                - :File
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: &23 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 189
+                    begin_pos: 185
+                  double_colon: 
+                  expression: *23
+                  node: *24
+                hash: 2387407036266410492
+              - :join
+              - &26 !ruby/object
+                comments: &35 []
+                children:
+                - 
+                - :APP_ROOT
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: &25 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 203
+                    begin_pos: 195
+                  double_colon: 
+                  expression: *25
+                  node: *26
+                hash: -3364964344588072621
+              - &27 !ruby/object
+                comments: []
+                children:
+                - lib/metric_fu
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 220
+                    begin_pos: 219
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 206
+                    begin_pos: 205
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 220
+                    begin_pos: 205
+                  node: *27
+                hash: 3506731580108765370
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 190
+                  begin_pos: 189
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 194
+                  begin_pos: 190
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 221
+                  begin_pos: 220
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 195
+                  begin_pos: 194
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 221
+                  begin_pos: 185
+                node: *28
+              hash: 1185078341524118733
+            type: :casgn
+            location: !ruby/object:Parser::Source::Map::Constant
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 182
+                begin_pos: 174
+              double_colon: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 221
+                begin_pos: 174
+              node: *29
+              operator: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 184
+                begin_pos: 183
+            hash: 4241821387178495302
+          - &31 !ruby/object
+            comments: []
+            children:
+            - 
+            - :module_function
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: 
+              selector: &30 !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 240
+                begin_pos: 225
+              end: 
+              begin: 
+              expression: *30
+              node: *31
+            hash: -2537703743198303873
+          - &40 !ruby/object
+            comments: []
+            children:
+            - :root
+            - &32 !ruby/object
+              comments: &41 []
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *32
+              hash: 2630593425470599536
+            - &39 !ruby/object
+              comments: []
+              children:
+              - &34 !ruby/object
+                comments: []
+                children:
+                - :@app_root
+                type: :ivasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &33 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 266
+                    begin_pos: 257
+                  expression: *33
+                  node: *34
+                hash: 401971756730508828
+              - &38 !ruby/object
+                comments: []
+                children:
+                - 
+                - :Pathname
+                - &37 !ruby/object
+                  comments: *35
+                  children:
+                  - 
+                  - :APP_ROOT
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: &36 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 288
+                      begin_pos: 280
+                    double_colon: 
+                    expression: *36
+                    node: *37
+                  hash: -3364964344588072621
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 279
+                    begin_pos: 271
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 289
+                    begin_pos: 288
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 280
+                    begin_pos: 279
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 289
+                    begin_pos: 271
+                  node: *38
+                hash: -222038647134779728
+              type: :or_asgn
+              location: !ruby/object:Parser::Source::Map::Variable
+                name: *33
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 289
+                  begin_pos: 257
+                node: *39
+                operator: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 270
+                  begin_pos: 267
+              hash: 3146948702517875453
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 247
+                begin_pos: 244
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 252
+                begin_pos: 248
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 295
+                begin_pos: 292
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 295
+                begin_pos: 244
+              node: *40
+            hash: 1106287386113593538
+          - &44 !ruby/object
+            comments: []
+            children:
+            - :metric_url
+            - &42 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *42
+              hash: 2630593425470599536
+            - &43 !ruby/object
+              comments: []
+              children:
+              - https://github.com/metricfu/metric_fu
+              type: :str
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 357
+                  begin_pos: 356
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 319
+                  begin_pos: 318
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 357
+                  begin_pos: 318
+                node: *43
+              hash: 4413544186820087533
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 302
+                begin_pos: 299
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 313
+                begin_pos: 303
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 363
+                begin_pos: 360
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 363
+                begin_pos: 299
+              node: *44
+            hash: 1243924271264512692
+          - &47 !ruby/object
+            comments: []
+            children:
+            - :metric_name
+            - &45 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *45
+              hash: 2630593425470599536
+            - &46 !ruby/object
+              comments: []
+              children:
+              - MetricFu
+              type: :str
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 397
+                  begin_pos: 396
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 388
+                  begin_pos: 387
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 397
+                  begin_pos: 387
+                node: *46
+              hash: 4066019770377321433
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 370
+                begin_pos: 367
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 382
+                begin_pos: 371
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 403
+                begin_pos: 400
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 403
+                begin_pos: 367
+              node: *47
+            hash: -3343674089797535522
+          - &55 !ruby/object
+            comments: []
+            children:
+            - :run_dir
+            - &48 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *48
+              hash: 2630593425470599536
+            - &54 !ruby/object
+              comments: []
+              children:
+              - &50 !ruby/object
+                comments: []
+                children:
+                - :@run_dir
+                type: :ivasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &49 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 431
+                    begin_pos: 423
+                  expression: *49
+                  node: *50
+                hash: 1790481983544167569
+              - &53 !ruby/object
+                comments: []
+                children:
+                - &52 !ruby/object
+                  comments: []
+                  children:
+                  - 
+                  - :Dir
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: &51 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 439
+                      begin_pos: 436
+                    double_colon: 
+                    expression: *51
+                    node: *52
+                  hash: -489492237895036113
+                - :pwd
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 440
+                    begin_pos: 439
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 443
+                    begin_pos: 440
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 443
+                    begin_pos: 436
+                  node: *53
+                hash: 410782736302524994
+              type: :or_asgn
+              location: !ruby/object:Parser::Source::Map::Variable
+                name: *49
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 443
+                  begin_pos: 423
+                node: *54
+                operator: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 435
+                  begin_pos: 432
+              hash: 3238263103435602420
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 410
+                begin_pos: 407
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 418
+                begin_pos: 411
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 449
+                begin_pos: 446
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 449
+                begin_pos: 407
+              node: *55
+            hash: -340823408325575185
+          - &60 !ruby/object
+            comments: []
+            children:
+            - :run_path
+            - &56 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *56
+              hash: 2630593425470599536
+            - &59 !ruby/object
+              comments: []
+              children:
+              - 
+              - :Pathname
+              - &58 !ruby/object
+                comments: []
+                children:
+                - 
+                - :run_dir
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: &57 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 486
+                    begin_pos: 479
+                  end: 
+                  begin: 
+                  expression: *57
+                  node: *58
+                hash: -2809764975176612660
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: 
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 478
+                  begin_pos: 470
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 487
+                  begin_pos: 486
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 479
+                  begin_pos: 478
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 487
+                  begin_pos: 470
+                node: *59
+              hash: 3387026898649646206
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 456
+                begin_pos: 453
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 465
+                begin_pos: 457
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 493
+                begin_pos: 490
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 493
+                begin_pos: 453
+              node: *60
+            hash: 563086588035774735
+          - &67 !ruby/object
+            comments: []
+            children:
+            - :run_dir=
+            - &63 !ruby/object
+              comments: []
+              children:
+              - &62 !ruby/object
+                comments: []
+                children:
+                - :run_dir
+                type: :arg
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &61 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 517
+                    begin_pos: 510
+                  expression: *61
+                  node: *62
+                hash: -1517439077192569488
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 518
+                  begin_pos: 517
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 510
+                  begin_pos: 509
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 518
+                  begin_pos: 509
+                node: *63
+              hash: -1335319196588291870
+            - &66 !ruby/object
+              comments: []
+              children:
+              - :@run_dir
+              - &65 !ruby/object
+                comments: []
+                children:
+                - :run_dir
+                type: :lvar
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &64 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 541
+                    begin_pos: 534
+                  expression: *64
+                  node: *65
+                hash: -2741026369723414728
+              type: :ivasgn
+              location: !ruby/object:Parser::Source::Map::Variable
+                name: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 531
+                  begin_pos: 523
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 541
+                  begin_pos: 523
+                node: *66
+                operator: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 533
+                  begin_pos: 532
+              hash: -2841115783915415446
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 500
+                begin_pos: 497
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 509
+                begin_pos: 501
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 547
+                begin_pos: 544
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 547
+                begin_pos: 497
+              node: *67
+            hash: -863410069063083610
+          - &78 !ruby/object
+            comments: []
+            children:
+            - :report_name
+            - &68 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *68
+              hash: 2630593425470599536
+            - &77 !ruby/object
+              comments: []
+              children:
+              - &70 !ruby/object
+                comments: []
+                children:
+                - :@report_name
+                type: :ivar
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &69 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 583
+                    begin_pos: 571
+                  expression: *69
+                  node: *70
+                hash: 3264722612981623479
+              - &76 !ruby/object
+                comments: []
+                children:
+                - &71 !ruby/object
+                  comments: &158 []
+                  children: []
+                  type: :self
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 591
+                      begin_pos: 587
+                    node: *71
+                  hash: 898514843520854408
+                - :report_name=
+                - &75 !ruby/object
+                  comments: []
+                  children:
+                  - &74 !ruby/object
+                    comments: []
+                    children:
+                    - &73 !ruby/object
+                      comments: []
+                      children:
+                      - 
+                      - :run_path
+                      type: :send
+                      location: !ruby/object:Parser::Source::Map::Send
+                        dot: 
+                        selector: &72 !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 614
+                          begin_pos: 606
+                        end: 
+                        begin: 
+                        expression: *72
+                        node: *73
+                      hash: -2219595729652137582
+                    - :basename
+                    type: :send
+                    location: !ruby/object:Parser::Source::Map::Send
+                      dot: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 615
+                        begin_pos: 614
+                      selector: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 623
+                        begin_pos: 615
+                      end: 
+                      begin: 
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 623
+                        begin_pos: 606
+                      node: *74
+                    hash: 2851455862459190056
+                  - :to_s
+                  type: :send
+                  location: !ruby/object:Parser::Source::Map::Send
+                    dot: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 624
+                      begin_pos: 623
+                    selector: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 628
+                      begin_pos: 624
+                    end: 
+                    begin: 
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 628
+                      begin_pos: 606
+                    node: *75
+                  hash: -895154487573729128
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 592
+                    begin_pos: 591
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 603
+                    begin_pos: 592
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 628
+                    begin_pos: 587
+                  node: *76
+                  operator: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 605
+                    begin_pos: 604
+                hash: 244184435027414785
+              type: :or
+              location: !ruby/object:Parser::Source::Map::Operator
+                operator: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 586
+                  begin_pos: 584
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 628
+                  begin_pos: 571
+                node: *77
+              hash: -1779672057666236256
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 554
+                begin_pos: 551
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 566
+                begin_pos: 555
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 634
+                begin_pos: 631
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 634
+                begin_pos: 551
+              node: *78
+            hash: 4056054226428111616
+          - &85 !ruby/object
+            comments: []
+            children:
+            - :report_name=
+            - &81 !ruby/object
+              comments: []
+              children:
+              - &80 !ruby/object
+                comments: []
+                children:
+                - :report_name
+                type: :arg
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &79 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 666
+                    begin_pos: 655
+                  expression: *79
+                  node: *80
+                hash: 4410425221155256228
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 667
+                  begin_pos: 666
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 655
+                  begin_pos: 654
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 667
+                  begin_pos: 654
+                node: *81
+              hash: 3650589678855183341
+            - &84 !ruby/object
+              comments: []
+              children:
+              - :@report_name
+              - &83 !ruby/object
+                comments: []
+                children:
+                - :report_name
+                type: :lvar
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &82 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 698
+                    begin_pos: 687
+                  expression: *82
+                  node: *83
+                hash: 1508746567670857166
+              type: :ivasgn
+              location: !ruby/object:Parser::Source::Map::Variable
+                name: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 684
+                  begin_pos: 672
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 698
+                  begin_pos: 672
+                node: *84
+                operator: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 686
+                  begin_pos: 685
+              hash: -4109305206038623779
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 641
+                begin_pos: 638
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 654
+                begin_pos: 642
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 704
+                begin_pos: 701
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 704
+                begin_pos: 638
+              node: *85
+            hash: -263810808207808439
+          - &90 !ruby/object
+            comments:
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 741
+                  begin_pos: 708
+              text: "# The time at analyzed code state"
+            children:
+            - :report_time
+            - &86 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *86
+              hash: 2630593425470599536
+            - &89 !ruby/object
+              comments: &109 []
+              children:
+              - &88 !ruby/object
+                comments: &110 []
+                children:
+                - 
+                - :Time
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: &87 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 768
+                    begin_pos: 764
+                  double_colon: 
+                  expression: *87
+                  node: *88
+                hash: 4148157865903526316
+              - :now
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 769
+                  begin_pos: 768
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 772
+                  begin_pos: 769
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 772
+                  begin_pos: 764
+                node: *89
+              hash: 438647556788384486
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 747
+                begin_pos: 744
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 759
+                begin_pos: 748
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 778
+                begin_pos: 775
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 778
+                begin_pos: 744
+              node: *90
+            hash: -139135540931480405
+          - &96 !ruby/object
+            comments: []
+            children:
+            - :report_date_string
+            - &91 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *91
+              hash: 2630593425470599536
+            - &95 !ruby/object
+              comments: []
+              children:
+              - &93 !ruby/object
+                comments: &102 []
+                children:
+                - 
+                - :report_time
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: &92 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 820
+                    begin_pos: 809
+                  end: 
+                  begin: 
+                  expression: *92
+                  node: *93
+                hash: 10521738153084733
+              - :strftime
+              - &94 !ruby/object
+                comments: []
+                children:
+                - "%Y%m%d"
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 838
+                    begin_pos: 837
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 831
+                    begin_pos: 830
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 838
+                    begin_pos: 830
+                  node: *94
+                hash: -4359928269240692676
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 821
+                  begin_pos: 820
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 829
+                  begin_pos: 821
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 839
+                  begin_pos: 838
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 830
+                  begin_pos: 829
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 839
+                  begin_pos: 809
+                node: *95
+              hash: -409694496399210435
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 785
+                begin_pos: 782
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 804
+                begin_pos: 786
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 845
+                begin_pos: 842
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 845
+                begin_pos: 782
+              node: *96
+            hash: 2187956015884043469
+          - &100 !ruby/object
+            comments:
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 867
+                  begin_pos: 849
+              text: "# @return [String]"
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 891
+                  begin_pos: 870
+              text: "# @example '20140323'"
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 929
+                  begin_pos: 894
+              text: "# Used to uniquely identify reports"
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 976
+                  begin_pos: 932
+              text: "# as a sortable reference to when the report"
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 994
+                  begin_pos: 979
+              text: "# was generated"
+            children:
+            - :report_id
+            - &97 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *97
+              hash: 2630593425470599536
+            - &99 !ruby/object
+              comments: []
+              children:
+              - 
+              - :report_date_string
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: 
+                selector: &98 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1033
+                  begin_pos: 1015
+                end: 
+                begin: 
+                expression: *98
+                node: *99
+              hash: 1981228945040531901
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1000
+                begin_pos: 997
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1010
+                begin_pos: 1001
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1039
+                begin_pos: 1036
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1039
+                begin_pos: 997
+              node: *100
+            hash: 1546544844189800439
+          - &107 !ruby/object
+            comments:
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1102
+                  begin_pos: 1043
+              text: "# Non-date-specific; Used to uniquely identify a report run"
+            children:
+            - :report_fingerprint
+            - &101 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *101
+              hash: 2630593425470599536
+            - &106 !ruby/object
+              comments: []
+              children:
+              - &105 !ruby/object
+                comments: []
+                children:
+                - &104 !ruby/object
+                  comments: *102
+                  children:
+                  - 
+                  - :report_time
+                  type: :send
+                  location: !ruby/object:Parser::Source::Map::Send
+                    dot: 
+                    selector: &103 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1143
+                      begin_pos: 1132
+                    end: 
+                    begin: 
+                    expression: *103
+                    node: *104
+                  hash: 10521738153084733
+                - :to_i
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1144
+                    begin_pos: 1143
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1148
+                    begin_pos: 1144
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1148
+                    begin_pos: 1132
+                  node: *105
+                hash: 4138502106513024164
+              - :to_s
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1149
+                  begin_pos: 1148
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1153
+                  begin_pos: 1149
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1153
+                  begin_pos: 1132
+                node: *106
+              hash: 4408601728445139180
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1108
+                begin_pos: 1105
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1127
+                begin_pos: 1109
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1159
+                begin_pos: 1156
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1159
+                begin_pos: 1105
+              node: *107
+            hash: 1491583548816269776
+          - &115 !ruby/object
+            comments:
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1199
+                  begin_pos: 1163
+              text: "# The time the metrics are generated"
+            children:
+            - :current_time
+            - &108 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *108
+              hash: 2630593425470599536
+            - &114 !ruby/object
+              comments: []
+              children:
+              - &113 !ruby/object
+                comments: *109
+                children:
+                - &112 !ruby/object
+                  comments: *110
+                  children:
+                  - 
+                  - :Time
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: &111 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1227
+                      begin_pos: 1223
+                    double_colon: 
+                    expression: *111
+                    node: *112
+                  hash: 4148157865903526316
+                - :now
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1228
+                    begin_pos: 1227
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1231
+                    begin_pos: 1228
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1231
+                    begin_pos: 1223
+                  node: *113
+                hash: 438647556788384486
+              - :localtime
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1232
+                  begin_pos: 1231
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1241
+                  begin_pos: 1232
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1241
+                  begin_pos: 1223
+                node: *114
+              hash: -2284462151134915755
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1205
+                begin_pos: 1202
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1218
+                begin_pos: 1206
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1247
+                begin_pos: 1244
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1247
+                begin_pos: 1202
+              node: *115
+            hash: 3225444471231552048
+          - &119 !ruby/object
+            comments: []
+            children:
+            - :root_dir
+            - &116 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *116
+              hash: 2630593425470599536
+            - &118 !ruby/object
+              comments: *35
+              children:
+              - 
+              - :APP_ROOT
+              type: :const
+              location: !ruby/object:Parser::Source::Map::Constant
+                name: &117 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1276
+                  begin_pos: 1268
+                double_colon: 
+                expression: *117
+                node: *118
+              hash: -3364964344588072621
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1254
+                begin_pos: 1251
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1263
+                begin_pos: 1255
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1282
+                begin_pos: 1279
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1282
+                begin_pos: 1251
+              node: *119
+            hash: 4582841056839471186
+          - &123 !ruby/object
+            comments: []
+            children:
+            - :lib_dir
+            - &120 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *120
+              hash: 2630593425470599536
+            - &122 !ruby/object
+              comments: &130 []
+              children:
+              - 
+              - :LIB_ROOT
+              type: :const
+              location: !ruby/object:Parser::Source::Map::Constant
+                name: &121 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1310
+                  begin_pos: 1302
+                double_colon: 
+                expression: *121
+                node: *122
+              hash: -1586168567036079667
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1289
+                begin_pos: 1286
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1297
+                begin_pos: 1290
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1316
+                begin_pos: 1313
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1316
+                begin_pos: 1286
+              node: *123
+            hash: 2085948146936425032
+          - &125 !ruby/object
+            comments: []
+            children:
+            - 
+            - :require
+            - &124 !ruby/object
+              comments: []
+              children:
+              - metric_fu/loader
+              type: :str
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1346
+                  begin_pos: 1345
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1329
+                  begin_pos: 1328
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1346
+                  begin_pos: 1328
+                node: *124
+              hash: -4316251998880496102
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: 
+              selector: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1327
+                begin_pos: 1320
+              end: 
+              begin: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1346
+                begin_pos: 1320
+              node: *125
+            hash: 3548962650793193261
+          - &134 !ruby/object
+            comments: []
+            children:
+            - 
+            - :LOADER
+            - &133 !ruby/object
+              comments: []
+              children:
+              - &129 !ruby/object
+                comments: []
+                children:
+                - &128 !ruby/object
+                  comments: *126
+                  children:
+                  - 
+                  - :MetricFu
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: &127 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1366
+                      begin_pos: 1358
+                    double_colon: 
+                    expression: *127
+                    node: *128
+                  hash: 3031831017619076967
+                - :Loader
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1374
+                    begin_pos: 1368
+                  double_colon: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1368
+                    begin_pos: 1366
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1374
+                    begin_pos: 1358
+                  node: *129
+                hash: 3294839878190846698
+              - :new
+              - &132 !ruby/object
+                comments: *130
+                children:
+                - 
+                - :LIB_ROOT
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: &131 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1387
+                    begin_pos: 1379
+                  double_colon: 
+                  expression: *131
+                  node: *132
+                hash: -1586168567036079667
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1375
+                  begin_pos: 1374
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1378
+                  begin_pos: 1375
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1388
+                  begin_pos: 1387
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1379
+                  begin_pos: 1378
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1388
+                  begin_pos: 1358
+                node: *133
+              hash: -1525308039812235164
+            type: :casgn
+            location: !ruby/object:Parser::Source::Map::Constant
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1355
+                begin_pos: 1349
+              double_colon: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1388
+                begin_pos: 1349
+              node: *134
+              operator: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1357
+                begin_pos: 1356
+            hash: -2912414737758070205
+          - &138 !ruby/object
+            comments: []
+            children:
+            - :loader
+            - &135 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *135
+              hash: 2630593425470599536
+            - &137 !ruby/object
+              comments: []
+              children:
+              - 
+              - :LOADER
+              type: :const
+              location: !ruby/object:Parser::Source::Map::Constant
+                name: &136 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1412
+                  begin_pos: 1406
+                double_colon: 
+                expression: *136
+                node: *137
+              hash: 2964741752048184387
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1394
+                begin_pos: 1391
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1401
+                begin_pos: 1395
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1418
+                begin_pos: 1415
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1418
+                begin_pos: 1391
+              node: *138
+            hash: -2602184209133575929
+          - &141 !ruby/object
+            comments: []
+            children:
+            - 
+            - :extend
+            - &140 !ruby/object
+              comments: []
+              children:
+              - 
+              - :SingleForwardable
+              type: :const
+              location: !ruby/object:Parser::Source::Map::Constant
+                name: &139 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1445
+                  begin_pos: 1428
+                double_colon: 
+                expression: *139
+                node: *140
+              hash: -4602302742327073521
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: 
+              selector: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1427
+                begin_pos: 1421
+              end: 
+              begin: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1445
+                begin_pos: 1421
+              node: *141
+            hash: 3630382627912550386
+          - &145 !ruby/object
+            comments: []
+            children:
+            - 
+            - :def_delegators
+            - &142 !ruby/object
+              comments: []
+              children:
+              - :loader
+              type: :sym
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1465
+                  begin_pos: 1464
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1471
+                  begin_pos: 1464
+                node: *142
+              hash: 354209901770935062
+            - &143 !ruby/object
+              comments: []
+              children:
+              - :lib_require
+              type: :sym
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1474
+                  begin_pos: 1473
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1485
+                  begin_pos: 1473
+                node: *143
+              hash: 3821382574710932814
+            - &144 !ruby/object
+              comments: []
+              children:
+              - :load_tasks
+              type: :sym
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1488
+                  begin_pos: 1487
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1498
+                  begin_pos: 1487
+                node: *144
+              hash: -3234079008504282859
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: 
+              selector: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1463
+                begin_pos: 1449
+              end: 
+              begin: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1498
+                begin_pos: 1449
+              node: *145
+            hash: -4269330032346506622
+          - &155 !ruby/object
+            comments: []
+            children:
+            - :library_dirs
+            - &146 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *146
+              hash: 2630593425470599536
+            - &154 !ruby/object
+              comments: []
+              children:
+              - &147 !ruby/object
+                comments: []
+                children:
+                - metrics
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1533
+                    begin_pos: 1526
+                  node: *147
+                hash: -3491756930002181743
+              - &148 !ruby/object
+                comments: []
+                children:
+                - formatter
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1543
+                    begin_pos: 1534
+                  node: *148
+                hash: -231093801870369004
+              - &149 !ruby/object
+                comments: []
+                children:
+                - reporting
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1553
+                    begin_pos: 1544
+                  node: *149
+                hash: 4386665304028065801
+              - &150 !ruby/object
+                comments: []
+                children:
+                - logging
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1561
+                    begin_pos: 1554
+                  node: *150
+                hash: 2316016623742863802
+              - &151 !ruby/object
+                comments: []
+                children:
+                - errors
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1568
+                    begin_pos: 1562
+                  node: *151
+                hash: 4512478956399231593
+              - &152 !ruby/object
+                comments: []
+                children:
+                - data_structures
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1584
+                    begin_pos: 1569
+                  node: *152
+                hash: 3622903845745975347
+              - &153 !ruby/object
+                comments: []
+                children:
+                - tasks
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1590
+                    begin_pos: 1585
+                  node: *153
+                hash: 4084358415804769340
+              type: :array
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1591
+                  begin_pos: 1590
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1526
+                  begin_pos: 1523
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1591
+                  begin_pos: 1523
+                node: *154
+              hash: 500711151544186618
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1505
+                begin_pos: 1502
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1518
+                begin_pos: 1506
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1597
+                begin_pos: 1594
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1597
+                begin_pos: 1502
+              node: *155
+            hash: 2519735080281461188
+          - &164 !ruby/object
+            comments: []
+            children:
+            - &160 !ruby/object
+              comments: []
+              children:
+              - &157 !ruby/object
+                comments: &180 []
+                children:
+                - 
+                - :loader
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: &156 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1607
+                    begin_pos: 1601
+                  end: 
+                  begin: 
+                  expression: *156
+                  node: *157
+                hash: -814090367775729501
+              - :create_dirs
+              - &159 !ruby/object
+                comments: *158
+                children: []
+                type: :self
+                location: !ruby/object:Parser::Source::Map
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1624
+                    begin_pos: 1620
+                  node: *159
+                hash: 898514843520854408
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1608
+                  begin_pos: 1607
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1619
+                  begin_pos: 1608
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1625
+                  begin_pos: 1624
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1620
+                  begin_pos: 1619
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1625
+                  begin_pos: 1601
+                node: *160
+              hash: -1328069716931645591
+            - &161 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *161
+              hash: 2630593425470599536
+            - &163 !ruby/object
+              comments: []
+              children:
+              - 
+              - :library_dirs
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: 
+                selector: &162 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1645
+                  begin_pos: 1633
+                end: 
+                begin: 
+                expression: *162
+                node: *163
+              hash: 2942577292839386142
+            type: :block
+            location: !ruby/object:Parser::Source::Map::Collection
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1651
+                begin_pos: 1648
+              begin: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1628
+                begin_pos: 1626
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1651
+                begin_pos: 1601
+              node: *164
+            hash: 216204205811602490
+          - &166 !ruby/object
+            comments:
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1719
+                  begin_pos: 1655
+              text: "# @note artifact_dir is relative to where the task is being run,"
+            - !ruby/object:Parser::Source::Comment
+              location: !ruby/object:Parser::Source::Map
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1754
+                  begin_pos: 1722
+              text: "#   not to the metric_fu library"
+            children:
+            - 
+            - :require
+            - &165 !ruby/object
+              comments: []
+              children:
+              - metric_fu/io
+              type: :str
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1779
+                  begin_pos: 1778
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1766
+                  begin_pos: 1765
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1779
+                  begin_pos: 1765
+                node: *165
+              hash: 2874141958091604843
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: 
+              selector: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1764
+                begin_pos: 1757
+              end: 
+              begin: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1779
+                begin_pos: 1757
+              node: *166
+            hash: 3005984644677828004
+          - &173 !ruby/object
+            comments: []
+            children:
+            - :artifact_dir
+            - &167 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *167
+              hash: 2630593425470599536
+            - &172 !ruby/object
+              comments: []
+              children:
+              - &171 !ruby/object
+                comments: []
+                children:
+                - &170 !ruby/object
+                  comments: []
+                  children:
+                  - &169 !ruby/object
+                    comments: *126
+                    children:
+                    - 
+                    - :MetricFu
+                    type: :const
+                    location: !ruby/object:Parser::Source::Map::Constant
+                      name: &168 !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 1811
+                        begin_pos: 1803
+                      double_colon: 
+                      expression: *168
+                      node: *169
+                    hash: 3031831017619076967
+                  - :Io
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1815
+                      begin_pos: 1813
+                    double_colon: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1813
+                      begin_pos: 1811
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 1815
+                      begin_pos: 1803
+                    node: *170
+                  hash: 1533613902471125254
+                - :FileSystem
+                type: :const
+                location: !ruby/object:Parser::Source::Map::Constant
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1827
+                    begin_pos: 1817
+                  double_colon: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1817
+                    begin_pos: 1815
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1827
+                    begin_pos: 1803
+                  node: *171
+                hash: -1942836925879402401
+              - :artifact_dir
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1828
+                  begin_pos: 1827
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1840
+                  begin_pos: 1828
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1840
+                  begin_pos: 1803
+                node: *172
+              hash: -3734686041732067636
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1785
+                begin_pos: 1782
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1798
+                begin_pos: 1786
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1846
+                begin_pos: 1843
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1846
+                begin_pos: 1782
+              node: *173
+            hash: -2399789416747562170
+          - &179 !ruby/object
+            comments: []
+            children:
+            - :artifact_subdirs
+            - &174 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *174
+              hash: 2630593425470599536
+            - &178 !ruby/object
+              comments: []
+              children:
+              - &175 !ruby/object
+                comments: []
+                children:
+                - scratch
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1885
+                    begin_pos: 1878
+                  node: *175
+                hash: 457331093748610794
+              - &176 !ruby/object
+                comments: []
+                children:
+                - output
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1892
+                    begin_pos: 1886
+                  node: *176
+                hash: -3303504678174422145
+              - &177 !ruby/object
+                comments: []
+                children:
+                - _data
+                type: :str
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1898
+                    begin_pos: 1893
+                  node: *177
+                hash: 4333017258694195938
+              type: :array
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1899
+                  begin_pos: 1898
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1878
+                  begin_pos: 1875
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1899
+                  begin_pos: 1875
+                node: *178
+              hash: 1267952699796581021
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1853
+                begin_pos: 1850
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1870
+                begin_pos: 1854
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1905
+                begin_pos: 1902
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1905
+                begin_pos: 1850
+              node: *179
+            hash: -1216334897184594265
+          - &188 !ruby/object
+            comments: []
+            children:
+            - &184 !ruby/object
+              comments: []
+              children:
+              - &182 !ruby/object
+                comments: *180
+                children:
+                - 
+                - :loader
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: &181 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1915
+                    begin_pos: 1909
+                  end: 
+                  begin: 
+                  expression: *181
+                  node: *182
+                hash: -814090367775729501
+              - :create_artifact_subdirs
+              - &183 !ruby/object
+                comments: *158
+                children: []
+                type: :self
+                location: !ruby/object:Parser::Source::Map
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 1944
+                    begin_pos: 1940
+                  node: *183
+                hash: 898514843520854408
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1916
+                  begin_pos: 1915
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1939
+                  begin_pos: 1916
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1945
+                  begin_pos: 1944
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1940
+                  begin_pos: 1939
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1945
+                  begin_pos: 1909
+                node: *184
+              hash: -3697885359010974056
+            - &185 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *185
+              hash: 2630593425470599536
+            - &187 !ruby/object
+              comments: []
+              children:
+              - 
+              - :artifact_subdirs
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: 
+                selector: &186 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1969
+                  begin_pos: 1953
+                end: 
+                begin: 
+                expression: *186
+                node: *187
+              hash: -2958335945198700285
+            type: :block
+            location: !ruby/object:Parser::Source::Map::Collection
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1975
+                begin_pos: 1972
+              begin: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1948
+                begin_pos: 1946
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1975
+                begin_pos: 1909
+              node: *188
+            hash: 1901436704095763464
+          - &191 !ruby/object
+            comments: []
+            children:
+            - &190 !ruby/object
+              comments: *180
+              children:
+              - 
+              - :loader
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: 
+                selector: &189 !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 1985
+                  begin_pos: 1979
+                end: 
+                begin: 
+                expression: *189
+                node: *190
+              hash: -814090367775729501
+            - :setup
+            type: :send
+            location: !ruby/object:Parser::Source::Map::Send
+              dot: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1986
+                begin_pos: 1985
+              selector: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1991
+                begin_pos: 1986
+              end: 
+              begin: 
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1991
+                begin_pos: 1979
+              node: *191
+            hash: 1321873467806292932
+          - &201 !ruby/object
+            comments: []
+            children:
+            - :reset
+            - &192 !ruby/object
+              comments: *41
+              children: []
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: 
+                node: *192
+              hash: 2630593425470599536
+            - &200 !ruby/object
+              comments: []
+              children:
+              - &194 !ruby/object
+                comments:
+                - !ruby/object:Parser::Source::Comment
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2056
+                      begin_pos: 2009
+                  text: "# TODO Don't like how this method needs to know"
+                - !ruby/object:Parser::Source::Comment
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2108
+                      begin_pos: 2061
+                  text: "# all of these class variables that are defined"
+                - !ruby/object:Parser::Source::Comment
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2135
+                      begin_pos: 2113
+                  text: "# in separate classes."
+                children:
+                - :@configuration
+                - &193 !ruby/object
+                  comments: &195 []
+                  children: []
+                  type: :nil
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2160
+                      begin_pos: 2157
+                    node: *193
+                  hash: 1563842447968699143
+                type: :ivasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2154
+                    begin_pos: 2140
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2160
+                    begin_pos: 2140
+                  node: *194
+                  operator: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2156
+                    begin_pos: 2155
+                hash: 2007191124330078073
+              - &197 !ruby/object
+                comments: []
+                children:
+                - :@graph
+                - &196 !ruby/object
+                  comments: *195
+                  children: []
+                  type: :nil
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2177
+                      begin_pos: 2174
+                    node: *196
+                  hash: 1563842447968699143
+                type: :ivasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2171
+                    begin_pos: 2165
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2177
+                    begin_pos: 2165
+                  node: *197
+                  operator: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2173
+                    begin_pos: 2172
+                hash: -3222701096682390225
+              - &199 !ruby/object
+                comments: []
+                children:
+                - :@result
+                - &198 !ruby/object
+                  comments: *195
+                  children: []
+                  type: :nil
+                  location: !ruby/object:Parser::Source::Map
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2195
+                      begin_pos: 2192
+                    node: *198
+                  hash: 1563842447968699143
+                type: :ivasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2189
+                    begin_pos: 2182
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2195
+                    begin_pos: 2182
+                  node: *199
+                  operator: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2191
+                    begin_pos: 2190
+                hash: 3167722042748532552
+              type: :begin
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2195
+                  begin_pos: 2140
+                node: *200
+              hash: 2975092229642342283
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 1998
+                begin_pos: 1995
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2004
+                begin_pos: 1999
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2201
+                begin_pos: 2198
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2201
+                begin_pos: 1995
+              node: *201
+            hash: -1667763645674118166
+          - &212 !ruby/object
+            comments: []
+            children:
+            - :run
+            - &204 !ruby/object
+              comments: []
+              children:
+              - &203 !ruby/object
+                comments: &215 []
+                children:
+                - :options
+                type: :arg
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &202 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2220
+                    begin_pos: 2213
+                  expression: *202
+                  node: *203
+                hash: -1595849256353533616
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2221
+                  begin_pos: 2220
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2213
+                  begin_pos: 2212
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2221
+                  begin_pos: 2212
+                node: *204
+              hash: 4133787404339629805
+            - &211 !ruby/object
+              comments: []
+              children:
+              - &208 !ruby/object
+                comments: []
+                children:
+                - &207 !ruby/object
+                  comments: []
+                  children:
+                  - &206 !ruby/object
+                    comments: *126
+                    children:
+                    - 
+                    - :MetricFu
+                    type: :const
+                    location: !ruby/object:Parser::Source::Map::Constant
+                      name: &205 !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2234
+                        begin_pos: 2226
+                      double_colon: 
+                      expression: *205
+                      node: *206
+                    hash: 3031831017619076967
+                  - :Run
+                  type: :const
+                  location: !ruby/object:Parser::Source::Map::Constant
+                    name: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2239
+                      begin_pos: 2236
+                    double_colon: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2236
+                      begin_pos: 2234
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2239
+                      begin_pos: 2226
+                    node: *207
+                  hash: 3029930821820800741
+                - :new
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2240
+                    begin_pos: 2239
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2243
+                    begin_pos: 2240
+                  end: 
+                  begin: 
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2243
+                    begin_pos: 2226
+                  node: *208
+                hash: -4576392165581650366
+              - :run
+              - &210 !ruby/object
+                comments: &280 []
+                children:
+                - :options
+                type: :lvar
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &209 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2255
+                    begin_pos: 2248
+                  expression: *209
+                  node: *210
+                hash: -1352921386146749060
+              type: :send
+              location: !ruby/object:Parser::Source::Map::Send
+                dot: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2244
+                  begin_pos: 2243
+                selector: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2247
+                  begin_pos: 2244
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2256
+                  begin_pos: 2255
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2248
+                  begin_pos: 2247
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2256
+                  begin_pos: 2226
+                node: *211
+              hash: -1435272058662604517
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2208
+                begin_pos: 2205
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2212
+                begin_pos: 2209
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2262
+                begin_pos: 2259
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2262
+                begin_pos: 2205
+              node: *212
+            hash: 2642719603434436123
+          - &285 !ruby/object
+            comments: []
+            children:
+            - :run_only
+            - &218 !ruby/object
+              comments: []
+              children:
+              - &214 !ruby/object
+                comments: []
+                children:
+                - :metrics_to_run_names
+                type: :arg
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &213 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2299
+                    begin_pos: 2279
+                  expression: *213
+                  node: *214
+                hash: 1739603281115902761
+              - &217 !ruby/object
+                comments: *215
+                children:
+                - :options
+                type: :arg
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: &216 !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2308
+                    begin_pos: 2301
+                  expression: *216
+                  node: *217
+                hash: -1595849256353533616
+              type: :args
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2309
+                  begin_pos: 2308
+                begin: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2279
+                  begin_pos: 2278
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2309
+                  begin_pos: 2278
+                node: *218
+              hash: 2555385667069055955
+            - &284 !ruby/object
+              comments: []
+              children:
+              - &225 !ruby/object
+                comments: []
+                children:
+                - :metrics_to_run_names
+                - &224 !ruby/object
+                  comments: []
+                  children:
+                  - &221 !ruby/object
+                    comments: []
+                    children:
+                    - 
+                    - :Array
+                    - &220 !ruby/object
+                      comments: &245 []
+                      children:
+                      - :metrics_to_run_names
+                      type: :lvar
+                      location: !ruby/object:Parser::Source::Map::Variable
+                        name: &219 !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2363
+                          begin_pos: 2343
+                        expression: *219
+                        node: *220
+                      hash: -3800802699154009832
+                    type: :send
+                    location: !ruby/object:Parser::Source::Map::Send
+                      dot: 
+                      selector: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2342
+                        begin_pos: 2337
+                      end: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2364
+                        begin_pos: 2363
+                      begin: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2343
+                        begin_pos: 2342
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2364
+                        begin_pos: 2337
+                      node: *221
+                    hash: -1336977011829265276
+                  - :map
+                  - &223 !ruby/object
+                    comments: []
+                    children:
+                    - &222 !ruby/object
+                      comments: []
+                      children:
+                      - :to_s
+                      type: :sym
+                      location: !ruby/object:Parser::Source::Map::Collection
+                        end: 
+                        begin: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2371
+                          begin_pos: 2370
+                        expression: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2375
+                          begin_pos: 2370
+                        node: *222
+                      hash: -3413789086497340496
+                    type: :block_pass
+                    location: !ruby/object:Parser::Source::Map::Operator
+                      operator: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2370
+                        begin_pos: 2369
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2375
+                        begin_pos: 2369
+                      node: *223
+                    hash: 483747085846208547
+                  type: :send
+                  location: !ruby/object:Parser::Source::Map::Send
+                    dot: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2365
+                      begin_pos: 2364
+                    selector: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2368
+                      begin_pos: 2365
+                    end: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2376
+                      begin_pos: 2375
+                    begin: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2369
+                      begin_pos: 2368
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2376
+                      begin_pos: 2337
+                    node: *224
+                  hash: 4545750442523444054
+                type: :lvasgn
+                location: !ruby/object:Parser::Source::Map::Variable
+                  name: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2334
+                    begin_pos: 2314
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2376
+                    begin_pos: 2314
+                  node: *225
+                  operator: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2336
+                    begin_pos: 2335
+                hash: -3954880232430585415
+              - &279 !ruby/object
+                comments: []
+                children:
+                - &229 !ruby/object
+                  comments: []
+                  children:
+                  - &228 !ruby/object
+                    comments: []
+                    children:
+                    - &227 !ruby/object
+                      comments: *126
+                      children:
+                      - 
+                      - :MetricFu
+                      type: :const
+                      location: !ruby/object:Parser::Source::Map::Constant
+                        name: &226 !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2389
+                          begin_pos: 2381
+                        double_colon: 
+                        expression: *226
+                        node: *227
+                      hash: 3031831017619076967
+                    - :Configuration
+                    type: :const
+                    location: !ruby/object:Parser::Source::Map::Constant
+                      name: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2404
+                        begin_pos: 2391
+                      double_colon: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2391
+                        begin_pos: 2389
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2404
+                        begin_pos: 2381
+                      node: *228
+                    hash: 3502720253029675807
+                  - :run
+                  type: :send
+                  location: !ruby/object:Parser::Source::Map::Send
+                    dot: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2405
+                      begin_pos: 2404
+                    selector: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2408
+                      begin_pos: 2405
+                    end: 
+                    begin: 
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2408
+                      begin_pos: 2381
+                    node: *229
+                  hash: -120109675782675448
+                - &232 !ruby/object
+                  comments: []
+                  children:
+                  - &231 !ruby/object
+                    comments: []
+                    children:
+                    - :config
+                    type: :arg
+                    location: !ruby/object:Parser::Source::Map::Variable
+                      name: &230 !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2419
+                        begin_pos: 2413
+                      expression: *230
+                      node: *231
+                    hash: 4228439686359049562
+                  type: :args
+                  location: !ruby/object:Parser::Source::Map::Collection
+                    end: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2420
+                      begin_pos: 2419
+                    begin: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2413
+                      begin_pos: 2412
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2420
+                      begin_pos: 2412
+                    node: *232
+                  hash: 4534800553494998888
+                - &278 !ruby/object
+                  comments: []
+                  children:
+                  - &236 !ruby/object
+                    comments: []
+                    children:
+                    - &235 !ruby/object
+                      comments: []
+                      children:
+                      - &234 !ruby/object
+                        comments: []
+                        children:
+                        - :config
+                        type: :lvar
+                        location: !ruby/object:Parser::Source::Map::Variable
+                          name: &233 !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2433
+                            begin_pos: 2427
+                          expression: *233
+                          node: *234
+                        hash: -3592905701947715993
+                      - :configure_metrics
+                      type: :send
+                      location: !ruby/object:Parser::Source::Map::Send
+                        dot: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2434
+                          begin_pos: 2433
+                        selector: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2451
+                          begin_pos: 2434
+                        end: 
+                        begin: 
+                        expression: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2451
+                          begin_pos: 2427
+                        node: *235
+                      hash: -4082869599994845793
+                    - :each
+                    type: :send
+                    location: !ruby/object:Parser::Source::Map::Send
+                      dot: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2452
+                        begin_pos: 2451
+                      selector: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2456
+                        begin_pos: 2452
+                      end: 
+                      begin: 
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2456
+                        begin_pos: 2427
+                      node: *236
+                    hash: -2349740710266231595
+                  - &239 !ruby/object
+                    comments: []
+                    children:
+                    - &238 !ruby/object
+                      comments: []
+                      children:
+                      - :metric
+                      type: :arg
+                      location: !ruby/object:Parser::Source::Map::Variable
+                        name: &237 !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2467
+                          begin_pos: 2461
+                        expression: *237
+                        node: *238
+                      hash: -1576997827128993286
+                    type: :args
+                    location: !ruby/object:Parser::Source::Map::Collection
+                      end: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2468
+                        begin_pos: 2467
+                      begin: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2461
+                        begin_pos: 2460
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2468
+                        begin_pos: 2460
+                      node: *239
+                    hash: 1041992592074381030
+                  - &277 !ruby/object
+                    comments: []
+                    children:
+                    - &244 !ruby/object
+                      comments: []
+                      children:
+                      - :metric_name
+                      - &243 !ruby/object
+                        comments: []
+                        children:
+                        - &242 !ruby/object
+                          comments: []
+                          children:
+                          - &241 !ruby/object
+                            comments: &258 []
+                            children:
+                            - :metric
+                            type: :lvar
+                            location: !ruby/object:Parser::Source::Map::Variable
+                              name: &240 !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2497
+                                begin_pos: 2491
+                              expression: *240
+                              node: *241
+                            hash: 959324675929940837
+                          - :name
+                          type: :send
+                          location: !ruby/object:Parser::Source::Map::Send
+                            dot: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2498
+                              begin_pos: 2497
+                            selector: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2502
+                              begin_pos: 2498
+                            end: 
+                            begin: 
+                            expression: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2502
+                              begin_pos: 2491
+                            node: *242
+                          hash: 1336339940707219501
+                        - :to_s
+                        type: :send
+                        location: !ruby/object:Parser::Source::Map::Send
+                          dot: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2503
+                            begin_pos: 2502
+                          selector: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2507
+                            begin_pos: 2503
+                          end: 
+                          begin: 
+                          expression: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2507
+                            begin_pos: 2491
+                          node: *243
+                        hash: -1569750908147890745
+                      type: :lvasgn
+                      location: !ruby/object:Parser::Source::Map::Variable
+                        name: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2488
+                          begin_pos: 2477
+                        expression: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2507
+                          begin_pos: 2477
+                        node: *244
+                        operator: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2490
+                          begin_pos: 2489
+                      hash: -3001673171219958341
+                    - &276 !ruby/object
+                      comments: []
+                      children:
+                      - &250 !ruby/object
+                        comments: []
+                        children:
+                        - &247 !ruby/object
+                          comments: *245
+                          children:
+                          - :metrics_to_run_names
+                          type: :lvar
+                          location: !ruby/object:Parser::Source::Map::Variable
+                            name: &246 !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2539
+                              begin_pos: 2519
+                            expression: *246
+                            node: *247
+                          hash: -3800802699154009832
+                        - :include?
+                        - &249 !ruby/object
+                          comments: &252 []
+                          children:
+                          - :metric_name
+                          type: :lvar
+                          location: !ruby/object:Parser::Source::Map::Variable
+                            name: &248 !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2560
+                              begin_pos: 2549
+                            expression: *248
+                            node: *249
+                          hash: -2886357893653941885
+                        type: :send
+                        location: !ruby/object:Parser::Source::Map::Send
+                          dot: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2540
+                            begin_pos: 2539
+                          selector: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2548
+                            begin_pos: 2540
+                          end: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2561
+                            begin_pos: 2560
+                          begin: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2549
+                            begin_pos: 2548
+                          expression: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2561
+                            begin_pos: 2519
+                          node: *250
+                        hash: -3138005768691442749
+                      - &263 !ruby/object
+                        comments: []
+                        children:
+                        - &257 !ruby/object
+                          comments: []
+                          children:
+                          - 
+                          - :p
+                          - &256 !ruby/object
+                            comments: []
+                            children:
+                            - &251 !ruby/object
+                              comments: []
+                              children:
+                              - 'Enabling '
+                              type: :str
+                              location: !ruby/object:Parser::Source::Map::Collection
+                                end: 
+                                begin: 
+                                expression: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2584
+                                  begin_pos: 2575
+                                node: *251
+                              hash: 3448238191675241685
+                            - &255 !ruby/object
+                              comments: &265 []
+                              children:
+                              - &254 !ruby/object
+                                comments: *252
+                                children:
+                                - :metric_name
+                                type: :lvar
+                                location: !ruby/object:Parser::Source::Map::Variable
+                                  name: &253 !ruby/object:Parser::Source::Range
+                                    source_buffer: *1
+                                    end_pos: 2597
+                                    begin_pos: 2586
+                                  expression: *253
+                                  node: *254
+                                hash: -2886357893653941885
+                              type: :begin
+                              location: !ruby/object:Parser::Source::Map::Collection
+                                end: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2598
+                                  begin_pos: 2597
+                                begin: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2586
+                                  begin_pos: 2584
+                                expression: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2598
+                                  begin_pos: 2584
+                                node: *255
+                              hash: 3213280305700592959
+                            type: :dstr
+                            location: !ruby/object:Parser::Source::Map::Collection
+                              end: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2599
+                                begin_pos: 2598
+                              begin: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2575
+                                begin_pos: 2574
+                              expression: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2599
+                                begin_pos: 2574
+                              node: *256
+                            hash: -2273906664403023001
+                          type: :send
+                          location: !ruby/object:Parser::Source::Map::Send
+                            dot: 
+                            selector: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2573
+                              begin_pos: 2572
+                            end: 
+                            begin: 
+                            expression: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2599
+                              begin_pos: 2572
+                            node: *257
+                          hash: 3474413498573974859
+                        - &262 !ruby/object
+                          comments: []
+                          children:
+                          - &260 !ruby/object
+                            comments: *258
+                            children:
+                            - :metric
+                            type: :lvar
+                            location: !ruby/object:Parser::Source::Map::Variable
+                              name: &259 !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2616
+                                begin_pos: 2610
+                              expression: *259
+                              node: *260
+                            hash: 959324675929940837
+                          - :enabled=
+                          - &261 !ruby/object
+                            comments: []
+                            children: []
+                            type: :true
+                            location: !ruby/object:Parser::Source::Map
+                              expression: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2631
+                                begin_pos: 2627
+                              node: *261
+                            hash: -739394776908133517
+                          type: :send
+                          location: !ruby/object:Parser::Source::Map::Send
+                            dot: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2617
+                              begin_pos: 2616
+                            selector: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2624
+                              begin_pos: 2617
+                            end: 
+                            begin: 
+                            expression: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2631
+                              begin_pos: 2610
+                            node: *262
+                            operator: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2626
+                              begin_pos: 2625
+                          hash: -1036905196085503840
+                        type: :begin
+                        location: !ruby/object:Parser::Source::Map::Collection
+                          end: 
+                          begin: 
+                          expression: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2631
+                            begin_pos: 2572
+                          node: *263
+                        hash: 1491294396776149180
+                      - &275 !ruby/object
+                        comments: []
+                        children:
+                        - &270 !ruby/object
+                          comments: []
+                          children:
+                          - 
+                          - :p
+                          - &269 !ruby/object
+                            comments: []
+                            children:
+                            - &264 !ruby/object
+                              comments: []
+                              children:
+                              - 'Disabling '
+                              type: :str
+                              location: !ruby/object:Parser::Source::Map::Collection
+                                end: 
+                                begin: 
+                                expression: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2668
+                                  begin_pos: 2658
+                                node: *264
+                              hash: 3733939813463116720
+                            - &268 !ruby/object
+                              comments: *265
+                              children:
+                              - &267 !ruby/object
+                                comments: *252
+                                children:
+                                - :metric_name
+                                type: :lvar
+                                location: !ruby/object:Parser::Source::Map::Variable
+                                  name: &266 !ruby/object:Parser::Source::Range
+                                    source_buffer: *1
+                                    end_pos: 2681
+                                    begin_pos: 2670
+                                  expression: *266
+                                  node: *267
+                                hash: -2886357893653941885
+                              type: :begin
+                              location: !ruby/object:Parser::Source::Map::Collection
+                                end: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2682
+                                  begin_pos: 2681
+                                begin: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2670
+                                  begin_pos: 2668
+                                expression: !ruby/object:Parser::Source::Range
+                                  source_buffer: *1
+                                  end_pos: 2682
+                                  begin_pos: 2668
+                                node: *268
+                              hash: 3213280305700592959
+                            type: :dstr
+                            location: !ruby/object:Parser::Source::Map::Collection
+                              end: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2683
+                                begin_pos: 2682
+                              begin: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2658
+                                begin_pos: 2657
+                              expression: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2683
+                                begin_pos: 2657
+                              node: *269
+                            hash: 4372541486682737817
+                          type: :send
+                          location: !ruby/object:Parser::Source::Map::Send
+                            dot: 
+                            selector: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2656
+                              begin_pos: 2655
+                            end: 
+                            begin: 
+                            expression: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2683
+                              begin_pos: 2655
+                            node: *270
+                          hash: 4455100780438389452
+                        - &274 !ruby/object
+                          comments: []
+                          children:
+                          - &272 !ruby/object
+                            comments: *258
+                            children:
+                            - :metric
+                            type: :lvar
+                            location: !ruby/object:Parser::Source::Map::Variable
+                              name: &271 !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2700
+                                begin_pos: 2694
+                              expression: *271
+                              node: *272
+                            hash: 959324675929940837
+                          - :enabled=
+                          - &273 !ruby/object
+                            comments: []
+                            children: []
+                            type: :false
+                            location: !ruby/object:Parser::Source::Map
+                              expression: !ruby/object:Parser::Source::Range
+                                source_buffer: *1
+                                end_pos: 2716
+                                begin_pos: 2711
+                              node: *273
+                            hash: -1932954524010424747
+                          type: :send
+                          location: !ruby/object:Parser::Source::Map::Send
+                            dot: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2701
+                              begin_pos: 2700
+                            selector: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2708
+                              begin_pos: 2701
+                            end: 
+                            begin: 
+                            expression: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2716
+                              begin_pos: 2694
+                            node: *274
+                            operator: !ruby/object:Parser::Source::Range
+                              source_buffer: *1
+                              end_pos: 2710
+                              begin_pos: 2709
+                          hash: -2227908332144796057
+                        type: :begin
+                        location: !ruby/object:Parser::Source::Map::Collection
+                          end: 
+                          begin: 
+                          expression: !ruby/object:Parser::Source::Range
+                            source_buffer: *1
+                            end_pos: 2716
+                            begin_pos: 2655
+                          node: *275
+                        hash: 547657658786157075
+                      type: :if
+                      location: !ruby/object:Parser::Source::Map::Condition
+                        keyword: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2518
+                          begin_pos: 2516
+                        end: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2728
+                          begin_pos: 2725
+                        else: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2644
+                          begin_pos: 2640
+                        begin: 
+                        expression: !ruby/object:Parser::Source::Range
+                          source_buffer: *1
+                          end_pos: 2728
+                          begin_pos: 2516
+                        node: *276
+                      hash: -3862939357421168507
+                    type: :begin
+                    location: !ruby/object:Parser::Source::Map::Collection
+                      end: 
+                      begin: 
+                      expression: !ruby/object:Parser::Source::Range
+                        source_buffer: *1
+                        end_pos: 2728
+                        begin_pos: 2477
+                      node: *277
+                    hash: 1447902961651966360
+                  type: :block
+                  location: !ruby/object:Parser::Source::Map::Collection
+                    end: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2738
+                      begin_pos: 2735
+                    begin: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2459
+                      begin_pos: 2457
+                    expression: !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2738
+                      begin_pos: 2427
+                    node: *278
+                  hash: -1138986911673908936
+                type: :block
+                location: !ruby/object:Parser::Source::Map::Collection
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2746
+                    begin_pos: 2743
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2411
+                    begin_pos: 2409
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2746
+                    begin_pos: 2381
+                  node: *279
+                hash: 373768699940263909
+              - &283 !ruby/object
+                comments: []
+                children:
+                - 
+                - :run
+                - &282 !ruby/object
+                  comments: *280
+                  children:
+                  - :options
+                  type: :lvar
+                  location: !ruby/object:Parser::Source::Map::Variable
+                    name: &281 !ruby/object:Parser::Source::Range
+                      source_buffer: *1
+                      end_pos: 2762
+                      begin_pos: 2755
+                    expression: *281
+                    node: *282
+                  hash: -1352921386146749060
+                type: :send
+                location: !ruby/object:Parser::Source::Map::Send
+                  dot: 
+                  selector: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2754
+                    begin_pos: 2751
+                  end: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2763
+                    begin_pos: 2762
+                  begin: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2755
+                    begin_pos: 2754
+                  expression: !ruby/object:Parser::Source::Range
+                    source_buffer: *1
+                    end_pos: 2763
+                    begin_pos: 2751
+                  node: *283
+                hash: 1766851076353613332
+              type: :begin
+              location: !ruby/object:Parser::Source::Map::Collection
+                end: 
+                begin: 
+                expression: !ruby/object:Parser::Source::Range
+                  source_buffer: *1
+                  end_pos: 2763
+                  begin_pos: 2314
+                node: *284
+              hash: -1962864767560960995
+            type: :def
+            location: !ruby/object:Parser::Source::Map::Definition
+              keyword: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2269
+                begin_pos: 2266
+              operator: 
+              name: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2278
+                begin_pos: 2270
+              end: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2769
+                begin_pos: 2766
+              expression: !ruby/object:Parser::Source::Range
+                source_buffer: *1
+                end_pos: 2769
+                begin_pos: 2266
+              node: *285
+            hash: -2805080619986182292
+          type: :begin
+          location: !ruby/object:Parser::Source::Map::Collection
+            end: 
+            begin: 
+            expression: !ruby/object:Parser::Source::Range
+              source_buffer: *1
+              end_pos: 2769
+              begin_pos: 103
+            node: *286
+          hash: -4573685582966056626
+        type: :module
+        location: !ruby/object:Parser::Source::Map::Definition
+          keyword: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 91
+            begin_pos: 85
+          operator: 
+          name: *8
+          end: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 2773
+            begin_pos: 2770
+          expression: !ruby/object:Parser::Source::Range
+            source_buffer: *1
+            end_pos: 2773
+            begin_pos: 85
+          node: *287
+        hash: -3602832803479537524
+      type: :begin
+      location: !ruby/object:Parser::Source::Map::Collection
+        end: 
+        begin: 
+        expression: !ruby/object:Parser::Source::Range
+          source_buffer: *1
+          end_pos: 2773
+          begin_pos: 16
+        node: *288
+      hash: -2331516044052927119
+description: dir
+collector: !ruby/object:Reek::Core::WarningCollector
+  warnings: !ruby/object:Set
+    hash:
+      ? &289 !ruby/object:Reek::Smells::SmellWarning
+        smell_detector: !ruby/object:Reek::Smells::NestedIterators
+          source: lib/metric_fu.rb
+          config: !ruby/object:Reek::Core::SmellConfiguration
+            options:
+              enabled: true
+              exclude: []
+              max_allowed_nesting: 1
+              ignore_iterators: &290 []
+          smells_found:
+          - *289
+          ignore_iterators: *290
+        context: MetricFu#run_only
+        lines:
+        - 129
+        message: contains iterators nested 2 deep
+        parameters:
+          :name: MetricFu#run_only
+          :count: 2
+      : true
+      ? &291 !ruby/object:Reek::Smells::SmellWarning
+        smell_detector: !ruby/object:Reek::Smells::TooManyStatements
+          source: lib/metric_fu.rb
+          config: !ruby/object:Reek::Core::SmellConfiguration
+            options:
+              enabled: true
+              exclude:
+              - initialize
+              max_statements: 5
+          smells_found:
+          - *291
+          max_allowed_statements: 5
+        context: MetricFu#run_only
+        lines:
+        - 126
+        message: has approx 9 statements
+        parameters:
+          :count: 9
+      : true
+      ? &292 !ruby/object:Reek::Smells::SmellWarning
+        smell_detector: &293 !ruby/object:Reek::Smells::UtilityFunction
+          source: lib/metric_fu.rb
+          config: !ruby/object:Reek::Core::SmellConfiguration
+            options:
+              enabled: true
+              exclude: []
+          smells_found:
+          - *292
+          - &294 !ruby/object:Reek::Smells::SmellWarning
+            smell_detector: *293
+            context: MetricFu#current_time
+            lines:
+            - 67
+            message: doesn't depend on instance state
+            parameters:
+              :name: MetricFu#current_time
+          - &295 !ruby/object:Reek::Smells::SmellWarning
+            smell_detector: *293
+            context: MetricFu#artifact_dir
+            lines:
+            - 99
+            message: doesn't depend on instance state
+            parameters:
+              :name: MetricFu#artifact_dir
+          - &296 !ruby/object:Reek::Smells::SmellWarning
+            smell_detector: *293
+            context: MetricFu#run
+            lines:
+            - 122
+            message: doesn't depend on instance state
+            parameters:
+              :name: MetricFu#run
+        context: MetricFu#report_time
+        lines:
+        - 44
+        message: doesn't depend on instance state
+        parameters:
+          :name: MetricFu#report_time
+      : true
+      *294: true
+      *295: true
+      *296: true
+smell_types:
+- !ruby/class 'Reek::Smells::Attribute'
+- !ruby/class 'Reek::Smells::BooleanParameter'
+- !ruby/class 'Reek::Smells::ClassVariable'
+- !ruby/class 'Reek::Smells::ControlParameter'
+- !ruby/class 'Reek::Smells::DataClump'
+- !ruby/class 'Reek::Smells::DuplicateMethodCall'
+- !ruby/class 'Reek::Smells::FeatureEnvy'
+- !ruby/class 'Reek::Smells::IrresponsibleModule'
+- !ruby/class 'Reek::Smells::LongParameterList'
+- !ruby/class 'Reek::Smells::LongYieldList'
+- !ruby/class 'Reek::Smells::ModuleInitialize'
+- !ruby/class 'Reek::Smells::NestedIterators'
+- !ruby/class 'Reek::Smells::NilCheck'
+- !ruby/class 'Reek::Smells::PrimaDonnaMethod'
+- !ruby/class 'Reek::Smells::RepeatedConditional'
+- !ruby/class 'Reek::Smells::TooManyInstanceVariables'
+- !ruby/class 'Reek::Smells::TooManyMethods'
+- !ruby/class 'Reek::Smells::TooManyStatements'
+- !ruby/class 'Reek::Smells::UncommunicativeMethodName'
+- !ruby/class 'Reek::Smells::UncommunicativeModuleName'
+- !ruby/class 'Reek::Smells::UncommunicativeParameterName'
+- !ruby/class 'Reek::Smells::UncommunicativeVariableName'
+- !ruby/class 'Reek::Smells::UnusedParameters'
+- !ruby/class 'Reek::Smells::UtilityFunction'
