@@ -19,12 +19,12 @@ module MetricFu
     end
 
     def self.reek_version
-      Reek.const_defined?(:VERSION) ? Reek::VERSION : 
+      Reek.const_defined?(:VERSION) ? Reek::VERSION :
                                       Reek::Version::STRING
     end
 
     def self.reek_examinor_klass
-      Reek.const_defined?(:Examiner) ? Reek.const_get(:Examiner) : 
+      Reek.const_defined?(:Examiner) ? Reek.const_get(:Examiner) :
                                        Reek.const_get(:Core).const_get(:Examiner)
     end
 
