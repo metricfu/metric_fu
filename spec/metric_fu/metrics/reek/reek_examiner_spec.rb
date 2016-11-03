@@ -39,6 +39,7 @@ describe MetricFu::ReekExaminer do
   context 'Analyse Reek Examiner' do
     describe 'Reek V1' do
       let(:output) {
+        gem 'reek', '~> 1.0'
         fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_1.6.6.yml').to_s
         YAML::load_file(fixture_file)
       }
@@ -53,6 +54,7 @@ describe MetricFu::ReekExaminer do
 
     describe 'Reek V2' do
       let(:output) {
+        gem 'reek', '~> 2.0'
         fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_2.2.1.yml').to_s
         YAML::load_file(fixture_file)
       }
@@ -67,6 +69,7 @@ describe MetricFu::ReekExaminer do
 
     describe 'Reek V3' do
       let(:output) {
+        gem 'reek', '~> 3.0'
         fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_3.11.yml').to_s
         YAML::load_file(fixture_file)
       }
@@ -81,6 +84,7 @@ describe MetricFu::ReekExaminer do
 
     describe 'Reek V4' do
       let(:output) {
+        gem 'reek', '~> 4.0'
         fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_4.1.0.yml').to_s
         YAML::load_file(fixture_file)
       }
