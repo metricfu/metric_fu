@@ -1,8 +1,8 @@
-# MetricFu [![Gem Version](https://badge.fury.io/rb/metric_fu.png)](http://badge.fury.io/rb/metric_fu) [![Build Status](https://travis-ci.org/metricfu/metric_fu.png?branch=master)](http://travis-ci.org/metricfu/metric_fu)
+# MetricFu [![Gem Version](https://badge.fury.io/rb/metric_fu.svg)](http://badge.fury.io/rb/metric_fu) [![Build Status](https://travis-ci.org/metricfu/metric_fu.svg?branch=master)](http://travis-ci.org/metricfu/metric_fu)
 
 [![Join the chat at https://gitter.im/metricfu/metric_fu](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/metricfu/metric_fu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Code Climate](https://codeclimate.com/github/metricfu/metric_fu.png)](https://codeclimate.com/github/metricfu/metric_fu) [![Inline docs](http://inch-ci.org/github/metricfu/metric_fu.png)](http://inch-ci.org/github/metricfu/metric_fu) [![Dependency Status](https://gemnasium.com/metricfu/metric_fu.png)](https://gemnasium.com/metricfu/metric_fu)
+[![Code Climate](https://codeclimate.com/github/metricfu/metric_fu.svg)](https://codeclimate.com/github/metricfu/metric_fu) [![Inline docs](http://inch-ci.org/github/metricfu/metric_fu.svg)](http://inch-ci.org/github/metricfu/metric_fu) [![Dependency Status](https://gemnasium.com/metricfu/metric_fu.svg)](https://gemnasium.com/metricfu/metric_fu)
 
 [Rdoc](http://rdoc.info/github/metricfu/metric_fu/)
 
