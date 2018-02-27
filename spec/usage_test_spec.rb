@@ -63,7 +63,7 @@ README
       expect(test_result.success).to eq(true)
     end
     specify "fails when the command runs with an error" do
-      code = "sandwhich_fu ruby"
+      code = "sandwhich_fu ruby;"
       test_result = SnippetRunner.new(code, "sh").run_code
       expect(test_result.captured_output).to match(failed_command_error)
       expect(test_result.success).to eq(false)
@@ -83,7 +83,7 @@ README
   end
 
   def failed_command_error
-    defined?(JRUBY_VERSION) ? "IOError" : "Errno::ENOENT"
+    "SystemCommandError"
   end
 
   def fixtures_path
