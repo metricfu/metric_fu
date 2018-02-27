@@ -4,9 +4,15 @@ Each change should fall into categories that would affect whether the release is
 
 As such, a _Feature_ would map to either major (breaking change) or minor. A _bug fix_ to a patch.  And _misc_ is either minor or patch, the difference being kind of fuzzy for the purposes of history.  Adding tests would be patch level.
 
-### Unreleased
+### [Unreleased](https://github.com/metricfu/metric_fu/compare/v4.13.0...master)
 
 * Breaking Changes
+* Features
+* Fixes
+* Misc
+
+### [4.13.0](https://github.com/metricfu/metric_fu/compare/v4.12.0...v4.13.0)
+
 * Features
   * Setup CI pipeline on AppVeyor and fixed specs. (Rasmus Bergholdt, #285, fixes #284)
   * Upgraded roodi to v5.0.0 (Jonathan Keam, #287)
@@ -20,7 +26,6 @@ As such, a _Feature_ would map to either major (breaking change) or minor. A _bu
   * Fix test warnings (Jonathan Keam, #289, addresses #288)
 * Misc
   * Add a Gitter chat badge to README.md (#259)
-
 
 ### [4.12.0](https://github.com/metricfu/metric_fu/compare/v4.11.4...v4.12.0)
 
