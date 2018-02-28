@@ -1,7 +1,7 @@
 # encoding: utf-8
 source "https://rubygems.org"
 
-if RUBY_VERSION =~ /^2\.2\.[0-1]p?\d*/ || RUBY_VERSION =~ /^2\.1\.\d*p?\d*/ || RUBY_VERSION =~ /^2.3.\d*p?\d*/
+if RUBY_VERSION =~ /^2.[3-5].\d*p?\d*/ || RUBY_VERSION =~ /^2\.2\.[0-1]p?\d*/ || RUBY_VERSION =~ /^2\.1\.\d*p?\d*/
   gem "activesupport", "~> 4.2"
   gem "json", "~> 1.7"
   gem "rubocop", platforms: :mri, groups: [:test, :local_development]
