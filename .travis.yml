@@ -8,13 +8,15 @@ before_install:
   - gem install bundler
   - bundle config --local without local_development yard guard
 rvm:
-  # 2.1, not 2.1.0 until fixed https://github.com/travis-ci/travis-ci/issues/2220
+  - 2.5
+  - 2.4
+  - 2.3
   - 2.2
   - 2.1
   - 2.0.0
   - 1.9.2
   - 1.9.3
-  - jruby
+  - jruby-9.1.9.0
   - "rbx-2"
 matrix:
   allow_failures:
