@@ -83,7 +83,7 @@ README
   end
 
   def failed_command_error
-    "SystemCommandError"
+    MetricFu.configuration.windows? ? 'Errno::ENOENT' : "SystemCommandError"
   end
 
   def fixtures_path

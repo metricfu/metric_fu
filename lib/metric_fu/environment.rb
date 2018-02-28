@@ -121,6 +121,10 @@ module MetricFu
       @osx ||= platform.include?("darwin")
     end
 
+    def windows?
+      (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ platform) != nil
+    end
+
     def ruby_strangely_makes_accessors_private?
       @private_accessors ||= ruby192? || jruby?
     end
