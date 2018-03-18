@@ -38,88 +38,43 @@ describe MetricFu::ReekExaminer do
   end
 
   context 'Analyse Reek Examiner' do
-    let(:reek_version) { Gem::Specification.find_by_name('reek').version }
+    let(:options) { { } }
+    let(:files_to_analyze) { Dir[run_dir + '/**/bad_code.rb'] }
     let(:expect_code_smells) {
       [
         {
-          :method=>"MetricFu",
+          :method=>"BadCode",
           :message=>"has no descriptive comment",
           :type=>"IrresponsibleModule",
-          :lines=>[5]
+          :lines=>[1]
         },
         {
-          :method=>"MetricFu#run_only",
+          :method=>"BadCode#nonsense",
+          :message=>"has approx 7 statements",
+          :type=>"TooManyStatements",
+          :lines=>[2]
+        },
+        {
+          :method=>"BadCode#nonsense",
+          :message=>"has the variable name 'x'",
+          :type=>"UncommunicativeVariableName",
+          :lines=>[3]
+        },
+        {
+          :method=>"BadCode#nonsense",
           :message=>"contains iterators nested 2 deep",
           :type=>"NestedIterators",
-          :lines=>[129]
-        },
-        {
-          :method=>"MetricFu#run_only",
-          :message=>"has approx 9 statements",
-          :type=>"TooManyStatements",
-          :lines=>[126]
+          :lines=>[5]
         }
       ]
     }
 
-    describe 'Reek V1', :skip => !gem_match_version('reek', '~> 1.0') do
-      let(:output) {
-        fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_1.6.6.yml').to_s
-        YAML::load_file(fixture_file)
-      }
-
-      it 'analyse parses to propper mf_reek model' do
-        sut = MetricFu::ReekExaminer::ReekExaminerV1.new(double)
-        sut.instance_variable_set(:@output, output)
-        expect(sut.analyze).to be_a(Array)
-        expect(sut.analyze.count).to eq(1)
-        expect(sut.analyze.first[:code_smells]).to include(*expect_code_smells)
-      end
-    end
-
-    describe 'Reek V2', :skip => !gem_match_version('reek', '~> 2.0') do
-      let(:output) {
-        fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_2.2.1.yml').to_s
-        YAML::load_file(fixture_file)
-      }
-
-      it 'analyse parses to propper mf_reek model' do
-        sut = MetricFu::ReekExaminer::ReekExaminerV1.new(double)
-        sut.instance_variable_set(:@output, output)
-        expect(sut.analyze).to be_a(Array)
-        expect(sut.analyze.count).to eq(1)
-        expect(sut.analyze.first[:code_smells]).to include(*expect_code_smells)
-      end
-    end
-
-    describe 'Reek V3', :skip => !gem_match_version('reek', '~> 3.0') do
-      let(:output) {
-        fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_3.11.yml').to_s
-        YAML::load_file(fixture_file)
-      }
-
-      it 'analyse parses to propper mf_reek model' do
-        sut = MetricFu::ReekExaminer::ReekExaminerV3.new(double)
-        sut.instance_variable_set(:@output, output)
-        expect(sut.analyze).to be_a(Array)
-        expect(sut.analyze.count).to eq(1)
-        expect(sut.analyze.first[:code_smells]).to include(*expect_code_smells)
-      end
-    end
-
-    describe 'Reek V4', :skip => !gem_match_version('reek', '~> 4.0') do
-      let(:output) {
-        fixture_file = FIXTURE.fixtures_path.join('reek', 'examiner_4.1.0.yml').to_s
-        YAML::load_file(fixture_file)
-      }
-
-      it 'analyse parses to propper mf_reek model' do
-        sut = MetricFu::ReekExaminer::ReekExaminerV4.new(double)
-        sut.instance_variable_set(:@output, output)
-        expect(sut.analyze).to be_a(Array)
-        expect(sut.analyze.count).to eq(1)
-        expect(sut.analyze.first[:code_smells]).to include(*expect_code_smells)
-      end
+    it 'analyse parses to propper mf_reek model' do
+      sut = MetricFu::ReekExaminer.get
+      sut.run!(files_to_analyze, options)
+      expect(sut.analyze).to be_a(Array)
+      expect(sut.analyze.count).to eq(1)
+      expect(sut.analyze.first[:code_smells]).to include(*expect_code_smells)
     end
   end
 end

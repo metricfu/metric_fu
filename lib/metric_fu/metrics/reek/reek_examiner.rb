@@ -19,13 +19,15 @@ module MetricFu
     end
 
     def self.reek_version
-      Reek.const_defined?(:VERSION) ? Reek::VERSION :
-                                      Reek::Version::STRING
+      Reek::Version::STRING
+    rescue NameError
+      Reek::VERSION
     end
 
     def self.reek_examinor_klass
-      Reek.const_defined?(:Examiner) ? Reek.const_get(:Examiner) :
-                                       Reek.const_get(:Core).const_get(:Examiner)
+      Reek::Examiner
+    rescue NameError
+      Reek::Core::Examiner
     end
 
     class ReekExaminerV1
@@ -38,6 +40,7 @@ module MetricFu
       end
 
       def analyze
+        return [] if @output.nil?
         @output.smells.group_by(&:source).collect do |file_path, smells|
           { file_path: file_path,
             code_smells: analyze_smells(smells) }
@@ -72,6 +75,7 @@ module MetricFu
       end
 
       def analyze
+        return [] if @output.nil?
         @output.map(&:smells).flatten.group_by(&:source).collect do |file_path, smells|
           { file_path: file_path,
             code_smells: analyze_smells(smells) }

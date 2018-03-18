@@ -37,24 +37,4 @@ describe MetricFu::ReekGenerator do
       reek.emit
     end
   end
-
-  describe "analyze method" do
-    before :each do
-      MetricFu::Configuration.run {}
-      allow(File).to receive(:directory?).and_return(true)
-      @reek = MetricFu::ReekGenerator.new
-      @examiner = @reek.send(:examiner)
-      @smell_warning = Reek.const_defined?(:SmellWarning) ? Reek.const_get(:SmellWarning) : Reek.const_get(:Smells).const_get(:SmellWarning)
-      if @smell_warning.instance_methods.include?(:subclass)
-        @smell_warning.send(:alias_method, :smell_type, :subclass)
-      end
-    end
-
-    context "Reek Examiner versions" do
-      it "parses Reek V1 correct"
-      it "parses Reek V2 correct"
-      it "parses Reek V3 correct"
-      it "parses Reek V4 correct"
-    end
-  end
 end
