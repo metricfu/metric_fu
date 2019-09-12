@@ -21,7 +21,7 @@ module MetricFu
     end
 
     def analyze
-      @matches = @output.map(&:smells).flatten.group_by(&:source).collect do |file_path, smells|
+      @matches = @output.flat_map(&:smells).group_by(&:source).collect do |file_path, smells|
         { file_path: file_path,
           code_smells: analyze_smells(smells) }
       end
