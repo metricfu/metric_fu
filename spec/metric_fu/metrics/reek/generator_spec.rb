@@ -161,16 +161,26 @@ describe MetricFu::ReekGenerator do
 
     context "with real output, not mocked nor doubled" do
       let(:result) do
-        {:file_path=>"spec/support/samples/alfa.rb", :code_smells=>[{:method=>"Alfa", :message=>"takes parameters ['echo', 'foxtrot', 'golf'] to 3 methods", :type=>"DataClump", :lines=>[2, 3, 4]}, {:method=>"Alfa", :message=>"has no descriptive comment", :type=>"IrresponsibleModule", :lines=>[1]}, {:method=>"Alfa#bravo", :message=>"has unused parameter 'echo'", :type=>"UnusedParameters", :lines=>[2]}, {:method=>"Alfa#bravo", :message=>"has unused parameter 'foxtrot'", :type=>"UnusedParameters", :lines=>[2]}, {:method=>"Alfa#bravo", :message=>"has unused parameter 'golf'", :type=>"UnusedParameters", :lines=>[2]}, {:method=>"Alfa#charlie", :message=>"has unused parameter 'echo'", :type=>"UnusedParameters", :lines=>[3]}, {:method=>"Alfa#charlie", :message=>"has unused parameter 'foxtrot'", :type=>"UnusedParameters", :lines=>[3]}, {:method=>"Alfa#charlie", :message=>"has unused parameter 'golf'", :type=>"UnusedParameters", :lines=>[3]}, {:method=>"Alfa#delta", :message=>"has unused parameter 'echo'", :type=>"UnusedParameters", :lines=>[4]}, {:method=>"Alfa#delta", :message=>"has unused parameter 'foxtrot'", :type=>"UnusedParameters", :lines=>[4]}, {:method=>"Alfa#delta", :message=>"has unused parameter 'golf'", :type=>"UnusedParameters", :lines=>[4]}]}
-      end
-      before do
-        @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
-        @generator.emit
+        {
+          file_path: "spec/support/samples/reek/alfa.rb",
+          code_smells: [
+            {
+              lines: [1],
+              message: "has unused parameter 'echo'",
+              method: "bravo",
+              type: "UnusedParameters"
+            }
+          ]
+        }
       end
 
       it "returns real data" do
-        @matches = @generator.analyze
+        @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
+        @generator.emit
 
+        @matches = @generator.analyze
+        puts "PWD: #{Dir.pwd}"
+        puts "MetricFu.run_dir: #{MetricFu.run_dir}"
         expect(@matches.first).to eq(result)
       end
     end
