@@ -36,19 +36,19 @@ RSpec.configure do |config|
   # :each every describe block
   # :all every it block
 
-  def run_dir
+  def dummy_dir
     File.expand_path("dummy", File.dirname(__FILE__))
   end
 
   config.before(:suite) do
-    MetricFu.run_dir = run_dir
+    MetricFu.run_dir = dummy_dir
   end
 
   config.after(:suite) do
     cleanup_fs
   end
 
-  config.after(:each) do
+  config.append_after do
     MetricFu.reset
   end
 end
