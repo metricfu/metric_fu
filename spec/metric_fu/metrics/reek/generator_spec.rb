@@ -8,7 +8,7 @@ describe MetricFu::ReekGenerator do
     let(:files_to_analyze) { ["lib/foo.rb", "lib/bar.rb"] }
     let(:reek) { MetricFu::ReekGenerator.new(options) }
 
-    before :each do
+    before(:each) do
       allow(reek).to receive(:files_to_analyze).and_return(files_to_analyze)
     end
 
@@ -175,7 +175,7 @@ describe MetricFu::ReekGenerator do
       end
 
       it "returns real data" do
-        MetricFu.with_run_dir Dir[File.expand_path("../../..", __FILE__)] do
+        MetricFu.with_run_dir File.expand_path("../../..", __FILE__) do
           @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
           @generator.emit
 
