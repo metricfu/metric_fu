@@ -167,7 +167,7 @@ describe MetricFu::ReekGenerator do
             {
               lines: [1],
               message: "has unused parameter 'echo'",
-              method: "bravo",
+              method: "foo",
               type: "UnusedParameters"
             }
           ]
@@ -175,13 +175,14 @@ describe MetricFu::ReekGenerator do
       end
 
       it "returns real data" do
-        @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
-        @generator.emit
+        MetricFu.with_run_dir Dir[File.expand_path("../../..", __FILE__)] do
+          @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
+          @generator.emit
 
-        @matches = @generator.analyze
-        puts "PWD: #{Dir.pwd}"
-        puts "MetricFu.run_dir: #{MetricFu.run_dir}"
-        expect(@matches.first).to eq(result)
+          @matches = @generator.analyze
+
+          expect(@matches.first).to eq(result)
+        end
       end
     end
 
