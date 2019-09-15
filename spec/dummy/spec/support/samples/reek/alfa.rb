@@ -1,1 +1,0 @@
-def bravo(echo); end
