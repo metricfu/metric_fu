@@ -15,7 +15,6 @@ install:
   - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
   - gem install bundler
   - bundle install --path=vendor/bundle --retry=3 --jobs=3
-  - bundle update
 
 cache:
   - vendor/bundle
