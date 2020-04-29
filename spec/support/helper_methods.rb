@@ -30,3 +30,8 @@ end
 def compare_paths(path1, path2)
   expect(File.join(MetricFu.root_dir, path1)).to eq(File.join(MetricFu.root_dir, path2))
 end
+
+def gem_match_version(a_gem, version)
+  Gem::Dependency.new('', version).match?('', Gem::Specification.find_by_name(a_gem).version)
+end
+
