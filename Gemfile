@@ -59,8 +59,8 @@ group :development do
 end
 
 group :guard do
-  gem "guard",         "~> 1.8.1"
-  gem "guard-bundler", "~> 1.0.0"
+  gem "guard"
+  gem "guard-bundler"
   gem "guard-rspec"
 
   # file system change event handling

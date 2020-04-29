@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
 
   # metric dependencies
   s.add_runtime_dependency "flay",                  [">= 2.0.1",  "~> 2.1"]
-  s.add_runtime_dependency "churn",                 ["~> 0.0.35"]
+  s.add_runtime_dependency "churn",                 [">= 1.0.2",  "~> 1.0"]
   s.add_runtime_dependency "flog",                  [">= 4.1.1",  "~> 4.1"]
   s.add_runtime_dependency "reek",                  [">= 1.3.4", "< 5.0.0"]
   s.add_runtime_dependency "cane",                  [">= 2.5.2",  "~> 2.5"]
@@ -67,5 +67,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "test_construct"
   # ensure we have a JSON parser
   s.add_development_dependency "json"
-  s.add_development_dependency "simplecov", "~> 0.9"
+  s.add_development_dependency "simplecov", "< 0.18"
 end
