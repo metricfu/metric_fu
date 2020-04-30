@@ -6,7 +6,7 @@ describe MetricFu::Configuration, "for churn" do
     it "should set @churn to {}" do
       load_metric "churn"
       expect(MetricFu::Metric.get_metric(:churn).run_options).to eq(
-               start_date: '"1 year ago"', minimum_churn_count: 10, ignore_files: [], data_directory: MetricFu::Io::FileSystem.scratch_directory("churn")
+               start_date: '"1 year ago"', minimum_churn_count: 10, ignore_files: nil, data_directory: MetricFu::Io::FileSystem.scratch_directory("churn")
       )
     end
   end
