@@ -13,6 +13,7 @@ environment:
 
 install:
   - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - echo %RUBY_VERSION%
   - ruby -v
   - gem install bundler
   - bundle config force_ruby_platform true
