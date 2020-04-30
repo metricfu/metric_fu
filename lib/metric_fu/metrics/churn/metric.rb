@@ -8,7 +8,7 @@ module MetricFu
       {
         start_date: '"1 year ago"',
         minimum_churn_count: 10,
-        ignore_files: [],
+        ignore_files: "",
         data_directory: MetricFu::Io::FileSystem.scratch_directory(name)
       }
     end

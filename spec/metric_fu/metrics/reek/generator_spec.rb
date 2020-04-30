@@ -1,4 +1,5 @@
 require "spec_helper"
+
 MetricFu.metrics_require { "reek/generator" }
 
 describe MetricFu::ReekGenerator do
@@ -7,7 +8,7 @@ describe MetricFu::ReekGenerator do
     let(:files_to_analyze) { ["lib/foo.rb", "lib/bar.rb"] }
     let(:reek) { MetricFu::ReekGenerator.new(options) }
 
-    before :each do
+    before(:each) do
       allow(reek).to receive(:files_to_analyze).and_return(files_to_analyze)
     end
 
@@ -42,8 +43,8 @@ describe MetricFu::ReekGenerator do
     before :each do
       MetricFu::Configuration.run {}
       allow(File).to receive(:directory?).and_return(true)
-      @reek = MetricFu::ReekGenerator.new
-      @examiner = @reek.send(:examiner)
+      @generator = MetricFu::ReekGenerator.new
+      @examiner = @generator.send(:examiner)
       @smell_warning = Reek.const_defined?(:SmellWarning) ? Reek.const_get(:SmellWarning) : Reek.const_get(:Smells).const_get(:SmellWarning)
       if @smell_warning.instance_methods.include?(:subclass)
         @smell_warning.send(:alias_method, :smell_type, :subclass)
@@ -99,9 +100,11 @@ describe MetricFu::ReekGenerator do
                             smell_type: "Duplication",
                             lines: [6, 9])
         ]
-        @lines = instance_double(@examiner, smells: @smells)
-        @reek.instance_variable_set(:@output, @lines)
-        @matches = @reek.analyze
+        @examiners = [
+          instance_double(Reek::Examiner, smells: @smells)
+        ]
+        @generator.instance_variable_set(:@output, @examiners)
+        @matches = @generator.analyze
       end
 
       it "should find the code smell's line numbers" do
@@ -143,9 +146,11 @@ describe MetricFu::ReekGenerator do
                    subclass: "Duplication",
                    lines: [2, 4]),
         ]
-        @lines = instance_double(@examiner, smells: @smells)
-        @reek.instance_variable_set(:@output, @lines)
-        @matches = @reek.analyze
+        @examiners = [
+          instance_double(Reek::Examiner, smells: @smells)
+        ]
+        @generator.instance_variable_set(:@output, @examiners)
+        @matches = @generator.analyze
       end
 
       it "uses the subclass field to find the smell type" do
@@ -154,11 +159,40 @@ describe MetricFu::ReekGenerator do
       end
     end
 
+    context "with real output, not mocked nor doubled" do
+      let(:result) do
+        {
+          file_path: "spec/support/samples/reek/alfa.rb",
+          code_smells: [
+            {
+              lines: [1],
+              message: "has unused parameter 'echo'",
+              method: "foo",
+              type: "UnusedParameters"
+            }
+          ]
+        }
+      end
+
+      it "returns real data" do
+        MetricFu.with_run_dir File.expand_path("../../..", __FILE__) do
+          @generator = MetricFu::ReekGenerator.new(dirs_to_reek: ["spec/support/samples"])
+          @generator.emit
+
+          @matches = @generator.analyze
+
+          expect(@matches.first).to eq(result)
+        end
+      end
+    end
+
     context "without reek warnings" do
       before :each do
-        @lines = instance_double(@examiner, smells: [])
-        @reek.instance_variable_set(:@output, @lines)
-        @matches = @reek.analyze
+        @examiners = [
+          instance_double(Reek::Examiner, smells: [])
+        ]
+        @generator.instance_variable_set(:@output, @examiners)
+        @matches = @generator.analyze
       end
 
       it "returns empty analysis" do
