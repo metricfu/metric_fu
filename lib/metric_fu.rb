@@ -20,6 +20,15 @@ module MetricFu
     "MetricFu"
   end
 
+  def with_run_dir(dir, &block)
+    old_dir = run_dir
+    self.run_dir = dir
+
+    block.call
+
+    self.run_dir = old_dir
+  end
+
   def run_dir
     @run_dir ||= Dir.pwd
   end

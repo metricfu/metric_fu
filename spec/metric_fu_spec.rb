@@ -2,8 +2,27 @@
 require "spec_helper"
 
 describe MetricFu do
+  before do
+    MetricFu.run_dir = Dir.pwd
+    MetricFu.report_name = nil
+  end
+
+  describe ".with_run_dir" do
+    it "temporarily uses a specified `run_dir`" do
+      expect(MetricFu.run_dir).to eq(Dir.pwd)
+
+      MetricFu.with_run_dir "spec/dummy" do
+        expect(MetricFu.run_dir).to eq("spec/dummy")
+      end
+
+      expect(MetricFu.run_dir).to eq(Dir.pwd)
+    end
+  end
+
   specify "the default report_name is the run directory base name" do
-    expect(MetricFu.report_name).to eq("dummy")
+    MetricFu.with_run_dir "spec/support" do
+      expect(MetricFu.report_name).to eq("support")
+    end
   end
 
   specify "the user can set the report_name" do
