@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
     s.signing_key = File.join(Gem.user_home, ".ssh", "gem-private_key.pem")
   end
 
-  s.rubyforge_project           = "metric_fu"
   s.license                     = "MIT"
   s.platform                    = Gem::Platform::RUBY
   s.version                     = MetricFu::VERSION
@@ -34,10 +33,8 @@ Gem::Specification.new do |s|
   s.files                       = files
   s.test_files                  = test_files
   s.executables                 = executables
-  s.default_executable          = "metric_fu"
   s.require_paths               = ["lib"]
 
-  s.has_rdoc                    = true
   s.extra_rdoc_files            = ["HISTORY.md", "CONTRIBUTING.md", "TODO.md", "MIT-LICENSE"]
   s.rdoc_options                = ["--main", "README.md"]
 
