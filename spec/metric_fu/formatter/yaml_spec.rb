@@ -50,8 +50,18 @@ describe MetricFu::Formatter::YAML do
       out = MetricFu::Utility.capture_output {
         MetricFu::Formatter::YAML.new(output: @output).finish
       }
-      expect(out).to include ":#{@metric1}:"
-      expect(out).to include ":#{@metric2}:"
+      expected_output = YAML.to_json(
+        "#{@metric1}" => {
+          "total_violations" => 0,
+          "violations" => {},
+        },
+        "#{@metric2}" => {
+          "files" => [],
+          "classes" => [],
+          "methods" => [],
+        }
+      )
+      expect(out).to eq(expected_output)
     end
   end
 

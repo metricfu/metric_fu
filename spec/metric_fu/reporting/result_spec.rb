@@ -16,15 +16,13 @@ describe MetricFu::Result do
 
   describe "#as_yaml" do
     it "should call #result_hash" do
-      result_hash = double("result_hash")
-      expect(result_hash).to receive(:to_yaml)
-
-      expect(@result).to receive(:result_hash).and_return(result_hash)
-      @result.as_yaml
+      result_hash =  { "hi" => "there" }
+      @result.result_hash.update(result_hash)
+      yaml = @result.as_yaml
+      expected_yaml = '{"hi": "there"}' << "\n"
+      expect(yaml).to eq(expected_yaml)
+      expect(JSON.load(yaml)).to eq(result_hash)
     end
-  end
-
-  describe "#result_hash" do
   end
 
   describe "#add" do
