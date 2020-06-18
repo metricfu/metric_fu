@@ -6,7 +6,7 @@ require "metric_fu/metrics/rcov/generator"
 describe SimpleCov::Formatter::MetricFu do
   before do
     @rcov_file =  subject.coverage_file_path
-    File.delete(@rcov_file) if File.exists?(@rcov_file)
+    File.delete(@rcov_file) if File.exist?(@rcov_file)
 
     @result = SimpleCov::Result.new(
 
@@ -19,7 +19,7 @@ describe SimpleCov::Formatter::MetricFu do
   it "test_format" do
     SimpleCov::Formatter::MetricFu.new.format(@result)
 
-    expect(File.exists?(@rcov_file)).to be_truthy
+    expect(File.exist?(@rcov_file)).to be_truthy
   end
 
   if SimpleCov.running

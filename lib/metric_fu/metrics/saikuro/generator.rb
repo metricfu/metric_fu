@@ -84,7 +84,7 @@ module MetricFu
     end
 
     def file_not_exists?(filename)
-      !File.exists?(filename)
+      !File.exist?(filename)
     end
 
     def sort_methods(methods)

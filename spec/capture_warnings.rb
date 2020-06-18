@@ -29,16 +29,6 @@ RSpec.configure do |config|
       line.include?(app_root) && !line.include?(bundle_dir)
     }
 
-    if app_warnings.any?
-      puts <<-WARNINGS
-#{'-' * 30} app warnings: #{'-' * 30}
-
-#{app_warnings.join("\n")}
-
-#{'-' * 75}
-      WARNINGS
-    end
-
     if other_warnings.any?
       output_file = File.join(output_dir, "warnings.txt")
       File.write(output_file, other_warnings.join("\n") << "\n")
@@ -47,8 +37,17 @@ RSpec.configure do |config|
       puts
     end
 
-    # fail the build...
     if app_warnings.any?
+      puts <<-WARNINGS
+
+#{'-' * 30} app warnings: #{'-' * 30}
+
+#{app_warnings.join("\n")}
+
+#{'-' * 75}
+
+      WARNINGS
+
       abort "Failing build due to app warnings: #{app_warnings.inspect}"
     end
   end

@@ -47,8 +47,28 @@ platform :jruby do
 end
 
 group :test, :local_development  do
-  gem "pry"
+  gem "code_notes"
+
+  # Debugging
+  # Guard includes 'pry', so let's make that explicit
+  # https://github.com/guard/guard#interactions
+  # Add: edit -c, play -l number, whereami, wtf
+  gem "pry",       require:  true
+  # see https://github.com/pry/pry/wiki/Editor-integration
+  #     https://github.com/pry/pry/wiki/Documentation-browsing
+  #     https://github.com/pry/pry/wiki/Exceptions
+  #     http://www.confreaks.com/videos/2864-rubyconf2013-repl-driven-development-with-pry
+  # On OSX, edit ~/.editrc and add
+  # bind "^R" em-inc-search-prev
+  # to get 'readline' support
+  #
+  # Adds: 'step', 'next', 'finish', 'continue', and 'break'  commands to control execution.
+  # gem "pry-byebug",   require:  false
+  # see https://github.com/deivid-rodriguez/pry-byebug#execution-commands
   gem "pry-nav"
+  # command completion
+  gem "bond",      require:  false
+  # see .pryrc for more configurations
 end
 
 # Added by devtools
